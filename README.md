@@ -1,11 +1,10 @@
-# drawerrer.github.io
+# 영유의 서랍장
 drawerrer.github.io
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>영유의 서랍장</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
