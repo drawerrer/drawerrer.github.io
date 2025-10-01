@@ -37,7 +37,7 @@
 
   <!-- 푸터 -->
   <footer>
-    <p>© 2025 내 블로그. All rights reserved.</p>
+    <p>© 2025 영유의 서랍장. All rights reserved.</p>
   </footer>
 </body>
 </html>
