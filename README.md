@@ -19,7 +19,7 @@
   <main>
     <section id="welcome">
       <h2>놀러와 주셔서 감사해요 !</h2>
-      <p>서랍장에서 여유로운 시간 보내시길 바라요◦◦◦☁️</p>
+      <p>서랍장에서 여유롭게 탐색하는 시간을 갖길 바라요◦◦◦☁️</p>
     </section>
 
     <section id="latest-posts">
