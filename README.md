@@ -5,7 +5,7 @@ drawerrer.github.io
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>내 블로그</title>
+  <title>영유의 서랍장</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,8 +27,8 @@ drawerrer.github.io
   <!-- 메인 콘텐츠 -->
   <main>
     <section id="welcome">
-      <h2>환영합니다!</h2>
-      <p>이곳은 제가 글과 사진, 그리고 좋아하는 것들을 공유하는 공간입니다.</p>
+      <h2>놀러와 주셔서 감사해요 !</h2>
+      <p>저의 서랍장에서 여유로운 시간 보내시길 바라요.</p>
     </section>
 
     <section id="latest-posts">
