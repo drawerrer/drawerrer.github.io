@@ -5,10 +5,10 @@
   <header>
     <nav>
       <ul>
-        <li><a href="index.html">홈</a></li>
+        <li><a href="index.html">홈으로 돌아가기</a></li>
         <li><a href="blog.html">글</a></li>
         <li><a href="photos.html">사진</a></li>
-        <li><a href="collections.html">영화 모음집</a></li>
+        <li><a href="collections.html">끝내주는 영화 모음집</a></li>
         <li><a href="about.html">소개</a></li>
         <li><a href="contact.html">연락처</a></li>
       </ul>
