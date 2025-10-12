@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>나의 블로그</title>
+  <title>영유의 서랍장</title>
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
@@ -23,12 +23,15 @@
       padding: 60px 70px 30px 70px;
     }
 
-    .logo {
-      font-size: 20px;
-      font-weight: 700;
-      color: #729960;
-      margin-bottom: 25px;
-      letter-spacing: -0.5px;
+    <header>
+  <div class="logo">
+    <img src="정영주 컵앤하겐.png" alt="CopenHagen 로고" height="60">
+  </div>
+  <nav>
+    <a href="#" id="diaryLink" class="active">일기장</a>
+    <a href="#" id="photoLink">사진 모음집</a>
+  </nav>
+</header>
     }
 
     nav {
