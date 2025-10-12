@@ -1,10 +1,9 @@
 
-<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>나의 블로그</title>
+  <title>영유의 서랍장</title>
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
@@ -305,5 +304,3 @@
       });
     });
   </script>
-</body>
-</html>
