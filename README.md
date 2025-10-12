@@ -1,9 +1,10 @@
 
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>영유의 서랍장</title>
+  <title>나의 블로그</title>
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
@@ -23,14 +24,14 @@
       padding: 60px 70px 30px 70px;
     }
 
-  <div class="logo">
-    <img src="정영주 컵앤하겐.png" alt="CopenHagen 로고" height="60">
-  </div>
-  <nav>
-    <a href="#" id="diaryLink" class="active">일기장</a>
-    <a href="#" id="photoLink">사진 모음집</a>
-  </nav>
-</header>
+    .logo {
+      margin-bottom: 25px;
+    }
+
+    .logo img {
+      display: block;
+      height: 60px;
+      object-fit: contain;
     }
 
     nav {
@@ -140,24 +141,12 @@
       opacity: 0.7;
     }
 
-    .photo-gallery {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-top: 30px;
-    }
-
     .photo-gallery img {
       width: 100%;
-      max-width: 220px;
+      max-width: 400px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .photo-gallery img:hover {
-      transform: scale(1.03);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+      margin-top: 20px;
     }
 
     footer {
@@ -170,7 +159,9 @@
 </head>
 <body>
   <header>
-    <div class="logo"><이미지></div>
+    <div class="logo">
+      <img src="정영주 컵앤하겐.png" alt="로고">
+    </div>
     <nav>
       <a href="#" id="diaryLink" class="active">일기장</a>
       <a href="#" id="photoLink">사진 모음집</a>
@@ -178,20 +169,19 @@
   </header>
 
   <main>
-    <!-- 일기장 -->
+    <!-- 📖 일기장 -->
     <section id="diary" class="active">
       <ul class="post-list">
         <li data-id="1"><span class="date">2025.10.12</span> - 단풍이 시작된 아침</li>
         <li data-id="2"><span class="date">2025.10.09</span> - 조용한 카페의 오후</li>
-        <li data-id="3"><span class="date">2025.10.03</span> - 비 오는 거리에서</li>
       </ul>
 
-      <!-- 글 상세보기 -->
+      <!-- 상세 글 -->
       <div class="post-content" id="post1">
         <h2>단풍이 시작된 아침</h2>
         <span class="date">2025.10.12</span>
         <p>
-오늘 아침, 창문을 열었을 때 공기가 달라져 있었다.  
+창문을 여니 공기가 달라져 있었다.  
 조금 더 차갑고, 조금 더 선명했다.  
 길가의 나무들이 서서히 색을 바꾸기 시작했고,  
 나는 그 변화를 가만히 바라보았다.
@@ -203,36 +193,60 @@
         <h2>조용한 카페의 오후</h2>
         <span class="date">2025.10.09</span>
         <p>
-작은 골목 끝에 있는 카페,  
-오늘은 유난히 사람이 없었다.  
-잔잔한 음악과 커피 향 사이에서,  
+작은 골목 끝의 카페.  
+잔잔한 음악과 커피 향기 사이에서  
 잠시 모든 생각이 멈췄다.
-        </p>
-        <a href="#" class="back-link">← 목록으로 돌아가기</a>
-      </div>
-
-      <div class="post-content" id="post3">
-        <h2>비 오는 거리에서</h2>
-        <span class="date">2025.10.03</span>
-        <p>
-비가 내리면 도시의 소리가 달라진다.  
-차분해지고, 묘하게 따뜻해진다.  
-우산을 든 사람들 사이로, 나만의 리듬으로 걷는다.
         </p>
         <a href="#" class="back-link">← 목록으로 돌아가기</a>
       </div>
     </section>
 
-    <!-- 사진 모음집 -->
+    <!-- 📸 사진 모음집 -->
     <section id="photos">
       <ul class="post-list">
-        <li><span class="date">2025.09.20</span> - 하늘을 담은 창문</li>
-        <li><span class="date">2025.08.14</span> - 여름밤 불빛</li>
+        <li data-id="p1"><span class="date">2025.09.20</span> - 하늘을 담은 창문</li>
+        <li data-id="p2"><span class="date">2025.08.14</span> - 여름밤 불빛</li>
+        <li data-id="p3"><span class="date">2025.07.30</span> - 산책길의 초록들</li>
       </ul>
-      <div class="photo-gallery">
-        <img src="https://via.placeholder.com/220x160?text=사진1" alt="사진1">
-        <img src="https://via.placeholder.com/220x160?text=사진2" alt="사진2">
-        <img src="https://via.placeholder.com/220x160?text=사진3" alt="사진3">
+
+      <!-- 사진 상세보기 -->
+      <div class="post-content" id="p1">
+        <h2>하늘을 담은 창문</h2>
+        <span class="date">2025.09.20</span>
+        <p>
+햇살이 유리창에 비치는 순간,  
+그 안에 작은 하늘이 담겼다.
+        </p>
+        <div class="photo-gallery">
+          <img src="https://via.placeholder.com/400x250?text=하늘사진1" alt="하늘을 담은 창문 사진">
+        </div>
+        <a href="#" class="back-link">← 목록으로 돌아가기</a>
+      </div>
+
+      <div class="post-content" id="p2">
+        <h2>여름밤 불빛</h2>
+        <span class="date">2025.08.14</span>
+        <p>
+늦은 밤, 거리의 조명이 따뜻했다.  
+그 불빛 속에서 여름의 끝을 느꼈다.
+        </p>
+        <div class="photo-gallery">
+          <img src="https://via.placeholder.com/400x250?text=여름밤사진1" alt="여름밤 불빛 사진">
+        </div>
+        <a href="#" class="back-link">← 목록으로 돌아가기</a>
+      </div>
+
+      <div class="post-content" id="p3">
+        <h2>산책길의 초록들</h2>
+        <span class="date">2025.07.30</span>
+        <p>
+햇살 아래의 초록은 언제나 눈이 부시다.  
+오늘도 그 길 위를 천천히 걸었다.
+        </p>
+        <div class="photo-gallery">
+          <img src="https://via.placeholder.com/400x250?text=산책사진1" alt="산책길 사진">
+        </div>
+        <a href="#" class="back-link">← 목록으로 돌아가기</a>
       </div>
     </section>
   </main>
@@ -242,7 +256,7 @@
   </footer>
 
   <script>
-    // 탭 전환
+    // 📚 탭 전환
     const diaryLink = document.getElementById('diaryLink');
     const photoLink = document.getElementById('photoLink');
     const diarySection = document.getElementById('diary');
@@ -264,16 +278,12 @@
       diaryLink.classList.remove('active');
     });
 
-    // 글 상세보기 기능
-    const postItems = document.querySelectorAll('.post-list li');
-    const postContents = document.querySelectorAll('.post-content');
-    const backLinks = document.querySelectorAll('.back-link');
-
-    postItems.forEach(item => {
+    // ✍️ 일기장 상세보기
+    document.querySelectorAll('#diary .post-list li').forEach(item => {
       item.addEventListener('click', () => {
         const id = item.dataset.id;
-        document.querySelector('.post-list').style.display = 'none';
-        document.getElementById(`post${id}`).classList.add('active');
+        document.querySelector('#diary .post-list').style.display = 'none';
+        document.querySelector(`#post${id}`).classList.add('active');
       });
     });
 
@@ -286,12 +296,14 @@
       });
     });
 
-    backLinks.forEach(link => {
+    // 🔙 뒤로가기 버튼 (공용)
+    document.querySelectorAll('.back-link').forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         document.querySelectorAll('.post-content').forEach(c => c.classList.remove('active'));
-        document.querySelector('.post-list').style.display = 'block';
+        document.querySelectorAll('.post-list').forEach(list => list.style.display = 'block');
       });
     });
   </script>
-
+</body>
+</html>
