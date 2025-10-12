@@ -277,6 +277,15 @@
       });
     });
 
+    // 📸 사진 모음집 상세보기
+    document.querySelectorAll('#photos .post-list li').forEach(item => {
+      item.addEventListener('click', () => {
+        const id = item.dataset.id;
+        document.querySelector('#photos .post-list').style.display = 'none';
+        document.querySelector(`#${id}`).classList.add('active');
+      });
+    });
+
     backLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
