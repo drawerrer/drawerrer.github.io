@@ -23,7 +23,6 @@
       padding: 60px 70px 30px 70px;
     }
 
-    <header>
   <div class="logo">
     <img src="정영주 컵앤하겐.png" alt="CopenHagen 로고" height="60">
   </div>
@@ -286,5 +285,4 @@
       });
     });
   </script>
-</body>
-</html>
+
