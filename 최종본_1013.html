@@ -1,0 +1,457 @@
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>영유의 서랍장</title>
+<link href="../웹사이트 제작/img/Favicon_logo.png" rel="icon" type="image/png"/>
+<style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    body {
+      margin: 0;
+      font-family: 'Pretendard', sans-serif;
+      background-color: #D4E0EE;
+      color: #2c2c2c;
+      line-height: 1.7;
+      transition: background-color 0.3s ease;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 60px 70px 30px 70px;
+    }
+
+    .logo {
+      margin-bottom: 25px;
+    }
+
+    .logo img {
+      display: block;
+      height: 60px;
+      object-fit: contain;
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #2c2c2c;
+      font-weight: 500;
+      font-size: 17px;
+      letter-spacing: -0.3px;
+      transition: color 0.3s;
+    }
+
+    nav a:hover, nav a.active {
+      color: #729960;
+    }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 30px 80px;
+    }
+
+    section {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .post-list {
+      list-style: none;
+      padding: 0;
+      margin: 40px 0 0 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .post-list li {
+      font-size: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .post-list li:hover {
+      color: #729960;
+    }
+
+    .post-list li span.date {
+      color: #729960;
+      font-weight: 500;
+      margin-right: 10px;
+      font-size: 15px;
+    }
+
+    .post-content {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .post-content.active {
+      display: block;
+    }
+
+    .post-content h2 {
+      font-size: 20px;
+      color: #2c2c2c;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .post-content .date {
+      color: #729960;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .post-content p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #333;
+      white-space: pre-line;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 30px;
+      color: #729960;
+      text-decoration: none;
+      font-size: 15px;
+      transition: opacity 0.3s;
+    }
+
+    .back-link:hover {
+      opacity: 0.7;
+    }
+
+    .photo-gallery img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      margin-top: 20px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: rgba(0,0,0,0.4);
+      padding-bottom: 30px;
+    }
+  
+    .upload-btn {
+      display: inline-block;
+      padding: 10px 15px;
+      background-color: #729960;
+      color: white;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .upload-btn:hover {
+      background-color: #5e7b4f;
+    }
+
+    .masonry-upload-wrapper {
+      padding: 20px 70px;
+    }
+
+    .masonry-grid {
+      column-count: 3;
+      column-gap: 1em;
+      padding: 1em 70px;
+    }
+
+    .masonry-card {
+      background: white;
+      display: inline-block;
+      margin: 0 0 1em;
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .masonry-card img {
+      width: 100%;
+      display: block;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 1000px) {
+      .masonry-grid {
+        column-count: 2;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .masonry-grid {
+        column-count: 1;
+      }
+    }
+
+
+    .comment-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .comment-box {
+      width: 90%;
+      margin: 10px auto;
+      display: block;
+      padding: 10px;
+      font-size: 14px;
+      font-family: 'Pretendard', sans-serif;
+      background: #fffdf3;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+      height: 80px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+
+    .comment-display {
+      font-size: 14px;
+      padding: 8px 10px;
+      background: #fffdf3;
+      border-radius: 6px;
+      margin: 8px;
+      white-space: pre-wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+
+    
+    
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 30px 70px;
+    }
+
+    .photo-grid img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      object-fit: cover;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+
+
+.section { display: none; }
+.section.active { display: block; }
+</style>
+</head>
+<body>
+<header>
+<div class="logo">
+<img alt="로고" src="../웹사이트 제작/img/copenhagen_logo.png"/>
+</div>
+<nav>
+<a class="active" href="#" id="diaryLink">일기장</a>
+<a href="#" id="travelLink">사진 모음집</a>
+</nav>
+</header>
+<main>
+<!-- 📖 일기장 -->
+<section class="section active" id="diary">
+<ul class="post-list">
+<li data-id="1"><span class="date">2025.10.12</span> - 단풍이 시작된 아침</li>
+<li data-id="2"><span class="date">2025.10.12</span> - 첫 인사</li>
+</ul>
+<!-- 상세 글 -->
+<div class="post-content" id="post1">
+<h2>단풍이 시작된 아침</h2>
+<span class="date">2025.10.12</span>
+<p>
+창문을 여니 공기가 달라져 있었다.  
+조금 더 차갑고, 조금 더 선명했다.  
+길가의 나무들이 서서히 색을 바꾸기 시작했고,  
+나는 그 변화를 가만히 바라보았다.
+        </p>
+<a class="back-link" href="#">← 목록으로 돌아가기</a>
+</div>
+<div class="post-content" id="post2">
+<h2>첫 인사</h2>
+<span class="date">2025.10.12</span>
+<p>
+웹사이트를 만들었다. 글 쓰는 공간이 블로그만으로는 부족해서가 아니다. 한 번쯤 내 개인 웹사이트를 만들어보고 싶었다. 디자인부터 글자 하나까지 다 내 머릿속에서 나온 무언가를 갖고 싶었다. 
+
+원래 만들고 싶었던 웹사이트의 형태는 지금이랑 조금 다르다. 내가 여행지에서 모아온 쪼가리(티켓, 어느 미술관의 브로슈어, 일회용 아이스크림 스푼, 빵 봉지 등) 들을 스캔해서 아카이빙한 형태의 사이트를 만들고 싶었다. 그치만 레이아웃도 아직 구상하지 않았을 뿐더러, html, java, CSS 등 컴퓨터 용어에 익숙지 않은 내가 처음부터 무리하게 시도하다가는 금방 질려버릴 것 같았다. 그래서 Chat GPT 와 컴퓨터 공학을 전공하는 동생의 도움으로 초기 형태의 사이트를 만들었다.
+
+이제부터 이 공간을 어떻게 채울지를 생각하면 조금 신난다. 좋아요나 댓글 등에 구애받지 않는 오롯한 공간에서 내가 하고 싶은 건 다 해볼 요량이다. 시간이 더 흐르면 아카이빙 형태의 사이트도 만들어볼 수 있지 않을까.
+        </p>
+<a class="back-link" href="#">← 목록으로 돌아가기</a>
+</div>
+</section>
+<!-- 📷 사진 모음집 섹션 -->
+<section class="section" id="photoTravel">
+<div class="photo-grid">
+<!-- 예시 이미지 -->
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/FB1764FF-6E93-4250-93B8-BC49AE1E7721.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/f8a65ec3c0d043d3b0d65f372c351607.MOV"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/f4bbc85e91d1451a837622419248dc7f.MOV"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/F348C6E6-9C92-4F1E-8123-3BA05F79DF8C.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/F07E0FB2-12E2-40BF-B2DD-BE88F4780A39.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/EE013EAE-AAD2-4410-8FC1-97C278CC619C.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/EDD82C4A-D224-4CAD-B01F-A1D1C822044E.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/E1151564-4868-40DE-A559-ECB9699E4B8F.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/E0F6CB41-36B2-4F96-BD5D-7F378C4FFB82.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/DA957791-F921-4E82-9340-5ED7FC739442.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/CFCCFD2D-8D03-4AB8-AE2B-A5BD5F85EB72.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/CD77514C-E2D2-43B0-981D-5FBE259F5334.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/C6A67359-7302-44FC-B56F-33773AC54BD1.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/C4B1733E-8E20-4E2D-B5D2-706A4189A502.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/C2872EF0-5CF4-4312-8E83-B28DD03C63A4.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/C2597FD3-8D5F-494A-8DF0-6988543C409F.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/C0F35E0D-4C4F-46B6-B7A9-DF65188DE003.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/BF31B872-EF23-4E57-9130-1A94920114E8.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/BC61C738-7337-4B7E-BF5A-B37D7E8E1B06.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/BB093D99-A0E9-448A-A3DE-68F55391AEA1.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/B6FB57EF-B059-440E-8604-EAB47713DC10.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/B68B83FF-D232-477E-A877-86BDD6A140A9.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/aed8add1f3334ab992ea98ece6a5f652.MOV"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/ACE85D8B-0D60-4841-BE64-4B056A6B34C1.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/AC849DD2-2734-45E8-B96B-853AC3F6B884.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/A988CF71-4503-4C02-BFF4-23EF4E7F1890.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/A20EFEA6-EBD7-4C42-8772-9496003C787B.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/9B84AEE4-7C4C-49A3-A886-9FB0D2C739BE.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/9AB85074-0617-4B85-B76D-468A4B15A40B.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/93DA9076-00AA-4A05-BC52-2D96BD7444B7.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/90934C5D-7AB0-4897-B021-023A707E2FC6.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/8F7B2131-E7F2-4BD7-8715-71630EC0CD6B.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/8E5CC6DD-5F0D-4560-AD77-0EDF9AE5E637.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/89F6AF53-B914-44B8-9CFE-5AD4F57D91DA.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/882437f404254f3ea8d17dc01842398a.MOV"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/841A3C84-0893-49DD-87AC-D3FD315A12D5.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/7DFC11F5-A912-4B0F-846C-1190EFA5CDDF.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/75B4E9AC-BF0C-47A7-80C5-19A0575569AB.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/72a10ab000a14606bd6e98fa42491b5c.MOV"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/6FC5A7B7-C5D2-4255-9BC3-D35049347D2D.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/6F63B72F-8417-4D40-B795-5C96F818254A.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/6C4F9FC9-924F-4655-A740-E238A38FE6FA.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/6738CDE3-AB52-4C32-8F15-1AB2679A6A52.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/5f8f1a92f552455785915d93db34f47c.MOV"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/5A7A922A-1347-4782-8BB5-583471A5107F.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/57F1B840-B499-4836-8DD3-6540E6F501A9.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/52C799BD-BA7E-437D-B00A-A996159295C8.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/4C44F90D-AB1B-4895-965E-45937AFB24E3.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/4A34A31C-FF18-4715-97AD-24ED2D116B30.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/48E1C8E2-10B1-45DD-B9A8-1B3A28F88C99.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/468E0BC4-F710-416C-9E25-772A6CEC13FE.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/3D0BAA07-8452-4B3B-B9D3-4493AD777174.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/3830E20C-AA8D-4BC8-8CB8-3B5D7136F2DC.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/32D65ADC-9C10-4F01-B2F2-0B78D37D2E88.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/32B4C13C-D1CC-4A41-AC71-69CD8A5CD355.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/31E9B3B2-60EC-478D-A466-8E3D2223C26B.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/30CF492A-0DAA-4D5E-9139-D58D43702706.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/2fbf7654a7b145d2bcb90680249d6dab.MOV"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/1DB3FFD3-9FD7-4DCD-A951-C38E1141DE14.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/1C1C19FC-5CC9-4859-B388-A585444D8AF8.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/1B3D18E5-AB29-4DE3-9BBF-6DEC0F7B1055.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/173032C4-E124-4E5D-925C-9765DE8811A3.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/15376885-299F-4EA2-B515-006DEC3A28A6.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/12e54fb530054a20b704a18dac831747.MOV"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/126CBA9F-C75A-48F3-ABEA-4EFDB2EAECAD.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/1035bcf56c4d4414bc0359138233ebf8.MOV"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/10325b67ae9246ba82c283a7065f1902.MOV"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/0c71dbac94da41d1a387f5ec5d6d5c9a.MOV"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/0C0C4FC1-7775-4995-9770-B49C029F7A79.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/0843CFCB-AFE3-4301-B252-19BFDDAABC4D.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/034BCE60-8A04-4AB2-9C8E-BB61D996B69F.JPG"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/011abe1631d34406bbef0fff17fe6d9d.MOV"/>
+<img alt="여행사진" src="../웹사이트 제작/instagram_stories/0067C923-2392-4B57-BD00-AC45C30AAC7A.JPG"/>
+</div>
+</section>
+</main>
+<footer>
+    © 2025 영유의 서랍장. All rights reserved.
+  </footer>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const sections = document.querySelectorAll(".section");
+    const links = {
+        diaryLink: "diary",
+        albumLink: "album",
+        travelLink: "photoTravel"
+    };
+
+    Object.keys(links).forEach(linkId => {
+        const link = document.getElementById(linkId);
+        const sectionId = links[linkId];
+        const section = document.getElementById(sectionId);
+
+        if (link && section) {
+            link.addEventListener("click", function (e) {
+                e.preventDefault();
+                sections.forEach(s => s.classList.remove("active"));
+                section.classList.add("active");
+
+                Object.keys(links).forEach(id => {
+                    const l = document.getElementById(id);
+                    if (l) l.classList.remove("active");
+                });
+                link.classList.add("active");
+            });
+        }
+    });
+});
+ // ✍️ 일기장 상세보기
+    document.querySelectorAll('#diary .post-list li').forEach(item => {
+      item.addEventListener('click', () => {
+        const id = item.dataset.id;
+        document.querySelector('#diary .post-list').style.display = 'none';
+        document.querySelector(`#post${id}`).classList.add('active');
+      });
+    });
+
+    // 🔙 뒤로가기 버튼 (공용)
+    document.querySelectorAll('.back-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.post-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.post-list').forEach(list => list.style.display = 'block');
+      });
+    });
+</script></body></html>
