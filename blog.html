@@ -219,14 +219,16 @@
     }
     
     .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 20px;
-      padding: 10px 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-auto-rows: 200px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
     }
 
     .photo-grid img {
-      width: 200%;
+      width: 100%;
       height: auto;
       border-radius: 8px;
       object-fit: cover;
