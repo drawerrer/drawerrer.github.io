@@ -31,9 +31,17 @@
   transition: background-color 0.3s ease;
 }
 
-/* 헤더와 로고 숨김 */
+/* 헤더 - 배경 이미지와 연결 */
 header {
-  display: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 60px 70px 30px 70px;
+  background: transparent;
+}
+
+.logo img {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 /* 네비게이션을 본문 위에 배치 */
@@ -41,11 +49,25 @@ nav {
   display: flex;
   gap: 25px;
   justify-content: center;
-  padding: 30px 0 20px 0;
-  background-color: rgba(255, 255, 255, 0.95);
+  padding: 20px 0;
+  background-color: rgba(255, 255, 255, 0.98);
   border-radius: 12px 12px 0 0;
-  margin: 30px auto 0;
+  margin: 0 auto;
   max-width: 720px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+nav a {
+  text-decoration: none;
+  color: #2c2c2c;
+  font-weight: 500;
+  font-size: 17px;
+  letter-spacing: -0.3px;
+  transition: color 0.3s;
+}
+
+nav a:hover, nav a.active {
+  color: #729960;
 }
 
 main {
