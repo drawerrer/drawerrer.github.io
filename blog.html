@@ -18,21 +18,41 @@
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
     body {
-      margin: 0;
-      font-family: 'Pretendard', sans-serif;
-      background-color: #D4E0EE;
-      color: #2c2c2c;
-      line-height: 1.7;
-      transition: background-color 0.3s ease;
-    }
+  margin: 0;
+  font-family: 'Pretendard', sans-serif;
+  /* 배경 이미지 설정 */
+  background-image: url('your-image-url.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #2c2c2c;
+  line-height: 1.7;
+  transition: background-color 0.3s ease;
+}
 
-    header {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 60px 70px 30px 70px;
-    }
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 60px 70px 30px 70px;
+  background-color: rgba(212, 224, 238, 0.9);
+}
 
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.masonry-grid {
+  column-count: 3;
+  column-gap: 1em;
+  padding: 1em 70px;
+  background-color: rgba(212, 224, 238, 0.8);
     .logo {
       margin-bottom: 25px;
     }
