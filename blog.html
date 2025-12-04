@@ -32,18 +32,19 @@
 }
   
 /* 모바일 대응 */
-@media (max-width: 780px) {
+@media (max-width: 768px) {
   body {
     background-attachment: scroll;
     background-size: cover;
     background-position: center center;
   }
 
- img.responsive {
-    width: 50%;
+  img.responsive {
+    width: 100vw;
     height: auto;
+    max-height: 100vh;
+    object-fit: contain;
     display: block;
-    max-width: 50%;
   }
 }
   
