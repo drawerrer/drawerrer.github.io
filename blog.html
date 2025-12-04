@@ -21,7 +21,7 @@
   margin: 0;
   font-family: 'Pretendard', sans-serif;
   /* 배경 이미지 설정 */
-  background-image: url('IMG_2162.JPG');
+  background-image: url('your-image-url.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -50,7 +50,7 @@ nav {
   gap: 25px;
   justify-content: center;
   padding: 20px 0;
-  background-color: rgba(255, 255, 255, 0.98);
+  background-color: rgba(255, 255, 255, 1);
   border-radius: 12px 12px 0 0;
   margin: 0 auto;
   max-width: 720px;
@@ -59,24 +59,69 @@ nav {
 
 nav a {
   text-decoration: none;
-  color: #2c2c2c;
-  font-weight: 500;
+  color: #1a1a1a;
+  font-weight: 600;
   font-size: 17px;
   letter-spacing: -0.3px;
   transition: color 0.3s;
 }
 
 nav a:hover, nav a.active {
-  color: #729960;
+  color: #5a7a48;
 }
 
 main {
   max-width: 720px;
   margin: 0 auto;
   padding: 30px;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(255, 255, 255, 1);
   border-radius: 0 0 12px 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
+}
+
+/* 본문 글자 색상 조절 */
+.post-content h2 {
+  font-size: 20px;
+  color: #1a1a1a;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.post-content .date {
+  color: #5a7a48;
+  font-size: 14px;
+  margin-bottom: 20px;
+  display: block;
+  font-weight: 500;
+}
+
+.post-content p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #1a1a1a;
+  white-space: pre-line;
+}
+
+.post-list li {
+  font-size: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: color 0.2s;
+  color: #1a1a1a;
+}
+
+.post-list li:hover {
+  color: #5a7a48;
+}
+
+.post-list li span.date {
+  color: #5a7a48;
+  font-weight: 500;
+  margin-right: 10px;
+  font-size: 15px;
 }
 
 .masonry-grid {
@@ -85,115 +130,6 @@ main {
   padding: 1em 70px;
   background-color: rgba(212, 224, 238, 0.8);
 }
-
-    .logo img {
-      display: block;
-      height: 60px;
-      object-fit: contain;
-    }
-
-    nav {
-      display: flex;
-      gap: 25px;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #2c2c2c;
-      font-weight: 500;
-      font-size: 17px;
-      letter-spacing: -0.3px;
-      transition: color 0.3s;
-    }
-
-    nav a:hover, nav a.active {
-      color: #729960;
-    }
-
-    main {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 0 30px 80px;
-    }
-
-    section {
-      display: none;
-      animation: fadeIn 0.4s ease;
-    }
-
-    section.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .post-list {
-      list-style: none;
-      padding: 0;
-      margin: 40px 0 0 0;
-      border-top: 1px solid rgba(0, 0, 0, 0.08);
-    }
-
-    .post-list li {
-      font-size: 16px;
-      padding: 14px 0;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-
-    .post-list li:hover {
-      color: #729960;
-    }
-
-    .post-list li span.date {
-      color: #729960;
-      font-weight: 500;
-      margin-right: 10px;
-      font-size: 15px;
-    }
-
-    .post-content {
-      display: none;
-      animation: fadeIn 0.4s ease;
-    }
-
-    .post-content.active {
-      display: block;
-    }
-
-    .post-content h2 {
-      font-size: 20px;
-      color: #2c2c2c;
-      margin-top: 20px;
-      margin-bottom: 10px;
-    }
-
-    .post-content .date {
-      color: #729960;
-      font-size: 14px;
-      margin-bottom: 20px;
-      display: block;
-    }
-
-    .post-content p {
-      font-size: 16px;
-      line-height: 1.8;
-      color: #333;
-      white-space: pre-line;
-    }
-
-    .back-link {
-      display: inline-block;
-      margin-top: 30px;
-      color: #729960;
-      text-decoration: none;
-      font-size: 15px;
-      transition: opacity 0.3s;
-    }
 
     .back-link:hover {
       opacity: 0.7;
