@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>추억의 물 링 던지기 게임</title>
+    <title>바닷속 인어공주 링 던지기</title>
     <style>
         body {
             display: flex;
@@ -13,442 +12,310 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
-            font-family: 'Arial', sans-serif;
+            background-color: #001f3f; /* 깊은 바다색 */
+            font-family: 'Malgun Gothic', sans-serif;
+            overflow: hidden;
+            touch-action: none;
         }
 
         #game-container {
             position: relative;
-            width: 90%;
-            max-width: 400px;
-            aspect-ratio: 4/5;
-            /* Deep Sea Gradient as fallback */
-            background-color: #006994;
-            background-image: url('images/bg.jpg'), linear-gradient(180deg, #00b4db 0%, #0083b0 100%);
+            width: 360px;
+            height: 520px;
+            /* 바닷속 인어공주 배경 이미지 적용 */
+            background-image: url('image_2.png'); 
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            border: 12px solid #27ae60;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 8px solid #c0a060; /* 조개 껍데기의 금테두리 느낌 */
+            border-radius: 40px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.7);
             overflow: hidden;
         }
 
         canvas {
             display: block;
-            width: 100%;
-            height: 100%;
         }
 
         .controls {
-            margin-top: 20px;
+            position: absolute;
+            bottom: 25px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 45px;
+            box-sizing: border-box;
+            pointer-events: none;
         }
 
-        #push-btn-left,
-        #push-btn-right {
-            width: 80px;
-            height: 80px;
-            border: none;
+        .push-btn {
+            width: 75px;
+            height: 75px;
+            border: 3px solid rgba(255, 255, 255, 0.6);
             border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15); /* 배경과 어우러지는 투명도 */
+            backdrop-filter: blur(5px);
             color: white;
             font-weight: bold;
+            font-size: 18px;
             cursor: pointer;
+            pointer-events: auto;
             outline: none;
-            font-size: 16px;
-            margin: 0 20px;
+            transition: all 0.1s;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
-        #push-btn-left {
-            background-color: #27ae60;
-            box-shadow: 0 5px #1e8449;
-        }
-
-        #push-btn-right {
-            background-color: #27ae60;
-            box-shadow: 0 5px #1e8449;
-        }
-
-        #push-btn-left:active,
-        #push-btn-right:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px #1e8449;
-        }
-
-        .instruction {
-            margin-top: 10px;
-            color: #666;
+        .push-btn:active {
+            transform: scale(0.9) translateY(5px);
+            background: rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
-
 <body>
 
     <div id="game-container">
         <canvas id="gameCanvas"></canvas>
+        <div class="controls">
+            <button class="push-btn" id="btn-left">PUSH</button>
+            <button class="push-btn" id="btn-right">PUSH</button>
+        </div>
     </div>
 
-    <div class="controls">
-        <button id="push-btn-left">L</button>
-        <button id="push-btn-right">R</button>
-    </div>
-    <p class="instruction">버튼을 클릭하여 링을 막대에 끼워보세요!</p>
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const btnLeft = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const btnLeft = document.getElementById('push-btn-left');
-        const btnRight = document.getElementById('push-btn-right');
+    canvas.width = 360;
+    canvas.height = 520;
 
-        canvas.width = 400;
-        canvas.height = 500;
+    // 물리 상수
+    const gravity = 0.045;
+    const friction = 0.97;
+    // 링이 쌓일 때의 수직 간격 (튜브 두께 + 약간의 여유)
+    // 튜브 이미지처럼 통통하게 쌓이려면 간격이 넉넉해야 함
+    const ringStackHeight = 24; 
 
-        // 환경 변수
-        const gravity = 0.05;      // 중력
-        const friction = 0.98;     // 물 저항 (속도 감소)
-        const ringRadius = 15;
-        const ringInnerRadius = 7;
+    const poles = [
+        { x: 100, y: 190, width: 14, height: 230 },
+        { x: 260, y: 190, width: 14, height: 230 }
+    ];
 
-        // 기울기 변수 (gamma: -90 ~ 90)
-        let tiltAngle = 0;
+    // 튜브 이미지의 컬러 팔레트 (파랑, 주황, 핑크)
+    const ringColors = [
+        { main: '#00bcd4', light: '#80deea' }, // Cyan
+        { main: '#ff9800', light: '#ffb74d' }, // Orange
+        { main: '#e91e63', light: '#f48fb1' }  // Pink
+    ];
 
-        // 막대 설정 (2개)
-        const poles = [
-            { x: 130, y: 200, width: 10, height: 180 },
-            { x: 270, y: 200, width: 10, height: 180 }
-        ];
+    class Bubble {
+        constructor(side) {
+            this.x = (side === 'left' ? 30 + Math.random() * 120 : 210 + Math.random() * 120);
+            this.y = canvas.height + 10;
+            this.radius = Math.random() * 3 + 2;
+            this.speedY = Math.random() * 2 + 3;
+            this.wobble = Math.random() * 10;
+            this.alpha = 0.5;
+        }
+        update() {
+            this.y -= this.speedY;
+            this.wobble += 0.1;
+            this.x += Math.sin(this.wobble) * 1.5;
+            this.alpha -= 0.008;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+            ctx.fill();
+        }
+    }
 
-        // 링 객체 생성 (10개, 각기 다른 색상)
-        const rings = [];
-        const colors = ['#FF5733', '#33FF57', '#3357FF', '#F333FF', '#FFFF33', '#FF8C00', '#00CED1', '#9400D3', '#FF1493', '#ADFF2F'];
+    class Ring {
+        constructor(index) {
+            this.colors = ringColors[index % ringColors.length];
+            this.reset(index);
+        }
 
-        // 기포 객체 배열
-        const bubbles = [];
+        reset(index) {
+            this.x = 80 + (index * 22);
+            this.y = canvas.height - 40;
+            this.vx = 0;
+            this.vy = 0;
+            this.angleZ = Math.random() * Math.PI;
+            this.angleX = 0; 
+            this.vAngleZ = 0;
+            this.vAngleX = 0;
+            this.isHooked = false;
+            this.targetPole = null;
+        }
 
-        class Bubble {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.radius = Math.random() * 3 + 2; // 2~5px
-                this.speed = Math.random() * 2 + 1; // 1~3 px/frame
-                this.alpha = 1;
-                this.wobble = Math.random() * Math.PI * 2;
+        update() {
+            this.vy += gravity;
+            this.vx *= friction;
+            this.vy *= friction;
+            this.x += this.vx;
+            this.y += this.vy;
+
+            this.angleZ += this.vAngleZ;
+            this.angleX += this.vAngleX;
+            this.vAngleZ *= 0.95;
+            this.vAngleX *= 0.95;
+
+            // 정착 시 회전 멈춤 및 수평 유지 (완전히 눕도록)
+            if (this.isHooked || this.y > canvas.height - 50) {
+                this.angleX *= 0.7;
+                this.vAngleX *= 0.6;
+                if(Math.abs(this.angleX) < 0.05) this.angleX = 0;
             }
 
-            update() {
-                this.y -= this.speed;
-                this.alpha -= 0.01; // 천천히 투명해짐
-                this.wobble += 0.1;
-                this.x += Math.sin(this.wobble) * 0.5; // 좌우 흔들림
+            if (this.isHooked) {
+                const poleCenter = this.targetPole.x + this.targetPole.width / 2;
+                this.x += (poleCenter - this.x) * 0.2;
+                
+                // *** 핵심 수정: 스택 로직 개선 ***
+                // 튜브 두께를 고려하여 쌓이는 기준점을 높임
+                let floorLimit = canvas.height - 35; 
+                
+                rings.forEach(other => {
+                    // 나보다 아래에 정착한 링이 있으면 그 위에 쌓임
+                    if (other !== this && other.isHooked && other.targetPole === this.targetPole) {
+                        if (other.y > this.y) {
+                            // ringStackHeight 만큼 간격을 두고 쌓임
+                            floorLimit = Math.min(floorLimit, other.y - ringStackHeight);
+                        }
+                    }
+                });
+
+                if (this.y > floorLimit) {
+                    this.y = floorLimit;
+                    this.vy = 0; // 튀어오름 없이 착지
+                    this.vx = 0;
+                }
+
+                if (this.y < this.targetPole.y - 20) {
+                    this.isHooked = false;
+                    this.targetPole = null;
+                }
+            } else {
+                // 벽 충돌
+                if (this.x < 25 || this.x > canvas.width - 25) this.vx *= -0.5;
+                if (this.y < 25) this.vy *= -0.5;
+                if (this.y > canvas.height - 30) {
+                    this.y = canvas.height - 30;
+                    this.vy *= -0.2;
+                }
+                this.x = Math.max(25, Math.min(canvas.width - 25, this.x));
+
+                // 걸림 판정
+                poles.forEach(pole => {
+                    if (Math.abs(this.x - (pole.x + pole.width/2)) < 18) {
+                        if (this.y > pole.y && this.y < pole.y + 40 && this.vy > 0) {
+                            this.isHooked = true;
+                            this.targetPole = pole;
+                        }
+                    }
+                });
             }
+        }
 
-            // Ring 클래스 내부의 draw 메서드를 아래와 같이 수정하세요.
-            draw(isFront) {
-                const rx = 26; // 링의 가로 반지름
-                const ry = 10 + (10 * Math.abs(Math.sin(this.angleX))); // 링의 세로 반지름 (두께감)
-                const ringThickness = 16;
-
+        draw() {
             ctx.save();
             ctx.translate(this.x, this.y);
             ctx.rotate(this.angleZ);
+            
+            // *** 핵심 수정: 링 디자인 변경 (튜브 스타일) ***
+            const rx = 26; // 가로 반지름 (조금 더 넓게)
+            // 텀블링 시 두께 변화 (기본 두께 10 + 회전 효과)
+            // 누웠을 때 가장 두꺼워 보이도록 조정
+            const ry = 10 + (10 * Math.abs(Math.sin(this.angleX))); 
+            const ringThickness = 16; // 튜브 자체의 두께 (통통하게)
 
+            // 입체감을 위한 그라데이션
             const grad = ctx.createLinearGradient(-rx, -ry, rx, ry);
             grad.addColorStop(0, this.colors.main);
             grad.addColorStop(1, this.colors.light);
-        
-            ctx.beginPath();
-            ctx.lineWidth = ringThickness;
-            ctx.strokeStyle = grad;
 
-            if (isFront) {
-                // [앞부분] 아래쪽 반원만 그리기 (0 ~ 180도)
-                ctx.ellipse(0, 0, rx, ry * 0.8, 0, 0, Math.PI);
-            } else {
-                // [뒷부분] 위쪽 반원만 그리기 (180 ~ 360도)
-                ctx.ellipse(0, 0, rx, ry * 0.8, 0, Math.PI, Math.PI * 2);
-            }
-        
+            // 메인 몸체 그리기 (두꺼운 타원 스트로크)
+            ctx.beginPath();
+            // ry를 조금 줄여서 중앙의 구멍을 표현
+            ctx.ellipse(0, 0, rx, ry * 0.8, 0, 0, Math.PI * 2);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = ringThickness;
             ctx.stroke();
+
+            // 하이라이트 (진주 같은 반짝임 효과)
+            ctx.beginPath();
+            ctx.ellipse(0, -ry*0.6, rx*0.8, ry*0.2, 0, Math.PI, Math.PI*2);
+            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
             ctx.restore();
         }
-            }
+
+        applyPush(side) {
+            const power = Math.random() * 3 + 4; // 압력 약간 조절
+            this.vy -= power;
+            this.vx += (side === 'left' ? 1 : -1) * (Math.random() * 2.5);
+            this.vAngleZ = (Math.random() - 0.5) * 0.4;
+            this.vAngleX = Math.random() * 0.3;
+        }
+    }
+
+    // 링 개수 6개로 조정 (튜브가 커져서 개수 조정)
+    const rings = Array.from({ length: 6 }, (_, i) => new Ring(i));
+    const bubbles = [];
+
+    function drawPoles() {
+        poles.forEach(pole => {
+            // 그림자
+            ctx.fillStyle = 'rgba(0,0,0,0.3)'; // 배경에 맞춰 그림자 진하게
+            ctx.fillRect(pole.x + 4, pole.y + 5, pole.width, canvas.height - pole.y);
+
+            // 기둥 (바닷속 유물 느낌 그라데이션)
+            const grad = ctx.createLinearGradient(pole.x, 0, pole.x + pole.width, 0);
+            grad.addColorStop(0, '#8d6e63'); // Bronze/Wood dark
+            grad.addColorStop(0.5, '#d7ccc8'); // Bronze/Wood light
+            grad.addColorStop(1, '#8d6e63');
+            ctx.fillStyle = grad;
+            ctx.fillRect(pole.x, pole.y, pole.width, canvas.height - pole.y);
+        });
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = bubbles.length - 1; i >= 0; i--) {
+            bubbles[i].update();
+            bubbles[i].draw();
+            if (bubbles[i].y < -20) bubbles.splice(i, 1);
         }
 
-        class Ring {
-            constructor(index) {
-                this.reset(index);
-            }
+        drawPoles();
 
-            reset(index) {
-                this.x = 50 + (index * 30);
-                this.y = canvas.height - 40;
-                this.vx = (Math.random() - 0.5) * 2;
-                this.vy = 0;
-                this.color = colors[index];
-                this.isHooked = false;
-                this.targetPole = null;
-            }
+        // Y축 기준 정렬 (뒤에 있는 링 먼저 그리기)
+        rings.sort((a, b) => a.y - b.y);
+        rings.forEach(ring => {
+            ring.update();
+            ring.draw();
+        });
 
-            update() {
-                // 물리 법칙 적용 (공통)
-                this.vy += gravity;
-                this.vx *= friction;
-                this.vy *= friction;
+        requestAnimationFrame(animate);
+    }
 
-                // 기울기 물리 효과 적용
-                // 왼쪽 기울기(gamma < 0) -> 왼쪽으로 힘 (오른쪽에서 압력)
-                // 압력 세기: 기포 압력의 1/5 수준 (0.015)
-                if (tiltAngle) {
-                    this.vx += tiltAngle * 0.015;
-                }
+    const handlePush = (side) => {
+        for(let i=0; i<10; i++) setTimeout(() => bubbles.push(new Bubble(side)), i * 40);
+        rings.forEach(ring => ring.applyPush(side));
+    };
 
-                this.x += this.vx;
-                this.y += this.vy;
+    btnLeft.addEventListener('mousedown', (e) => { e.preventDefault(); handlePush('left'); });
+    btnRight.addEventListener('mousedown', (e) => { e.preventDefault(); handlePush('right'); });
+    btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); handlePush('left'); });
+    btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); handlePush('right'); });
 
-                if (this.isHooked && this.targetPole) {
-                    // 막대에 걸린 상태 로직
-                    // X축: 막대 중심으로 강하게 보정 (자석처럼)
-                    const poleCenter = this.targetPole.x + this.targetPole.width / 2;
-                    this.x += (poleCenter - this.x) * 0.2; // 부드럽게 중심 이동
-
-                    // 좌우 이동 범위 제한 (막대 중심으로부터 10px 이내)
-                    const limit = 10;
-                    if (this.x < poleCenter - limit) {
-                        this.x = poleCenter - limit;
-                        this.vx = 0; // 벽에 부딪힌 것처럼 속도 제거 (선택 사항)
-                    } else if (this.x > poleCenter + limit) {
-                        this.x = poleCenter + limit;
-                        this.vx = 0;
-                    }
-
-                    // 탈출 조건: 링이 막대 위로 올라가면 unhook
-                    if (this.y < this.targetPole.y - ringRadius) {
-                        this.isHooked = false;
-                        this.targetPole = null;
-                    } else {
-                        // 바닥/스택 충돌 로직
-                        // 기본 바닥: 막대의 하단
-                        let floorLimit = (this.targetPole.y + this.targetPole.height) - 10;
-
-                        // 다른 링들과 충돌 체크 (스택 효과)
-                        const stackSpacing = 14; // 링 두께 + 여유분
-
-                        rings.forEach(other => {
-                            // 같은 막대에 걸려있고, 나보다 아래에 있는 링을 찾음
-                            if (other !== this && other.isHooked && other.targetPole === this.targetPole) {
-                                if (other.y > this.y) {
-                                    // 내 바닥은 '아래에 있는 링의 바로 위'가 되어야 함.
-                                    // 여러 개가 있다면 그 중 가장 높은(Y값이 작은) 위치가 제한점이 됨.
-                                    floorLimit = Math.min(floorLimit, other.y - stackSpacing);
-                                }
-                            }
-                        });
-
-                        if (this.y > floorLimit) {
-                            this.y = floorLimit;
-                            this.vy *= -0.2; // 바닥 탄성 감소
-                        }
-                    }
-                } else {
-                    // 자유 상태 로직
-
-                    // 벽 충돌 (좌우)
-                    if (this.x - ringRadius < 0) {
-                        this.x = ringRadius;
-                        this.vx *= -0.5;
-                    } else if (this.x + ringRadius > canvas.width) {
-                        this.x = canvas.width - ringRadius;
-                        this.vx *= -0.5;
-                    }
-
-                    // 바닥 및 천장 충돌
-                    if (this.y + ringRadius > canvas.height) {
-                        this.y = canvas.height - ringRadius;
-                        this.vy *= -0.3;
-                    } else if (this.y - ringRadius < 0) {
-                        this.y = ringRadius;
-                        this.vy *= -0.3;
-                    }
-
-                    // 막대 걸림 판정
-                        poles.forEach(pole => {
-                            if (Math.abs(this.x - (pole.x + pole.width / 2)) < 15) {
-                                if (this.y > pole.y && this.y < pole.y + 30 && this.vy > 0) {
-                                    this.isHooked = true;
-                                    this.targetPole = pole;
-                                    
-                                    // [추가] 사운드와 함께 진동 발생!
-                                    playHookSound(); 
-                                    
-                                    if (navigator.vibrate) {
-                                        navigator.vibrate(50); // 50ms 동안 짧게 진동
-                                    }
-                                }
-                            }
-                        });
-                }
-            }
-
-            draw() {
-                // Draw striped ring (Side View / Oval)
-                const segments = 8;
-                const segmentAngle = (Math.PI * 2) / segments;
-                const rx = 22; // Wider X radius
-                const ry = 8;  // Flattened Y radius for perspective
-
-                for (let i = 0; i < segments; i++) {
-                    ctx.beginPath();
-                    ctx.ellipse(this.x, this.y, rx, ry, 0, i * segmentAngle, (i + 1) * segmentAngle);
-                    ctx.strokeStyle = i % 2 === 0 ? '#e67e22' : '#ecf0f1'; // Orange and White
-                    ctx.lineWidth = 10; // Thicker line to simulate volume
-                    ctx.stroke();
-                }
-
-                // Add a subtle highlight to make it look 3D (Optional)
-                ctx.beginPath();
-                ctx.ellipse(this.x, this.y, rx, ry, 0, 0, Math.PI * 2);
-                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            }
-
-            applyPush(direction) {
-                // 깊이에 따른 압력 조절
-                // 화면 아래(y=500 내외)일수록 1.0에 가깝고, 위(y=0)로 갈수록 약해짐 (최소 0.2 정도)
-                // 이를 통해 고리에 걸린 링이 쉽게 빠지지 않도록 함
-
-                const depthRatio = Math.max(0, Math.min(1, this.y / canvas.height));
-                // 위쪽에서는 힘이 30%, 아래쪽에서는 100%
-                const pressureMultiplier = 0.3 + (depthRatio * 0.7);
-
-                // 기본 솟구치는 힘
-                const baseForce = Math.random() * 3 + 2;
-                this.vy -= baseForce * pressureMultiplier;
-
-                // 방향에 따른 추가 힘 (X축, Y축)
-                // 이 또한 압력의 영향을 받아 약해져야 함
-                if (direction === 'left') {
-                    this.vx += (Math.random() * 2) * pressureMultiplier;
-                    this.vy -= (Math.random() * 2) * pressureMultiplier;
-                } else {
-                    this.vx -= (Math.random() * 2) * pressureMultiplier;
-                    this.vy -= (Math.random() * 2) * pressureMultiplier;
-                }
-            }
-        }
-
-        // 초기 링 생성
-        for (let i = 0; i < 10; i++) {
-            rings.push(new Ring(i));
-        }
-
-        function spawnBubbles(side) {
-            const count = 10; // 한번에 발생할 기포 수
-            for (let i = 0; i < count; i++) {
-                // 위치: 바닥 근처, 왼쪽 버튼이면 왼쪽 영역, 오른쪽이면 오른쪽 영역
-                let startX;
-                if (side === 'left') {
-                    startX = Math.random() * (canvas.width / 2);
-                } else {
-                    startX = (canvas.width / 2) + Math.random() * (canvas.width / 2);
-                }
-                bubbles.push(new Bubble(startX, canvas.height + 10)); // 화면 아래에서 시작
-            }
-        }
-
-        function drawPoles() {
-            ctx.fillStyle = '#f1c40f';
-            poles.forEach(pole => {
-                // 막대 본체 (Vertical Stem)
-                ctx.fillRect(pole.x, pole.y, pole.width, pole.height);
-
-                // 하단 받침대 설정 (역 T자 형태)
-                const barWidth = 30;
-                const barHeight = 8;
-
-                // 하단 가로바 (Bottom Bar Only)
-                ctx.fillRect(pole.x - (barWidth - pole.width) / 2, pole.y + pole.height - barHeight, barWidth, barHeight);
-            });
-        }
-
-        function drawWaterEffect() {
-            // 물결이나 기포 느낌 (선택 사항)
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-            for (let i = 0; i < 5; i++) {
-                ctx.beginPath();
-                ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, 2, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // 기포 업데이트 및 그리기
-            for (let i = bubbles.length - 1; i >= 0; i--) {
-                const b = bubbles[i];
-                b.update();
-                b.draw();
-                if (b.alpha <= 0 || b.y < -10) {
-                    bubbles.splice(i, 1);
-                }
-            }
-
-            drawPoles();
-
-            rings.forEach(ring => {
-                ring.update();
-                ring.draw();
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        // 일반적인 디바이스 오리엔테이션 리스너 (Android 등 권한 요청이 필요 없는 경우)
-        if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== 'function') {
-            window.addEventListener('deviceorientation', (event) => {
-                // gamma가 null일 수 있으므로 체크
-                if (event.gamma !== null) tiltAngle = event.gamma;
-            });
-        }
-
-        let permissionRequested = false;
-
-        const handlePush = (direction, e) => {
-            if (e && e.cancelable) e.preventDefault(); // 다중 터치/클릭 방지 및 스크롤 방지
-
-            // iOS 13+ DeviceOrientation 권한 요청
-            if (!permissionRequested &&
-                typeof DeviceOrientationEvent !== 'undefined' &&
-                typeof DeviceOrientationEvent.requestPermission === 'function') {
-
-                permissionRequested = true;
-                DeviceOrientationEvent.requestPermission()
-                    .then(response => {
-                        if (response === 'granted') {
-                            window.addEventListener('deviceorientation', (event) => {
-                                if (event.gamma !== null) tiltAngle = event.gamma;
-                            });
-                        }
-                    })
-                    .catch(console.error);
-            }
-
-            rings.forEach(ring => ring.applyPush(direction));
-
-            // 기포 생성 효과 추가
-            spawnBubbles(direction);
-        };
-
-        // 마우스 클릭 이벤트
-        btnLeft.addEventListener('mousedown', (e) => handlePush('left', e));
-        btnRight.addEventListener('mousedown', (e) => handlePush('right', e));
-
-        // 모바일 터치 이벤트 (지연 시간 제거)
-        btnLeft.addEventListener('touchstart', (e) => handlePush('left', e), { passive: false });
-        btnRight.addEventListener('touchstart', (e) => handlePush('right', e), { passive: false });
-
-        animate();
-    </script>
+    animate();
+</script>
 </body>
-
 </html>
