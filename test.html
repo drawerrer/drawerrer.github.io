@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>탱글탱글 튜브 링 던지기</title>
+    <title>바닷속 인어공주 링 던지기</title>
     <style>
         body {
             display: flex;
@@ -12,7 +12,7 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #a7ffeb; /* 튜브 이미지 배경색 참고 */
+            background-color: #001f3f; /* 깊은 바다색 */
             font-family: 'Malgun Gothic', sans-serif;
             overflow: hidden;
             touch-action: none;
@@ -22,11 +22,13 @@
             position: relative;
             width: 360px;
             height: 520px;
-            /* 시원한 수영장 타일 느낌 배경 */
-            background: conic-gradient(from 90deg at 1px 1px, #ffffff 90deg, #b2ebf2 0) 0 0 / 40px 40px;
-            border: 12px solid #00bcd4;
+            /* 바닷속 인어공주 배경 이미지 적용 */
+            background-image: url('image_2.png'); 
+            background-size: cover;
+            background-position: center;
+            border: 8px solid #c0a060; /* 조개 껍데기의 금테두리 느낌 */
             border-radius: 40px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.7);
             overflow: hidden;
         }
 
@@ -48,9 +50,9 @@
         .push-btn {
             width: 75px;
             height: 75px;
-            border: 4px solid #ffffff;
+            border: 3px solid rgba(255, 255, 255, 0.6);
             border-radius: 50%;
-            background: rgba(0, 188, 212, 0.5);
+            background: rgba(255, 255, 255, 0.15); /* 배경과 어우러지는 투명도 */
             backdrop-filter: blur(5px);
             color: white;
             font-weight: bold;
@@ -59,12 +61,13 @@
             pointer-events: auto;
             outline: none;
             transition: all 0.1s;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
         .push-btn:active {
             transform: scale(0.9) translateY(5px);
-            background: rgba(0, 188, 212, 0.8);
+            background: rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
@@ -88,38 +91,38 @@
     canvas.height = 520;
 
     // 물리 상수
-    const gravity = 0.05; 
+    const gravity = 0.045;
     const friction = 0.97;
-    const ringStackHeight = 20; // 링이 쌓일 때의 수직 간격 (튜브 두께 반영)
+    // 링이 쌓일 때의 수직 간격 (튜브 두께 + 약간의 여유)
+    // 튜브 이미지처럼 통통하게 쌓이려면 간격이 넉넉해야 함
+    const ringStackHeight = 24; 
 
     const poles = [
         { x: 100, y: 190, width: 14, height: 230 },
         { x: 260, y: 190, width: 14, height: 230 }
     ];
 
-    // 첨부 이미지 컬러 팔레트 (Cyan, Orange, Pink 계열)
+    // 튜브 이미지의 컬러 팔레트 (파랑, 주황, 핑크)
     const ringColors = [
-        { main: '#26c6da', light: '#80deea' }, // Cyan
+        { main: '#00bcd4', light: '#80deea' }, // Cyan
         { main: '#ff9800', light: '#ffb74d' }, // Orange
-        { main: '#ec407a', light: '#f48fb1' }, // Pink
-        { main: '#26c6da', light: '#80deea' }, 
-        { main: '#ff9800', light: '#ffb74d' }
+        { main: '#e91e63', light: '#f48fb1' }  // Pink
     ];
 
     class Bubble {
         constructor(side) {
             this.x = (side === 'left' ? 30 + Math.random() * 120 : 210 + Math.random() * 120);
             this.y = canvas.height + 10;
-            this.radius = Math.random() * 4 + 3;
-            this.speedY = Math.random() * 3 + 5;
+            this.radius = Math.random() * 3 + 2;
+            this.speedY = Math.random() * 2 + 3;
             this.wobble = Math.random() * 10;
-            this.alpha = 0.6;
+            this.alpha = 0.5;
         }
         update() {
             this.y -= this.speedY;
             this.wobble += 0.1;
             this.x += Math.sin(this.wobble) * 1.5;
-            this.alpha -= 0.01;
+            this.alpha -= 0.008;
         }
         draw() {
             ctx.beginPath();
@@ -160,7 +163,7 @@
             this.vAngleZ *= 0.95;
             this.vAngleX *= 0.95;
 
-            // 정착 시 회전 멈춤 및 수평 유지
+            // 정착 시 회전 멈춤 및 수평 유지 (완전히 눕도록)
             if (this.isHooked || this.y > canvas.height - 50) {
                 this.angleX *= 0.7;
                 this.vAngleX *= 0.6;
@@ -225,8 +228,9 @@
             // *** 핵심 수정: 링 디자인 변경 (튜브 스타일) ***
             const rx = 26; // 가로 반지름 (조금 더 넓게)
             // 텀블링 시 두께 변화 (기본 두께 10 + 회전 효과)
-            const ry = 10 + (12 * Math.abs(Math.sin(this.angleX))); 
-            const ringThickness = 14; // 튜브 자체의 두께
+            // 누웠을 때 가장 두꺼워 보이도록 조정
+            const ry = 10 + (10 * Math.abs(Math.sin(this.angleX))); 
+            const ringThickness = 16; // 튜브 자체의 두께 (통통하게)
 
             // 입체감을 위한 그라데이션
             const grad = ctx.createLinearGradient(-rx, -ry, rx, ry);
@@ -235,25 +239,26 @@
 
             // 메인 몸체 그리기 (두꺼운 타원 스트로크)
             ctx.beginPath();
-            ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+            // ry를 조금 줄여서 중앙의 구멍을 표현
+            ctx.ellipse(0, 0, rx, ry * 0.8, 0, 0, Math.PI * 2);
             ctx.strokeStyle = grad;
             ctx.lineWidth = ringThickness;
             ctx.stroke();
 
-            // 하이라이트 (반짝임 효과)
+            // 하이라이트 (진주 같은 반짝임 효과)
             ctx.beginPath();
-            ctx.ellipse(0, -ry/2, rx*0.8, ry*0.3, 0, Math.PI, Math.PI*2);
-            ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-            ctx.lineWidth = 4;
+            ctx.ellipse(0, -ry*0.6, rx*0.8, ry*0.2, 0, Math.PI, Math.PI*2);
+            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+            ctx.lineWidth = 3;
             ctx.stroke();
 
             ctx.restore();
         }
 
         applyPush(side) {
-            const power = Math.random() * 4 + 4;
+            const power = Math.random() * 3 + 4; // 압력 약간 조절
             this.vy -= power;
-            this.vx += (side === 'left' ? 1 : -1) * (Math.random() * 3);
+            this.vx += (side === 'left' ? 1 : -1) * (Math.random() * 2.5);
             this.vAngleZ = (Math.random() - 0.5) * 0.4;
             this.vAngleX = Math.random() * 0.3;
         }
@@ -266,14 +271,14 @@
     function drawPoles() {
         poles.forEach(pole => {
             // 그림자
-            ctx.fillStyle = 'rgba(0,0,0,0.1)';
-            ctx.fillRect(pole.x + 6, pole.y + 10, pole.width, canvas.height - pole.y);
+            ctx.fillStyle = 'rgba(0,0,0,0.3)'; // 배경에 맞춰 그림자 진하게
+            ctx.fillRect(pole.x + 4, pole.y + 5, pole.width, canvas.height - pole.y);
 
-            // 기둥 (흰색 플라스틱 느낌)
+            // 기둥 (바닷속 유물 느낌 그라데이션)
             const grad = ctx.createLinearGradient(pole.x, 0, pole.x + pole.width, 0);
-            grad.addColorStop(0, '#e0e0e0');
-            grad.addColorStop(0.5, '#ffffff');
-            grad.addColorStop(1, '#e0e0e0');
+            grad.addColorStop(0, '#8d6e63'); // Bronze/Wood dark
+            grad.addColorStop(0.5, '#d7ccc8'); // Bronze/Wood light
+            grad.addColorStop(1, '#8d6e63');
             ctx.fillStyle = grad;
             ctx.fillRect(pole.x, pole.y, pole.width, canvas.height - pole.y);
         });
@@ -301,7 +306,7 @@
     }
 
     const handlePush = (side) => {
-        for(let i=0; i<8; i++) setTimeout(() => bubbles.push(new Bubble(side)), i * 50);
+        for(let i=0; i<10; i++) setTimeout(() => bubbles.push(new Bubble(side)), i * 40);
         rings.forEach(ring => ring.applyPush(side));
     };
 
