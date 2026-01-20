@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>판타지 수중 링 던지기</title>
+    <title>정밀 튜닝된 수중 링 던지기</title>
     <style>
         body {
             display: flex;
@@ -12,7 +12,7 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #1a1a2e;
+            background-color: #121212;
             font-family: 'Malgun Gothic', sans-serif;
             overflow: hidden;
             touch-action: none;
@@ -21,11 +21,11 @@
         #game-container {
             position: relative;
             width: 360px;
-            height: 500px;
-            background: linear-gradient(180deg, #1cb5e0 0%, #000851 100%);
-            border: 10px solid #27ae60;
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            height: 520px;
+            background: linear-gradient(180deg, #24c6dc 0%, #514a9d 100%);
+            border: 12px solid #2ecc71;
+            border-radius: 40px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
             overflow: hidden;
         }
 
@@ -35,41 +35,42 @@
 
         .controls {
             position: absolute;
-            bottom: 20px;
+            bottom: 25px;
             width: 100%;
             display: flex;
             justify-content: space-between;
-            padding: 0 40px;
+            padding: 0 45px;
             box-sizing: border-box;
             pointer-events: none;
         }
 
         .push-btn {
-            width: 70px;
-            height: 70px;
-            border: 3px solid rgba(255, 215, 0, 0.6);
+            width: 75px;
+            height: 75px;
+            border: 4px solid rgba(255, 215, 0, 0.7);
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
             color: white;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 22px;
             cursor: pointer;
             pointer-events: auto;
             outline: none;
-            transition: transform 0.1s, background 0.2s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.1s;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.4);
         }
 
         .push-btn:active {
-            transform: scale(0.9) translateY(5px);
-            background: rgba(255, 230, 0, 0.4);
+            transform: scale(0.85) translateY(6px);
+            background: rgba(255, 230, 0, 0.5);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
         }
 
         .instruction {
-            margin-top: 20px;
-            color: #bdc3c7;
-            text-align: center;
+            margin-top: 15px;
+            color: #7f8c8d;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -78,11 +79,11 @@
     <div id="game-container">
         <canvas id="gameCanvas"></canvas>
         <div class="controls">
-            <button class="push-btn" id="btn-left">L</button>
-            <button class="push-btn" id="btn-right">R</button>
+            <button class="push-btn" id="btn-left">PUSH</button>
+            <button class="push-btn" id="btn-right">PUSH</button>
         </div>
     </div>
-    <p class="instruction">버튼을 눌러 기포를 발생시키세요!<br>(기울기 센서 지원)</p>
+    <p class="instruction">기울기 센서와 멀티 터치를 지원합니다.</p>
 
 <script>
     const canvas = document.getElementById('gameCanvas');
@@ -91,34 +92,32 @@
     const btnRight = document.getElementById('btn-right');
 
     canvas.width = 360;
-    canvas.height = 500;
+    canvas.height = 520;
 
-    // 물리 상수
-    const gravity = 0.06;
-    const friction = 0.985;
+    // 물리 상수 튜닝
+    const gravity = 0.045; // 링이 천천히 가라앉도록 하향
+    const friction = 0.98; // 물 저항
     let tiltX = 0;
 
-    // 막대 설정 (오브제 스타일)
     const poles = [
-        { x: 110, y: 180, width: 12, height: 220 },
-        { x: 250, y: 180, width: 12, height: 220 }
+        { x: 100, y: 190, width: 12, height: 230 },
+        { x: 260, y: 190, width: 12, height: 230 }
     ];
 
-    // 기포 클래스
     class Bubble {
         constructor(side) {
-            this.x = (side === 'left' ? 40 + Math.random() * 100 : 220 + Math.random() * 100);
+            this.x = (side === 'left' ? 30 + Math.random() * 120 : 210 + Math.random() * 120);
             this.y = canvas.height + 10;
-            this.radius = Math.random() * 4 + 2;
-            this.speedY = Math.random() * 3 + 4;
-            this.wobble = Math.random() * Math.PI * 2;
-            this.alpha = 0.8;
+            this.radius = Math.random() * 3 + 2;
+            this.speedY = Math.random() * 3 + 5;
+            this.wobble = Math.random() * 10;
+            this.alpha = 0.7;
         }
         update() {
             this.y -= this.speedY;
-            this.wobble += 0.1;
-            this.x += Math.sin(this.wobble) * 1.5; // 보글보글 흔들림
-            this.alpha -= 0.005;
+            this.wobble += 0.15;
+            this.x += Math.sin(this.wobble) * 2;
+            this.alpha -= 0.008;
         }
         draw() {
             ctx.beginPath();
@@ -128,20 +127,19 @@
         }
     }
 
-    // 링 클래스
     class Ring {
         constructor(index) {
-            this.reset(index);
             this.color = ['#FFD700', '#FF7F50', '#E0FFFF', '#FF69B4', '#00FFFF'][index % 5];
+            this.reset(index);
         }
 
         reset(index) {
-            this.x = 60 + (index * 25);
-            this.y = canvas.height - 50;
+            this.x = 80 + (index * 22);
+            this.y = canvas.height - 30;
             this.vx = 0;
             this.vy = 0;
-            this.angleZ = Math.random() * Math.PI * 2; // 회전각
-            this.angleX = 0; // 텀블링(뒤집힘) 각
+            this.angleZ = Math.random() * Math.PI; // 좌우 회전
+            this.angleX = 0; // 텀블링 (앞뒤 회전)
             this.vAngleZ = 0;
             this.vAngleX = 0;
             this.isHooked = false;
@@ -149,56 +147,65 @@
         }
 
         update() {
-            // 기본 물리
             this.vy += gravity;
-            this.vx += tiltX * 0.05; // 기울기 영향
+            this.vx += tiltX * 0.04;
             this.vx *= friction;
             this.vy *= friction;
             this.x += this.vx;
             this.y += this.vy;
 
-            // 회전 물리
             this.angleZ += this.vAngleZ;
             this.angleX += this.vAngleX;
-            this.vAngleZ *= 0.96;
-            this.vAngleX *= 0.96;
+            this.vAngleZ *= 0.95;
+            this.vAngleX *= 0.95;
+
+            // 바닥/막대 안착 시 링이 측면(Flat)을 보이도록 강제하는 로직
+            if (this.isHooked || this.y > canvas.height - 35) {
+                this.angleX *= 0.75; // 회전각을 0으로 급격히 수렴시킴
+                this.vAngleX *= 0.7;
+                if(Math.abs(this.angleX) < 0.01) this.angleX = 0;
+            }
 
             if (this.isHooked) {
                 const poleCenter = this.targetPole.x + this.targetPole.width / 2;
-                this.x += (poleCenter - this.x) * 0.2;
-                this.angleX *= 0.8; // 걸리면 평평해짐
+                this.x += (poleCenter - this.x) * 0.25;
                 
-                // 스택 로직 (차곡차곡 쌓이기)
-                let floorLimit = canvas.height - 25;
+                // 스택 계산 (정교한 10px 간격)
+                let floorLimit = canvas.height - 28;
                 rings.forEach(other => {
                     if (other !== this && other.isHooked && other.targetPole === this.targetPole) {
                         if (other.y > this.y) {
-                            floorLimit = Math.min(floorLimit, other.y - 12);
+                            floorLimit = Math.min(floorLimit, other.y - 11);
                         }
                     }
                 });
 
                 if (this.y > floorLimit) {
                     this.y = floorLimit;
-                    this.vy = 0;
+                    this.vy *= -0.1;
+                    this.vx = 0;
                 }
 
                 // 탈출 조건
-                if (this.y < this.targetPole.y - 20) {
+                if (this.y < this.targetPole.y - 15) {
                     this.isHooked = false;
                     this.targetPole = null;
                 }
             } else {
-                // 벽 충돌
-                if (this.x < 25) { this.x = 25; this.vx *= -0.5; }
-                if (this.x > canvas.width - 25) { this.x = canvas.width - 25; this.vx *= -0.5; }
-                if (this.y > canvas.height - 25) { this.y = canvas.height - 25; this.vy *= -0.5; }
-                if (this.y < 25) { this.y = 25; this.vy *= -0.5; }
+                // 경계선 처리
+                if (this.x < 22) { this.x = 22; this.vx *= -0.4; }
+                if (this.x > canvas.width - 22) { this.x = canvas.width - 22; this.vx *= -0.4; }
+                if (this.y > canvas.height - 25) { 
+                    this.y = canvas.height - 25; 
+                    this.vy *= -0.2; 
+                }
+                if (this.y < 22) { this.y = 22; this.vy *= -0.4; }
 
-                // 막대 걸림 판정
+                // 걸림 판정
                 poles.forEach(pole => {
-                    if (Math.abs(this.x - (pole.x + pole.width/2)) < 20) {
-                        if (this.y > pole.y && this.y < pole.y + 40 && this.vy > 0) {
+                    const poleCX = pole.x + pole.width/2;
+                    if (Math.abs(this.x - poleCX) < 18) {
+                        if (this.y > pole.y && this.y < pole.y + 35 && this.vy > 0) {
                             this.isHooked = true;
                             this.targetPole = pole;
                         }
@@ -213,27 +220,30 @@
             ctx.rotate(this.angleZ);
             
             const rx = 22;
-            const ry = 7 + (15 * Math.abs(Math.sin(this.angleX))); // 3D 텀블링 효과
+            // angleX가 0일 때 ry가 최소(7)가 되어 납작한 측면을 보여줌
+            const ry = 7 + (14 * Math.abs(Math.sin(this.angleX)));
 
-            // 링 디자인 (스트라이프)
             for (let i = 0; i < 8; i++) {
                 ctx.beginPath();
                 ctx.ellipse(0, 0, rx, ry, 0, i * (Math.PI/4), (i+1) * (Math.PI/4));
                 ctx.strokeStyle = i % 2 === 0 ? this.color : '#FFFFFF';
-                ctx.lineWidth = 8;
+                ctx.lineWidth = 7;
                 ctx.stroke();
             }
             ctx.restore();
         }
 
         applyPush(side) {
-            const dist = Math.abs(this.x - (side === 'left' ? 90 : 270));
-            const power = Math.max(0, 1 - dist / 300);
+            const dist = Math.abs(this.x - (side === 'left' ? 80 : 280));
+            const power = Math.max(0, 1 - dist / 320);
             
-            this.vy -= (Math.random() * 5 + 5) * power;
-            this.vx += (side === 'left' ? 1 : -1) * (Math.random() * 4) * power;
-            this.vAngleZ = (Math.random() - 0.5) * 0.5;
-            this.vAngleX = Math.random() * 0.4;
+            // 기존 5~10 범위에서 3~6 범위로 압력 하향 조정
+            const pushPower = (Math.random() * 3 + 3.5) * power;
+            this.vy -= pushPower;
+            this.vx += (side === 'left' ? 1.2 : -1.2) * (Math.random() * 3) * power;
+            
+            this.vAngleZ = (Math.random() - 0.5) * 0.4;
+            this.vAngleX = Math.random() * 0.35;
         }
     }
 
@@ -243,43 +253,47 @@
     function drawPoles() {
         poles.forEach(pole => {
             // 기둥 그림자
-            ctx.fillStyle = 'rgba(0,0,0,0.2)';
-            ctx.fillRect(pole.x + 5, pole.y, pole.width, canvas.height - pole.y);
+            ctx.fillStyle = 'rgba(0,0,0,0.15)';
+            ctx.fillRect(pole.x + 4, pole.y, pole.width, canvas.height - pole.y);
 
-            // 기둥 본체 (금속 느낌 그라데이션)
+            // 기둥 (금속 그라데이션)
             const grad = ctx.createLinearGradient(pole.x, 0, pole.x + pole.width, 0);
-            grad.addColorStop(0, '#7f8c8d');
-            grad.addColorStop(0.5, '#ecf0f1');
-            grad.addColorStop(1, '#95a5a6');
+            grad.addColorStop(0, '#95a5a6');
+            grad.addColorStop(0.5, '#dfe6e9');
+            grad.addColorStop(1, '#7f8c8d');
             
             ctx.fillStyle = grad;
             ctx.fillRect(pole.x, pole.y, pole.width, canvas.height - pole.y);
 
-            // 기둥 머리 (장식)
+            // 상단 마개
             ctx.fillStyle = '#f1c40f';
-            ctx.fillRect(pole.x - 4, pole.y, pole.width + 8, 15);
+            ctx.beginPath();
+            ctx.roundRect(pole.x - 4, pole.y, pole.width + 8, 12, 4);
+            ctx.fill();
         });
-    }
-
-    function spawnBubbles(side) {
-        for(let i=0; i<15; i++) {
-            setTimeout(() => bubbles.push(new Bubble(side)), i * 50);
-        }
     }
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 기포 업데이트
+        // 배경 디테일 (물 느낌)
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.beginPath();
+        ctx.arc(100, 100, 80, 0, Math.PI * 2);
+        ctx.arc(280, 350, 50, 0, Math.PI * 2);
+        ctx.fill();
+
         for (let i = bubbles.length - 1; i >= 0; i--) {
             bubbles[i].update();
             bubbles[i].draw();
-            if (bubbles[i].y < -20 || bubbles[i].alpha <= 0) bubbles.splice(i, 1);
+            if (bubbles[i].y < -20) bubbles.splice(i, 1);
         }
 
         drawPoles();
 
-        rings.forEach(ring => {
+        // 링 그리기 (스택 순서 고려: 아래 있는 것부터 그림)
+        const sortedRings = [...rings].sort((a, b) => b.y - a.y);
+        sortedRings.forEach(ring => {
             ring.update();
             ring.draw();
         });
@@ -287,25 +301,21 @@
         requestAnimationFrame(animate);
     }
 
-    // 이벤트 리스너
     const handlePush = (side) => {
-        spawnBubbles(side);
-        rings.forEach(ring => ring.applyPush(side));
-        
-        // iOS 권한 요청 처리
-        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-            DeviceOrientationEvent.requestPermission();
+        // 기포 발생
+        for(let i=0; i<12; i++) {
+            setTimeout(() => bubbles.push(new Bubble(side)), i * 60);
         }
+        rings.forEach(ring => ring.applyPush(side));
     };
 
-    btnLeft.addEventListener('mousedown', () => handlePush('left'));
-    btnRight.addEventListener('mousedown', () => handlePush('right'));
+    btnLeft.addEventListener('mousedown', (e) => { e.preventDefault(); handlePush('left'); });
+    btnRight.addEventListener('mousedown', (e) => { e.preventDefault(); handlePush('right'); });
     btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); handlePush('left'); });
     btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); handlePush('right'); });
 
-    // 기울기 센서
     window.addEventListener('deviceorientation', (e) => {
-        if (e.gamma !== null) tiltX = e.gamma / 30;
+        if (e.gamma !== null) tiltX = e.gamma / 35;
     });
 
     animate();
