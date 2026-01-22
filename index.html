@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Portfolio Cabinet | Creative Space</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&amp;family=Mrs+Saint+Delafield&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script>
+        // Check for saved theme preference or use system preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            if (html.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+    </script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#d46211",
+                        "wood-light": "#DCC6A1",
+                        "wood-dark": "#7C6246",
+                        "tray-gray": "#CBD5E1",
+                        "tray-dark": "#2C353F",
+                    },
+                    fontFamily: {
+                        display: ["Pretendard Variable", "Pretendard", "sans-serif"],
+                        serif: ["Pretendard Variable", "Pretendard", "serif"],
+                        sans: ["Pretendard Variable", "Pretendard", "sans-serif"],
+                        script: ["Caveat", "cursive"],
+                        elegant: ["Mrs Saint Delafield", "cursive"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    }
+                }
+            }
+        };
+    </script>
+    <style type="text/tailwindcss">
+        :root {
+            /* Day Variables */
+            --bg-color: #f8f7f6;
+            --wall-color: #f4ece1;
+            --wall-dot: #dcd3c1;
+            --lamp-glow: rgba(255, 180, 80, 0.35);
+            --lamp-inner: #fff3e0;
+            --table-warmth: #c86c05;
+            --wood-grain-base: #d4c1a5;
+            --floor-base: rgba(0,0,0,0.1);
+            --floor-stripe: #d2b48c;
+            --cabinet-shadow: 15px 15px 50px rgba(0,0,0,0.2), -5px -5px 20px rgba(255,255,255,0.05);
+            --text-color: #4b5563;
+        }
+
+        .dark {
+            /* Night Variables */
+            --bg-color: #12100E;
+            --wall-color: #1a1714;
+            --wall-dot: #25211e;
+            --lamp-glow: rgba(255, 140, 0, 0.5);
+            --lamp-inner: #ffcc80;
+            --table-warmth: #3a1a08;
+            --wood-grain-base: #3a2a1a;
+            --floor-base: rgba(0,0,0,0.6);
+            --floor-stripe: #1a150f;
+            --cabinet-shadow: 25px 25px 60px rgba(0,0,0,0.6), -2px -2px 10px rgba(255,255,255,0.02);
+            --text-color: #a8a29e;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            transition: background-color 1s ease;
+        }
+
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .cabinet-shadow {
+            box-shadow: var(--cabinet-shadow);
+        }
+
+        .tray-content {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tray-trigger:hover .tray-content {
+            transform: translateX(-32px) translateY(-4px);
+            z-index: 50;
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .bedroom-wall {
+            background-color: var(--wall-color);
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px);
+            background-size: auto;
+        }
+
+        .lamp-glow-effect {
+            background: radial-gradient(circle at center, var(--lamp-inner) 0%, var(--lamp-glow) 50%, transparent 90%);
+        }
+
+        .floor-texture {
+            background: linear-gradient(to bottom, var(--floor-base) 0%, rgba(0,0,0,0) 100%),
+                        repeating-linear-gradient(90deg, var(--floor-stripe) 0, var(--floor-stripe) 80px, transparent 81px);
+        }
+
+        .cabinet-lighting {
+            background: linear-gradient(105deg, rgba(255,230,180,0.15) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .dark .cabinet-lighting {
+            background: linear-gradient(105deg, rgba(255,160,50,0.18) 0%, rgba(255,160,50,0.05) 30%, transparent 60%);
+        }
+
+        .wood-grain-texture {
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px),
+                              linear-gradient(90deg, rgba(0,0,0,0.03) 0%, transparent 50%, rgba(0,0,0,0.03) 100%);
+        }
+
+        .striped-bedding {
+            background: repeating-linear-gradient(90deg, #f8f8f8, #f8f8f8 6px, #dee2e6 6px, #dee2e6 12px);
+        }
+
+        .dark .striped-bedding {
+            background: repeating-linear-gradient(90deg, #1e2124, #1e2124 6px, #141619 6px, #141619 12px);
+        }
+
+        .book-stack div:nth-child(odd) { background-color: #fefce8; border-left: 4px solid #991b1b; }
+        .book-stack div:nth-child(even) { background-color: #f3f4f6; border-left: 4px solid #1e3a8a; }
+
+        .dark .book-stack div:nth-child(odd) { background-color: #1c1917; border-left: 4px solid #7c2d12; }
+        .dark .book-stack div:nth-child(even) { background-color: #1a1a1a; border-left: 4px solid #1e3a8a; }
+
+        .lamp-cast-light {
+            background: radial-gradient(ellipse at bottom left, rgba(255, 140, 0, 0.25) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .dark .lamp-cast-light {
+            opacity: 1;
+        }
+    </style>
+</head>
+<!-- Default to Light or Dark based on user pref, but here we start light as common web default or dark if requested. Let's start light and toggle. -->
+
+<body class="font-sans overflow-hidden">
+    <main
+        class="relative h-screen w-full flex flex-col items-center justify-end bedroom-wall transition-colors duration-1000">
+
+        <!-- Night Mode Ambient Light (Hidden in Day) -->
+        <div class="absolute inset-0 lamp-cast-light pointer-events-none z-0"></div>
+
+        <!-- Lamp Stand (Left) -->
+        <div class="absolute left-[5%] bottom-[15%] w-48 h-64 z-10 hidden lg:block">
+            <div
+                class="absolute bottom-0 w-full h-40 bg-[var(--table-warmth)] rounded-sm border-t border-white/20 dark:border-white/5 shadow-2xl wood-grain-texture overflow-hidden transition-colors duration-1000">
+                <!-- Night Gradient Overlay -->
+                <div
+                    class="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-transparent opacity-0 dark:opacity-100 transition-opacity duration-1000">
+                </div>
+
+                <div class="absolute top-4 left-1/2 -translate-x-1/2 w-32 h-1 bg-black/20 dark:bg-black/40 rounded">
+                </div>
+                <div
+                    class="absolute top-12 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-stone-100/50 dark:bg-stone-900 border border-black/20 dark:border-white/5 shadow-inner">
+                </div>
+            </div>
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-48 flex flex-col items-center">
+                <div
+                    class="w-20 h-24 bg-orange-50 dark:bg-orange-100/10 rounded-t-3xl border-x-2 border-t-2 border-orange-200/50 dark:border-orange-500/30 shadow-lg dark:shadow-[0_0_50px_rgba(255,165,0,0.3)] relative z-20 overflow-hidden transition-all duration-1000">
+                    <div
+                        class="absolute inset-0 lamp-glow-effect blur-xl opacity-0 dark:opacity-80 transition-opacity duration-1000">
+                    </div>
+                    <!-- Bulb center brightness -->
+                    <div
+                        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white/40 blur-md rounded-full opacity-0 dark:opacity-100 transition-opacity duration-1000">
+                    </div>
+                </div>
+                <!-- Lamp Pole -->
+                <div
+                    class="w-2 h-16 bg-stone-400 dark:bg-stone-800 transition-colors duration-1000 border-x border-black/10 dark:border-black/20">
+                </div>
+                <div
+                    class="w-16 h-4 bg-stone-400 dark:bg-stone-900 rounded-full border-t border-white/10 dark:border-white/5 transition-colors duration-1000">
+                </div>
+            </div>
+            <!-- Lamp Glow Halo -->
+            <div
+                class="absolute -top-20 -left-20 w-80 h-80 bg-orange-300/30 dark:bg-orange-600/15 blur-[90px] rounded-full pointer-events-none opacity-0 dark:opacity-100 transition-opacity duration-1000">
+            </div>
+        </div>
+
+        <!-- Bed / Decor (Right) -->
+        <div
+            class="absolute right-0 translate-x-[25%] bottom-0 w-[45%] h-[55%] z-10 hidden lg:block transition-all duration-1000 dark:grayscale-[0.4] dark:brightness-[0.4]">
+            <div
+                class="w-full h-full bg-[var(--wood-grain-base)] wood-grain-texture rounded-tl-lg border-l-4 border-t-4 border-white/20 dark:border-white/5 shadow-2xl relative overflow-hidden transition-colors duration-1000">
+                <div
+                    class="absolute bottom-0 left-0 w-full h-[65%] striped-bedding shadow-inner border-t border-gray-300/50 dark:border-black/40 transition-colors duration-1000">
+                    <div class="absolute -top-6 left-10 flex gap-4">
+                        <div
+                            class="w-48 h-32 bg-sky-300/80 dark:bg-sky-950/40 rounded-3xl rotate-6 shadow-lg border border-sky-400/30 dark:border-white/5 transition-colors duration-1000">
+                        </div>
+                        <div
+                            class="w-48 h-32 bg-sky-200/80 dark:bg-slate-900/40 rounded-3xl -rotate-3 shadow-lg border border-sky-300/30 dark:border-white/5 transition-colors duration-1000">
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="absolute top-0 left-0 w-full h-[35%] bg-wood-light/95 dark:bg-wood-dark border-b-4 border-black/10 dark:border-black/40 flex items-end px-8 pb-3 gap-8 transition-colors duration-1000">
+                    <div class="book-stack flex flex-col-reverse items-center mb-1">
+                        <div class="w-24 h-3 rounded-sm shadow-sm"></div>
+                        <div class="w-22 h-4 rounded-sm shadow-sm -rotate-1"></div>
+                        <div class="w-26 h-3 rounded-sm shadow-sm"></div>
+                        <div class="w-20 h-5 rounded-sm shadow-sm rotate-1"></div>
+                        <div class="w-24 h-4 rounded-sm shadow-sm"></div>
+                    </div>
+                    <div
+                        class="w-28 h-36 bg-stone-50 dark:bg-stone-900 border-4 border-[#5d3e26] dark:border-[#2d1e15] shadow-md mb-2 flex items-center justify-center overflow-hidden transition-colors duration-1000">
+                        <div
+                            class="w-full h-full bg-stone-100 dark:bg-stone-950 opacity-90 flex flex-col items-center justify-center p-2 transition-colors duration-1000">
+                            <div
+                                class="w-full h-1/2 bg-stone-400/40 dark:bg-white/5 rounded-sm mb-1 transition-colors duration-1000">
+                            </div>
+                            <div
+                                class="w-2/3 h-1/4 bg-stone-400/20 dark:bg-transparent rounded-sm transition-colors duration-1000">
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="book-stack flex flex-col-reverse items-center mb-1 opacity-90 dark:opacity-70 transition-opacity duration-1000">
+                        <div class="w-20 h-4 rounded-sm shadow-sm"></div>
+                        <div class="w-24 h-3 rounded-sm shadow-sm rotate-2"></div>
+                        <div class="w-22 h-4 rounded-sm shadow-sm"></div>
+                        <div class="w-18 h-4 rounded-sm shadow-sm -rotate-1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floor -->
+        <div
+            class="absolute bottom-0 w-full h-[25vh] floor-texture z-0 border-t border-black/5 dark:border-black/40 transition-colors duration-1000">
+        </div>
+
+        <!-- Cabinet (Center) -->
+        <div class="relative z-20 w-full max-w-lg mb-24 perspective-1000">
+            <div
+                class="relative mx-auto w-[320px] sm:w-[400px] bg-wood-light dark:bg-wood-dark p-2 sm:p-3 rounded-sm cabinet-shadow border-t-2 border-l-2 border-white/20 dark:border-white/10 transition-colors duration-1000">
+                <div class="absolute inset-0 cabinet-lighting z-40 rounded-sm"></div>
+
+                <div
+                    class="h-4 w-full border-b border-black/10 dark:border-black/30 flex items-center justify-center transition-colors duration-1000">
+                    <div class="h-1 w-8 bg-black/20 dark:bg-black/40 rounded-full transition-colors duration-1000">
+                    </div>
+                </div>
+
+                <div
+                    class="h-10 flex items-center justify-center border-b border-black/10 dark:border-black/30 transition-colors duration-1000">
+                    <div class="w-1 h-3 bg-black/40 dark:bg-black/60 rounded-full transition-colors duration-1000">
+                    </div>
+                </div>
+
+                <!-- Drawers -->
+                <div class="space-y-1.5 mt-2 relative z-30">
+                    <!-- Drawer 1 -->
+                    <a class="tray-trigger block relative group" href="writings.html">
+                        <div
+                            class="tray-content h-10 sm:h-12 bg-tray-gray dark:bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/10 dark:border-black/40 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 transition-colors duration-1000">
+                            <span
+                                class="text-xs sm:text-sm font-bold text-gray-600 dark:text-gray-500 w-8 transition-colors duration-1000">1</span>
+                            <span
+                                class="font-display font-medium text-gray-800 dark:text-gray-200 tracking-wider transition-colors duration-1000">WRITINGS</span>
+                        </div>
+                    </a>
+
+                    <!-- Drawer 2 -->
+                    <a class="tray-trigger block relative group" href="photography.html">
+                        <div
+                            class="tray-content h-10 sm:h-12 bg-tray-gray dark:bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/10 dark:border-black/40 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 transition-colors duration-1000">
+                            <span
+                                class="text-xs sm:text-sm font-bold text-gray-600 dark:text-gray-500 w-8 transition-colors duration-1000">2</span>
+                            <span
+                                class="font-display font-medium text-gray-800 dark:text-gray-200 tracking-wider transition-colors duration-1000">PHOTOGRAPHY</span>
+                        </div>
+                    </a>
+
+                    <!-- Drawer 3 -->
+                    <a class="tray-trigger block relative group" href="community.html">
+                        <div
+                            class="tray-content h-10 sm:h-12 bg-tray-gray dark:bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/10 dark:border-black/40 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 transition-colors duration-1000">
+                            <span
+                                class="text-xs sm:text-sm font-bold text-gray-600 dark:text-gray-500 w-8 transition-colors duration-1000">3</span>
+                            <span
+                                class="font-display font-medium text-gray-800 dark:text-gray-200 tracking-wider uppercase transition-colors duration-1000">COMMUNITY</span>
+                        </div>
+                    </a>
+
+                    <!-- Extra Drawers (Non-functional cosmetics for now) -->
+                    <div class="tray-trigger relative group cursor-pointer">
+                        <div
+                            class="tray-content h-8 sm:h-10 bg-tray-gray/80 dark:bg-tray-dark/60 flex items-center px-4 rounded-sm border-b border-black/10 dark:border-black/40 group-hover:bg-white dark:group-hover:bg-slate-800 transition-colors duration-1000">
+                            <span
+                                class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-600 w-8 transition-colors duration-1000">4</span>
+                            <span
+                                class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[10px] sm:text-xs font-display tracking-widest text-gray-400 dark:text-gray-500 uppercase">ARCHIVE</span>
+                        </div>
+                    </div>
+                    <div class="tray-trigger relative group cursor-pointer">
+                        <div
+                            class="tray-content h-8 sm:h-10 bg-tray-gray/80 dark:bg-tray-dark/60 flex items-center px-4 rounded-sm border-b border-black/10 dark:border-black/40 group-hover:bg-white dark:group-hover:bg-slate-800 transition-colors duration-1000">
+                            <span
+                                class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-600 w-8 transition-colors duration-1000">5</span>
+                            <span
+                                class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[10px] sm:text-xs font-display tracking-widest text-gray-400 dark:text-gray-500 uppercase">NOTES</span>
+                        </div>
+                    </div>
+                    <div class="tray-trigger relative group cursor-pointer">
+                        <div
+                            class="tray-content h-8 sm:h-10 bg-tray-gray/80 dark:bg-tray-dark/60 flex items-center px-4 rounded-sm border-b border-black/10 dark:border-black/40 group-hover:bg-white dark:group-hover:bg-slate-800 transition-colors duration-1000">
+                            <span
+                                class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-600 w-8 transition-colors duration-1000">6</span>
+                            <span
+                                class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[10px] sm:text-xs font-display tracking-widest text-gray-400 dark:text-gray-500 uppercase">ABOUT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-2 border-t-2 border-black/10 dark:border-black/20 transition-colors duration-1000">
+                    <div
+                        class="h-10 sm:h-12 bg-wood-light/80 dark:bg-wood-dark/80 rounded-sm flex items-center justify-center transition-colors duration-1000">
+                        <div class="w-12 h-1 bg-black/20 dark:bg-black/40 rounded-full transition-colors duration-1000">
+                        </div>
+                    </div>
+                </div>
+                <!-- Cabinet Base -->
+                <div
+                    class="h-10 sm:h-12 mt-2 bg-[#4A5D4E] dark:bg-[#1B261E] rounded-b-sm border-t border-black/10 dark:border-black/40 transition-colors duration-1000">
+                </div>
+            </div>
+
+            <!-- Cabinet Shadow under -->
+            <div
+                class="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[120%] h-12 bg-black/10 dark:bg-black/80 blur-2xl dark:blur-3xl rounded-full transition-all duration-1000">
+            </div>
+        </div>
+
+        <!-- Toggle Button -->
+        <nav class="fixed top-8 right-8 z-50 flex items-center gap-4">
+            <button
+                class="p-3 rounded-full bg-white/40 backdrop-blur-md border border-white/40 text-stone-800 hover:scale-110 transition-all shadow-lg"
+                onclick="toggleTheme()">
+                <span class="material-symbols-outlined block dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+            </button>
+        </nav>
+
+
+    </main>
+</body>
+
+</html>
