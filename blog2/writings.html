@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Writings Cabinet | Archive</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&amp;family=Mrs+Saint+Delafield&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script>
+        // Check for saved theme preference or use system preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            if (html.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+    </script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#8B735B",
+                        "wood-light": "#DCC6A1",
+                        "wood-dark": "#5D4037",
+                        "paper-aged": "#FDFCF8",
+                        "folder-manila": "#EFE6D5",
+                        "folder-divider": "#5D4037",
+                        "paper-clean": "#F9F7F2",
+                        "brass": "#B8860B",
+                        "brass-dark": "#8B6B0E",
+                    },
+                    fontFamily: {
+                        display: ["Pretendard Variable", "Pretendard", "sans-serif"],
+                        serif: ["Pretendard Variable", "Pretendard", "serif"],
+                        sans: ["Pretendard Variable", "Pretendard", "sans-serif"],
+                        script: ["Caveat", "cursive"],
+                        elegant: ["Mrs Saint Delafield", "cursive"],
+                    }
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        /* GLOBAL UTILS */
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* VIEW 1: FOLDER STACK STYLES */
+        /* DRAWER FRAME STYLES (MATCHING PHOTOGRAPHY) */
+        .perspective-2000 {
+            perspective: 2000px
+        }
+        .drawer-tilt {
+            transform: rotatex(25deg);
+            transform-style: preserve-3d
+        }
+        .drawer-shadow {
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.4), 0 30px 60px -30px rgba(0, 0, 0, 0.5)
+        }
+        .scrim-gradient {
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%)
+        }
+        .wood-texture {
+            background-color: #e5d3b3;
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAb_Qd6Xc2iIrfeMmHCSkJ4BcCemUIkWBBP05BoJhL8d0I98O_g5xPlrjSkZ5UcvUtXN_yx1LWtEGj5jvyZn1agNnavqWBIExrRYroBuQAZMJ08bZ25iRABJHupxUnGIfMOFCM_BuM-ypROkW_jHSa1RIZ35fMJZEvQY7ffOxBVnRbCL73zYW2xqBPFPLljdQ4uf5Y9TPT9cz585lhkK9CguKRrXhYUCsnAeCKx98chN9jTr-29WtDMpI7LgDm7ny6HrFfmAOW8mXJI);
+            background-size: cover;
+        }
+        .folder-tab {
+            clip-path: path("M 0 40 L 0 8 C 0 3, 3 0, 8 0 L 132 0 C 137 0, 140 3, 140 8 L 140 40 Z")
+        }
+        .divider-tab {
+            clip-path: path("M 0 45 L 0 10 C 0 4, 4 0, 10 0 L 170 0 C 176 0, 180 4, 180 10 L 180 45 Z")
+        }
+        .drawer-inner-shadow {
+            box-shadow: inset 0 100px 150px rgba(0, 0, 0, 0.9), inset 0 -40px 60px rgba(0, 0, 0, 0.6)
+        }
+        .paper-texture-overlay {
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuB0gRHJqUPXR6v_eeRV-6Hh4pYF-8dR87RHuIWny2RrlzW00S3gndwg33oUCbiGgGsoaSTH55-APoFiQ5zl0uWhZOtOsrldWNZX3GeoHVImqsFJvn6f6Bf59xS_PR6ajEi64A2uxRFlQKHVg2WBBkXCvNxWRdTJqsY7dSkVpb_Jd_JA0VC57VtDzgyuVKW9QJZqvYyl5E-5vdsmFR97t3U6DUSaRwmKGGDuVdWpF526cYb1PxdEMVVgAF2H1gowUR37C6p98uzt14Aa);
+            background-size: 400px;
+        }
+        .folder-stack-item {
+            transition: transform 0.3s ease;
+        }
+        .folder-stack-item:hover {
+            transform: translateY(-15px) translateZ(20px);
+        }
+
+        /* VIEW 2: READING MODE STYLES */
+        .wood-grain-bg {
+            background-color: #120907;
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAnAHcVxzFVWiT__NaEbwJtConwZ__vmh_kE35cyC54Rg_VkjZNtAqGHRaI-E-zUkYxFNUFfVpiWinlpMpoqM8cFwgPXscjIdod0BnpWv_JRAP_uBndqj4xOQfGbZ95B3rOhVfKtEbsDvJLs6FQCH4Z4xU4nyUufu8ijAsEIlBp5mUiWyNeRNLHHh5Rkn2GkYbnW_h2WDKEuu0h9mb46izxovIuMO0S94aE8k8bszZgQa9hjf_24VHNtpRtonBxOiqz4twkSG9OyRpm);
+            background-blend-mode: multiply;
+            background-size: cover;
+        }
+        .paper-texture-read {
+            background-color: #F9F7F2;
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuB0gRHJqUPXR6v_eeRV-6Hh4pYF-8dR87RHuIWny2RrlzW00S3gndwg33oUCbiGgGsoaSTH55-APoFiQ5zl0uWhZOtOsrldWNZX3GeoHVImqsFJvn6f6Bf59xS_PR6ajEi64A2uxRFlQKHVg2WBBkXCvNxWRdTJqsY7dSkVpb_Jd_JA0VC57VtDzgyuVKW9JqvYyl5E-5vdsmFR97t3U6DUSaRwmKGGDuVdWpF526cYb1PxdEMVVgAF2H1gowUR37C6p98uzt14Aa);
+            background-size: 600px;
+            background-blend-mode: soft-light;
+            box-shadow: 
+                0 0 100px rgba(0,0,0,0.6),
+                0 30px 60px rgba(0,0,0,0.4);
+        }
+        .brass-tab {
+            background: linear-gradient(145deg, #d4af37, #8b6b0e);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.4), inset 1px 1px 1px rgba(255,255,255,0.3);
+            border: 1px solid #7d5e0a;
+        }
+        .focused-lighting {
+            background: radial-gradient(circle at center, rgba(255,250,220,0.08) 0%, rgba(0,0,0,0.7) 100%);
+        }
+        .drop-cap::first-letter {
+            font-family: 'Playfair Display', serif;
+            float: left;
+            font-size: 4.8rem;
+            line-height: 1;
+            padding-right: 0.75rem;
+            padding-top: 0.25rem;
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+
+        /* TRANSITIONS */
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.5s ease;
+        }
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+    </style>
+    <style>
+        .wood-grain-bg {
+            background-color: #2c241b;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        /* Serrated Edge Mask */
+        .scalloped-edge {
+            --mask: radial-gradient(10px at 50% calc(100% - 12px), #000 99%, #0000 101%) calc(50% - 16px) 100%/32px 100%,
+                radial-gradient(10px at 50% calc(100% + 2px), #0000 99%, #000 101%) 50% 100%/32px 100% repeat-x;
+            /* Simple jagged edge using readable standard syntax or fallback */
+            /* Let's use a simpler repeatable radial gradient mask for top and bottom */
+            mask-image: radial-gradient(circle at 15px 0, transparent 0, transparent 5px, black 6px);
+            mask-size: 30px 20px;
+            mask-repeat: repeat-x;
+            mask-position: top;
+        }
+
+        .ticket-strip {
+            mask-image:
+                radial-gradient(circle at center top, transparent 6px, black 6.5px),
+                radial-gradient(circle at center bottom, transparent 6px, black 6.5px);
+            mask-size: 24px 100%;
+            /* Spacing of the holes */
+            mask-repeat: repeat-x;
+            mask-position: top center, bottom center;
+            mask-composite: intersect;
+            /* ensure both masks apply */
+            -webkit-mask-image:
+                radial-gradient(circle at center top, transparent 6px, black 6.5px),
+                radial-gradient(circle at center bottom, transparent 6px, black 6.5px);
+            -webkit-mask-size: 24px 100%;
+            -webkit-mask-repeat: repeat-x;
+            -webkit-mask-position: top center, bottom center;
+            -webkit-mask-composite: source-in;
+        }
+
+        @font-face {
+            font-family: 'StampFont';
+            src: local('Courier New'), monospace;
+            /* Fallback for now */
+        }
+    </style>
+</head>
+
+<body class="bg-[#Fdfcf0] dark:bg-zinc-950 font-sans h-screen overflow-hidden transition-colors duration-1000">
+
+    <!-- === VIEW 1: STAMP LIST (INSIDE DRAWER) === -->
+    <div id="folderView" class="relative z-10 w-full h-full transition-opacity duration-500">
+        <div
+            class="fixed inset-0 z-0 bg-gradient-to-tr from-stone-900/40 via-transparent to-white/10 pointer-events-none">
+        </div>
+        <main
+            class="relative z-10 h-full w-full flex flex-col items-center justify-center p-4 md:p-12 perspective-2000">
+
+            <!-- Back Navigation -->
+            <a class="fixed top-8 left-8 z-[250] flex items-center justify-center text-stone-700 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white transition-colors group bg-white/40 dark:bg-black/30 backdrop-blur-md p-3 rounded-full border border-white/40 dark:border-white/10 shadow-sm"
+                href="index.html">
+                <span class="material-symbols-outlined text-lg">arrow_back</span>
+            </a>
+
+            <!-- Drawer Frame (Restored) -->
+            <div
+                class="drawer-tilt relative w-full max-w-5xl bg-[#DCC6A1] p-5 rounded-sm drawer-shadow border-t-4 border-white/40 border-l-2 border-white/20">
+                <div class="absolute -top-4 left-0 w-full h-4 bg-[#C8B28E] rounded-t-sm"></div>
+                <div class="wood-texture p-4 border-2 border-black/20 shadow-inner relative h-[600px] overflow-hidden">
+                    <div class="absolute inset-0 pointer-events-none scrim-gradient opacity-50 z-50"></div>
+
+                    <!-- Stamp List Container (Inside Drawer) -->
+                    <!-- Stamp List Container (Inside Drawer) -->
+                    <div id="stampListContainer"
+                        class="relative z-30 w-full h-full overflow-y-auto scrollbar-hide flex flex-col-reverse justify-start pb-4">
+                        <!-- Stamps injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Label (Drawer Front) -->
+                <div
+                    class="mt-4 h-16 bg-[#DCC6A1] border-t-2 border-black/15 flex flex-col items-center justify-center relative z-[200] shadow-md">
+                    <div class="flex items-center gap-4 bg-white/90 px-4 py-1.5 border border-black/20 shadow-sm mb-1">
+                        <span class="text-[10px] font-bold text-gray-400">01</span>
+                        <span class="font-display text-sm tracking-[0.3em] font-medium text-gray-800">WRITINGS</span>
+                    </div>
+                    <div class="w-24 h-2 border-x-2 border-b-2 border-black/20 rounded-b-xl mt-1"></div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Theme Toggle (Fixed Top Right) -->
+        <nav class="fixed top-8 right-8 z-50 flex items-center gap-4">
+            <button
+                class="p-3 rounded-full bg-white/40 backdrop-blur-md border border-white/40 text-stone-800 hover:scale-110 transition-all shadow-lg"
+                onclick="toggleTheme()">
+                <span class="material-symbols-outlined block dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- === VIEW 2: READING MODE === -->
+    <div id="readingView"
+        class="fixed inset-0 z-[300] hidden opacity-0 transition-opacity duration-700 bg-[#Fdfcf0] dark:bg-zinc-900 flex items-center justify-center p-0 m-0">
+
+        <nav class="fixed top-8 left-8 z-[100]">
+            <button
+                class="flex items-center gap-3 text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white transition-all group px-4 py-2"
+                onclick="closeReadingView()">
+                <span class="material-symbols-outlined text-xl">arrow_back</span>
+                <span class="text-xs uppercase tracking-[0.2em] font-bold">Back</span>
+            </button>
+        </nav>
+
+        <div
+            class="relative z-20 w-full max-w-3xl h-full overflow-y-auto rounded-none flex flex-col scrollbar-hide pt-20 px-8">
+            <header class="pb-12 text-center border-b border-stone-200 dark:border-stone-800 mb-12">
+                <p class="font-mono text-xs text-stone-400 mb-4 uppercase tracking-widest" id="docDateDisplay">
+                    2025.10.12</p>
+                <h1 class="font-serif text-2xl md:text-4xl text-stone-900 dark:text-stone-100 leading-tight"
+                    id="docTitle">
+                    Title
+                </h1>
+            </header>
+
+            <article class="prose prose-stone max-w-none pb-40 dark:prose-invert" id="docContent">
+                <!-- Content -->
+            </article>
+
+            <!-- COMMENT SECTION -->
+            <section class="pb-24 max-w-none w-full border-t border-stone-200 dark:border-stone-800 pt-12">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="font-bold text-stone-900 dark:text-stone-100 text-xs tracking-widest uppercase">Comments
+                        (<span id="commentCount">0</span>)</h3>
+                </div>
+
+                <div id="commentList" class="space-y-8 mb-12"></div>
+
+                <form id="commentForm" class="bg-stone-100 dark:bg-zinc-800 p-6 rounded-sm">
+                    <h4 class="text-xs font-bold text-stone-500 uppercase mb-4 tracking-widest">Leave a Note</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <input type="text" name="name" placeholder="Name" required
+                            class="bg-transparent border-b border-stone-300 dark:border-stone-600 py-2 text-sm focus:outline-none focus:border-stone-800 dark:text-stone-200">
+                        <input type="password" name="password" placeholder="Password (to delete)" required
+                            class="bg-transparent border-b border-stone-300 dark:border-stone-600 py-2 text-sm focus:outline-none focus:border-stone-800 dark:text-stone-200">
+                    </div>
+                    <textarea name="content" placeholder="Message..." required rows="3"
+                        class="w-full bg-transparent border-b border-stone-300 dark:border-stone-600 py-2 text-sm focus:outline-none focus:border-stone-800 mb-4 dark:text-stone-200"></textarea>
+                    <div class="flex justify-end">
+                        <button type="submit"
+                            class="bg-stone-800 text-white px-6 py-2 text-xs font-bold uppercase tracking-widest hover:bg-stone-600 transition-colors">
+                            Post
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        const folderView = document.getElementById('folderView');
+        const stampListContainer = document.getElementById('stampListContainer');
+        const readingView = document.getElementById('readingView');
+        const docTitle = document.getElementById('docTitle');
+        const docDateDisplay = document.getElementById('docDateDisplay');
+        const commentList = document.getElementById('commentList');
+        const commentCount = document.getElementById('commentCount');
+        const commentForm = document.getElementById('commentForm');
+        const docContent = document.getElementById('docContent');
+
+        let currentDocId = '';
+
+        // Initial Data
+        const commentsData = JSON.parse(localStorage.getItem('commentsData')) || {};
+
+        // Palette from reference
+        const palette = [
+            '#CCA43B', // Mustard
+            '#A4B8E0', // Periwinkle
+            '#E8E0D0', // Cream
+            '#F0EAD6', // Light Yellow
+            '#A4C639', // Lime
+            '#E97451', // Salmon
+            '#4B3621'  // Dark Brown (Should match footer if last?)
+        ];
+
+        window.addEventListener('DOMContentLoaded', loadFolders);
+
+        function loadFolders() {
+            let essays = JSON.parse(localStorage.getItem('essaysData'));
+            if (!essays) {
+                loadEssayContent('');
+                essays = JSON.parse(localStorage.getItem('essaysData'));
+            }
+
+            // Generate HTML
+            // Sort by Date Ascending (Oldest = Index 0 = Front/Bottom)
+            const sortedEssays = Object.values(essays).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            // Re-sort after potential update (though content update doesn't affect sort)
+            // ... existing loop ...
+
+            stampListContainer.innerHTML = '';
+
+            sortedEssays.forEach((essay, index) => {
+                const color = palette[index % palette.length];
+                const strip = document.createElement('div');
+
+                // Styling
+                strip.className = "ticket-strip w-full h-16 flex items-center justify-between px-6 md:px-12 cursor-pointer hover:brightness-110 transition-all -mt-[2px] relative z-0 hover:z-10";
+                strip.style.backgroundColor = color;
+                strip.onclick = () => openReadingView(essay.title);
+
+                const stageText = `ARCHIVE ${String(index + 1).padStart(2, '0')}`;
+
+                // Inner HTML matching reference style
+                strip.innerHTML = `
+                    <div class="flex items-center gap-8 w-full">
+                        <span class="font-mono text-[10px] uppercase tracking-widest opacity-60 w-20 shrink-0 border-b border-black/10 pb-1">${stageText}</span>
+                        <span class="font-bold text-sm md:text-base uppercase tracking-wider text-stone-800/90 truncate flex-1 block text-center">${essay.title}</span>
+                         <span class="font-mono text-[10px] uppercase tracking-widest opacity-60 w-20 shrink-0 text-right border-b border-black/10 pb-1">${essay.date}</span>
+                    </div>
+                `;
+
+                stampListContainer.appendChild(strip);
+            });
+        }
+
+
+        function openReadingView(title) {
+            folderView.classList.add('opacity-0');
+            setTimeout(() => {
+                folderView.classList.add('hidden');
+                readingView.classList.remove('hidden');
+
+                // Reset scroll
+                readingView.querySelector('div').scrollTop = 0;
+
+                setTimeout(() => {
+                    readingView.classList.remove('opacity-0');
+                    loadEssayContent(title);
+                }, 50);
+            }, 500);
+        }
+
+        function closeReadingView() {
+            readingView.classList.add('opacity-0');
+            setTimeout(() => {
+                readingView.classList.add('hidden');
+                folderView.classList.remove('hidden');
+                setTimeout(() => {
+                    folderView.classList.remove('opacity-0');
+                }, 50);
+            }, 500);
+        }
+
+        function loadEssayContent(title) {
+            let essays = JSON.parse(localStorage.getItem('essaysData'));
+            // ... (Default initialization logic if empty - same as before) ...
+            if (!essays) {
+                const defaultEssays = {
+                    '첫 인사': {
+                        title: '첫 인사',
+                        date: '2025.10.12',
+                        content: `<p class="drop-cap text-stone-900 leading-relaxed font-serif text-justify text-base">
+                            어제 아침은 문밖이 소란스러웠다. 그렇다는 건 나를 빼고 모두가 일어나서 각자 할 일을 하고 있다는 의미였다. 왠지 나만 손해 보고 있는 것 같은 기분으로 침대 밖으로 몸을 던지다시피 일어났다. 일찍 일어나야 한다는 나의 의지는 몇 년 새 집착에 가까울 정도다. 가끔 9시가 넘어서 일어나는 날이면 아침 시간을 허비한 것 같은 기분이 든다. 누가 정해둔 것도 아닌데 나는 왜 이른 아침에 일어나는 걸 고집하는 걸까?
+                            </p>
+                            <p class="text-stone-900 leading-relaxed font-serif text-justify text-base mt-6">
+                            많은 미디어에서 일찍 일어나는 것을 성공의 비결로 꼽곤 한다. 모 유명 강사의 유명한 일화도 있다. 학원 운영이 어려워져 빚을 못 갚을까 두려워하던 시절, 살다가 겁이 나면 일찍 일어나라는 어머니의 말씀을 듣고 1년 반 동안 새벽 4시 반에 일어나서 학부모들께 편지를 썼던 이야기. 이후 학원은 200명의 학생이 다닐 정도로 흥행했다고. 몇 년 전 유행했던 ‘미라클 모닝’을 기억하는가? 그때 많은 사람들이 새벽 4시에 일어나며 인증샷을 SNS에 올리는 열풍이 불곤 했다. 이처럼 일찍 일어나야 성공할 수 있다는 의식이 많은 사람의 기저에 깔린 것이다.
+                            </p>
+                             <p class="text-stone-900 leading-relaxed font-serif text-justify text-base mt-6">
+                            나도 일찍 일어나야 성공할 수 있다고 믿는 사람들 중 하나다. 다만 그 믿음은 가끔 나를 괴롭게 하기도 한다. 성공의 반대말은 무엇이냐, 바로 실패다. 나는 일찍 일어나지 못하면 실패한다고 생각한다. 이건 어떤 사실을 말하는 게 아니다. 내가 일찍 일어나지 못하면 실패할지도 모른다는 불안감을 느낀다는 걸 의미한다. 내가 자는 동안 세상에서 어떤 중요한 일들이 일어나기라도 하는 듯 말이다. 공부를 자극하는 명언에는 그런 것도 있다. 네가 자는 동안 꿈을 꾸지만, 어떤 이들은 깨어서 그 꿈을 이룬다. 내가 일찍 일어나지 못한 시간만큼 남들보다 뒤처진다는 생각에 불을 붙이는 문장이다.
+                            </p>
+                            <p class="text-stone-900 leading-relaxed font-serif text-justify text-base mt-6">
+                            그런 불안감이 수년간 나를 아침 일찍 일어나야 하는 사람으로 만들었다. 오늘만 해도 그렇다. 평소보다 일찍 잠자리에 든 탓인지 눈이 빨리 떠졌다. 핸드폰을 확인하니 4시 53분. 첫 알람을 6시로 맞춰뒀으니 1시간이나 더 잘 수 있는 시간이었다. 잠에 들기 위해서 최신 IT 트렌드 관련 기사를 읽고 있는데 그게 트리거가 되었는지 요즘 진행하고 있는 프로젝트가 생각났다. 안 그래도 어젯밤에 내 실력을 한탄하는 내용의 글을 적었는데 다시금 불안해지는 것이다. 함께 프로젝트를 하는 사람 중 내가 제일 뒤처지고 있다는 생각. 그 생각이 나를 일으켜 세우고 책상 앞에 앉아서 글을 쓰게 만들었다.
+                            </p>`
+                    }
+                };
+                localStorage.setItem('essaysData', JSON.stringify(defaultEssays));
+                essays = defaultEssays;
+            }
+
+            if (!title && Object.keys(essays).length > 0) return;
+
+            const essay = essays[title];
+            if (essay) {
+                currentDocId = title;
+                docTitle.textContent = essay.title;
+                docDateDisplay.textContent = essay.date;
+                docContent.innerHTML = essay.content;
+                renderComments(title);
+            }
+        }
+
+        // ... Comment functions (renderComments, deleteComment, submit listener) ...
+        // Re-paste existing comment logic below or ensure it's preserved
+
+        function renderComments(docId) {
+            commentList.innerHTML = '';
+            const comments = commentsData[docId] || [];
+            commentCount.textContent = comments.length;
+
+            if (comments.length === 0) {
+                commentList.innerHTML = '<p class="text-center text-xs text-stone-400 italic">No comments yet.</p>';
+                return;
+            }
+
+            comments.forEach(comment => {
+                const el = document.createElement('div');
+                el.className = 'border-b border-black/5 pb-4 last:border-0';
+                el.innerHTML = `
+                    <div class="flex justify-between items-baseline mb-2">
+                        <span class="font-bold text-sm text-stone-800 dark:text-stone-200">${comment.name}</span>
+                        <span class="text-[10px] text-stone-400 font-mono">${new Date(comment.date).toLocaleDateString()}</span>
+                    </div>
+                    <p class="text-sm text-stone-600 dark:text-stone-400 leading-relaxed font-serif">${comment.content}</p>
+                `;
+                commentList.appendChild(el);
+            });
+        }
+
+        commentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(commentForm);
+            const name = formData.get('name');
+            const password = formData.get('password');
+            const content = formData.get('content');
+
+            if (!commentsData[currentDocId]) {
+                commentsData[currentDocId] = [];
+            }
+
+            const newComment = {
+                id: Date.now(),
+                name,
+                password, // In real app, hash this!
+                content,
+                date: new Date().toISOString()
+            };
+
+            commentsData[currentDocId].push(newComment);
+            localStorage.setItem('commentsData', JSON.stringify(commentsData));
+
+            renderComments(currentDocId);
+            commentForm.reset();
+        });
+    </script>
+</body>
+
+</html>
