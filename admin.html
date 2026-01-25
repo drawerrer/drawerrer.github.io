@@ -92,11 +92,11 @@
                     <span class="material-symbols-outlined text-lg">edit_note</span>
                     Writings
                 </button>
-                <button onclick="showView('comments')" id="nav-comments"
-                    class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-md text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors text-sm text-left">
-                    <span class="material-symbols-outlined text-lg">chat</span>
-                    Comments
-                </button>
+                <li class="sidebar-item p-3 mb-2 rounded-lg cursor-pointer hover:bg-stone-200 dark:hover:bg-zinc-800 text-stone-600 dark:text-stone-400 font-medium transition-colors flex items-center gap-3"
+                    id="nav-comments" onclick="showView('comments')">
+                    <span class="material-symbols-outlined text-[20px]">forum</span>
+                    <span class="text-sm">Community</span>
+                </li>
                 <button onclick="showView('photography')" id="nav-photography"
                     class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-md text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors text-sm text-left">
                     <span class="material-symbols-outlined text-lg">photo_library</span>
@@ -197,14 +197,30 @@
             </div>
 
             <!-- VIEW: COMMENTS -->
-            <div id="view-comments" class="content-view hidden space-y-6">
-                <header class="flex justify-between items-center mb-8">
-                    <h1 class="text-2xl font-bold font-display text-stone-800 dark:text-white">Comments</h1>
+            <!-- VIEW: COMMUNITY (Comments + Guestbook) -->
+            <div id="view-comments" class="content-view hidden space-y-8">
+                <header class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold font-display text-stone-800 dark:text-white">Community Management</h1>
                 </header>
-                <div class="space-y-4" id="adminCommentList">
-                    <!-- Comments injected via JS -->
-                    <div class="text-center py-12 text-stone-400 italic">Loading comments...</div>
-                </div>
+
+                <!-- 1. Guestbook Section -->
+                <section>
+                    <h2 class="text-sm font-bold uppercase text-stone-500 mb-4 tracking-wider">Guestbook (Community)
+                    </h2>
+                    <div class="space-y-4" id="adminGuestbookList">
+                        <!-- Injected via JS -->
+                    </div>
+                </section>
+
+                <hr class="border-stone-200 dark:border-zinc-700">
+
+                <!-- 2. Comments Section -->
+                <section>
+                    <h2 class="text-sm font-bold uppercase text-stone-500 mb-4 tracking-wider">Essay Comments</h2>
+                    <div class="space-y-4" id="adminCommentList">
+                        <!-- Injected via JS -->
+                    </div>
+                </section>
             </div>
 
             <!-- VIEW: PHOTOGRAPHY -->
@@ -596,44 +612,113 @@
             try { await deleteDoc(doc(db, "essays", id)); loadWritings(); } catch (e) { alert(e.message); }
         }
 
+        // --- COMMUNITY & COMMENTS LOGIC ---
+        async function loadCommunity() {
+            loadAdminComments();
+            loadGuestbook();
+        }
+
         async function loadAdminComments() {
             const listContainer = document.getElementById('adminCommentList');
             if (!listContainer) return;
-            listContainer.innerHTML = '<div class="text-center py-12 text-stone-400 italic">Loading comments...</div>';
+            listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">Loading essay comments...</div>';
+
             try {
-                const commentsQuery = query(collectionGroup(db, 'comments'), orderBy('createdAt', 'desc'));
+                // Try simple query without sorting first to avoid Index Error
+                const commentsQuery = query(collectionGroup(db, 'comments'));
                 const querySnapshot = await getDocs(commentsQuery);
+
                 listContainer.innerHTML = '';
-                if (querySnapshot.empty) { listContainer.innerHTML = '<div class="text-center py-12 text-stone-400 italic">No comments found.</div>'; return; }
-                for (const commentDoc of querySnapshot.docs) {
-                    const comment = commentDoc.data();
-                    const essayId = commentDoc.ref.parent.parent.id;
-                    const commentId = commentDoc.id;
-                    const el = document.createElement('div');
-                    el.className = "bg-white p-6 rounded-lg shadow-sm border border-stone-200 flex justify-between items-start mb-4";
+                if (querySnapshot.empty) {
+                    listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">No essay comments found.</div>';
+                    return;
+                }
+
+                // Client-side sort
+                const docs = [];
+                querySnapshot.forEach(doc => docs.push({ id: doc.id, ref: doc.ref, ...doc.data() }));
+                docs.sort((a, b) => {
+                    const tA = a.createdAt?.toMillis() || 0;
+                    const tB = b.createdAt?.toMillis() || 0;
+                    return tB - tA; // Descending
+                });
+
+                docs.forEach(comment => {
+                    const essayId = comment.ref.parent.parent.id;
                     const dateStr = comment.createdAt ? comment.createdAt.toDate().toLocaleDateString() : (comment.date || 'Unknown');
+
+                    const el = document.createElement('div');
+                    el.className = "bg-white p-4 rounded-lg shadow-sm border border-stone-200 flex justify-between items-start mb-2";
                     el.innerHTML = `
                         <div>
-                            <div class="flex items-center gap-2 mb-2">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge bg-stone-100 text-stone-600 text-[10px] px-2 py-0.5 rounded">Essay Comment</span>
                                 <span class="font-bold text-sm text-stone-800">${comment.name}</span>
                                 <span class="text-xs text-stone-400">on Essay ID: ${essayId.slice(0, 5)}...</span>
                                 <span class="text-[10px] text-stone-300">• ${dateStr}</span>
                             </div>
                             <p class="text-stone-600 text-sm">${comment.content}</p>
                         </div>
-                        <button onclick="deleteComment('${essayId}', '${commentId}')" class="text-red-400 hover:text-red-600 p-2"><span class="material-symbols-outlined text-lg">delete</span></button>
+                        <button onclick="deleteComment('${essayId}', '${comment.id}')" class="text-red-400 hover:text-red-600 p-2"><span class="material-symbols-outlined text-sm">delete</span></button>
                     `;
                     listContainer.appendChild(el);
-                }
+                });
             } catch (e) {
                 console.error("Error loading comments", e);
-                listContainer.innerHTML = '<div class="text-center py-12 text-red-400 italic">Error loading data.</div>';
+                listContainer.innerHTML = `<div class="text-center py-4 text-red-400 italic">Error loading comments: ${e.message}</div>`;
             }
         }
+
+        async function loadGuestbook() {
+            const listContainer = document.getElementById('adminGuestbookList');
+            if (!listContainer) return;
+            listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">Loading guestbook...</div>';
+
+            try {
+                // Guestbook usually doesn't have index issues as it's single collection
+                const q = query(collection(db, "guestbook"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+
+                listContainer.innerHTML = '';
+                if (querySnapshot.empty) {
+                    listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">No guestbook messages found.</div>';
+                    return;
+                }
+
+                querySnapshot.forEach(doc => {
+                    const msg = doc.data();
+                    const dateStr = msg.createdAt ? msg.createdAt.toDate().toLocaleDateString() : (msg.date || 'Unknown');
+
+                    const el = document.createElement('div');
+                    el.className = "bg-[#FDFCF9] p-4 rounded-lg shadow-sm border border-stone-200 flex justify-between items-start mb-2";
+                    el.innerHTML = `
+                        <div>
+                             <div class="flex items-center gap-2 mb-1">
+                                <span class="badge bg-yellow-100 text-yellow-800 text-[10px] px-2 py-0.5 rounded">Guestbook</span>
+                                <span class="font-bold text-sm text-stone-800">${msg.name}</span>
+                                <span class="text-[10px] text-stone-300">• ${dateStr}</span>
+                            </div>
+                            <p class="text-stone-600 text-sm font-serif italic">"${msg.message}"</p>
+                        </div>
+                        <button onclick="deleteGuestbook('${doc.id}')" class="text-red-400 hover:text-red-600 p-2"><span class="material-symbols-outlined text-sm">delete</span></button>
+                    `;
+                    listContainer.appendChild(el);
+                });
+            } catch (e) {
+                console.error("Error loading guestbook", e);
+                listContainer.innerHTML = `<div class="text-center py-4 text-red-400 italic">Error loading guestbook: ${e.message}</div>`;
+            }
+        }
+
         async function deleteComment(essayId, commentId) {
             if (!confirm("Delete comment?")) return;
             try { await deleteDoc(doc(db, "essays", essayId, "comments", commentId)); loadAdminComments(); loadStats(); } catch (e) { alert("Error: " + e.message); }
         };
+
+        async function deleteGuestbook(id) {
+            if (!confirm("Delete this guestbook message?")) return;
+            try { await deleteDoc(doc(db, "guestbook", id)); loadGuestbook(); loadStats(); } catch (e) { alert("Error: " + e.message); }
+        }
 
         function showView(viewId) {
             document.querySelectorAll('.content-view').forEach(el => el.classList.add('hidden'));
@@ -641,7 +726,7 @@
             document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
             document.getElementById('nav-' + viewId).classList.add('active');
 
-            if (viewId === 'comments') loadAdminComments();
+            if (viewId === 'comments') loadCommunity();
             if (viewId === 'writings') loadWritings();
             if (viewId === 'photography') loadPhotos();
         }
