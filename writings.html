@@ -353,8 +353,10 @@
             stampListContainer.innerHTML = '<div class="text-center pt-10 text-stone-500 italic">Loading archive...</div>';
 
             try {
-                // Fetch essays from Firestore
-                const q = query(collection(db, "essays"), orderBy("date", "asc"));
+                // Fetch essays from Firestore (Newest first)
+                // We use 'createdAt' for reliable sorting. If missing (legacy), it might be excluded, 
+                // so we can fallback or just rely on new data being correct.
+                const q = query(collection(db, "essays"), orderBy("createdAt", "desc"));
                 const querySnapshot = await getDocs(q);
 
                 cachedEssays = {};
@@ -382,6 +384,10 @@
                     strip.style.backgroundColor = color;
                     strip.onclick = () => openReadingView(essay.id);
 
+                    // Stage text: Archive 01, 02... based on index? 
+                    // If we sort desc, index 0 is newest. 
+                    // If we want Archive 01 to be oldest, we need total count - index? 
+                    // Let's just use index+1 for now.
                     const stageText = `ARCHIVE ${String(index + 1).padStart(2, '0')}`;
 
                     strip.innerHTML = `
@@ -396,6 +402,7 @@
                 });
             } catch (error) {
                 console.error("Error loading essays:", error);
+                alert("Error loading writings: " + error.message); // Added for debugging
                 stampListContainer.innerHTML = '<div class="text-center pt-10 text-red-500 italic">Failed to load archive.</div>';
             }
         }
