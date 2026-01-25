@@ -211,15 +211,14 @@
             <div id="view-photography" class="content-view hidden space-y-6">
                 <header class="flex justify-between items-center mb-8">
                     <h1 class="text-2xl font-bold font-display text-stone-800 dark:text-white">Photography</h1>
-                    <button
+                    <button onclick="openPhotoModal()"
                         class="bg-stone-800 text-white px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 hover:bg-stone-700">
-                        <span class="material-symbols-outlined text-sm">upload</span> Upload
+                        <span class="material-symbols-outlined text-sm">cloud_upload</span> Upload Photo
                     </button>
                 </header>
-                <div
-                    class="bg-stone-100 p-12 rounded-lg border-2 border-dashed border-stone-300 text-center text-stone-500">
-                    <span class="material-symbols-outlined text-4xl mb-2">cloud_upload</span>
-                    <p>Photo upload feature coming soon (Phase 4).</p>
+                <div id="photosList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <!-- Photos injected via JS -->
+                    <div class="col-span-full text-center py-12 text-stone-400 italic">Click Upload to add photos.</div>
                 </div>
             </div>
 
@@ -269,10 +268,44 @@
         </div>
     </div>
 
+    <!-- === UPLOAD PHOTO MODAL === -->
+    <div id="photoModal" class="hidden fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-zinc-800 w-full max-w-md rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <header
+                class="p-4 border-b border-stone-200 dark:border-zinc-700 flex justify-between items-center bg-stone-50 dark:bg-zinc-900">
+                <h2 class="font-display font-bold text-lg">Upload Photo</h2>
+                <button onclick="closePhotoModal()" class="text-stone-400 hover:text-stone-600">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </header>
+            <div class="p-6 overflow-y-auto flex-1 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Image File</label>
+                    <input type="file" id="photoFile" accept="image/*"
+                        class="w-full border border-stone-300 rounded p-2 text-sm text-stone-800 dark:text-white dark:bg-zinc-700 dark:border-zinc-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Caption (Optional)</label>
+                    <input type="text" id="photoCaption"
+                        class="w-full border border-stone-300 rounded p-2 text-sm text-stone-800 dark:text-white dark:bg-zinc-700 dark:border-zinc-600">
+                </div>
+            </div>
+            <footer
+                class="p-4 border-t border-stone-200 dark:border-zinc-700 bg-stone-50 dark:bg-zinc-900 flex justify-end gap-2">
+                <button onclick="closePhotoModal()"
+                    class="px-4 py-2 text-sm font-bold text-stone-500 hover:bg-stone-200 rounded">Cancel</button>
+                <button onclick="uploadPhoto()" id="uploadBtn"
+                    class="px-6 py-2 text-sm font-bold bg-stone-800 text-white hover:bg-stone-700 rounded shadow-sm">Upload</button>
+            </footer>
+        </div>
+    </div>
+
     <script type="module">
-        import { auth, db } from './js/firebase-config.js';
+        import { auth, db, storage } from './js/firebase-config.js';
         import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, updateDoc, getDoc, query, collectionGroup, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
         // Make functions globally available for HTML buttons
         window.handleLogin = handleLogin;
@@ -283,11 +316,16 @@
         window.saveEssay = saveEssay;
         window.deleteEssay = deleteEssay;
         window.deleteComment = deleteComment;
+        window.openPhotoModal = openPhotoModal;
+        window.closePhotoModal = closePhotoModal;
+        window.uploadPhoto = uploadPhoto;
+        window.deletePhoto = deletePhoto;
 
         const loginScreen = document.getElementById('loginScreen');
         const adminApp = document.getElementById('adminApp');
         const loginError = document.getElementById('loginError');
         const editModal = document.getElementById('editModal');
+        const photoModal = document.getElementById('photoModal');
         let editingId = null;
 
         // Check Access on Auth State Change
@@ -309,7 +347,6 @@
 
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                // Viewer is handled by onAuthStateChanged
             } catch (error) {
                 console.error("Login failed", error);
                 loginError.textContent = "Login failed: " + error.message;
@@ -342,18 +379,127 @@
                 // Count comments via collectionGroup
                 const commentsSnap = await getDocs(collectionGroup(db, 'comments'));
                 document.getElementById('stat-comments').textContent = commentsSnap.size;
+
+                // Photos stats (if element exists)
+                // const photosSnap = await getDocs(collection(db, "photos"));
+                // document.getElementById('stat-photos').textContent = photosSnap.size;
             } catch (e) {
                 console.error("Error loading stats", e);
             }
         }
 
+        // --- PHOTOS LOGIC ---
+        function openPhotoModal() {
+            photoModal.classList.remove('hidden');
+            document.getElementById('photoFile').value = '';
+            document.getElementById('photoCaption').value = '';
+        }
+
+        function closePhotoModal() {
+            photoModal.classList.add('hidden');
+        }
+
+        async function uploadPhoto() {
+            const fileInput = document.getElementById('photoFile');
+            const caption = document.getElementById('photoCaption').value;
+            const file = fileInput.files[0];
+
+            if (!file) return alert("Please select a file");
+
+            const uploadBtn = document.getElementById('uploadBtn');
+            uploadBtn.textContent = "Uploading...";
+            uploadBtn.disabled = true;
+
+            try {
+                // 1. Upload to Storage
+                const storageRef = ref(storage, 'photos/' + Date.now() + '_' + file.name);
+                await uploadBytes(storageRef, file);
+                const downloadURL = await getDownloadURL(storageRef);
+
+                // 2. Save Metadata to Firestore
+                await addDoc(collection(db, "photos"), {
+                    url: downloadURL,
+                    caption: caption,
+                    storagePath: storageRef.fullPath,
+                    createdAt: serverTimestamp()
+                });
+
+                alert("Photo uploaded!");
+                closePhotoModal();
+                loadPhotos();
+            } catch (error) {
+                console.error("Upload failed", error);
+                alert("Upload failed: " + error.message);
+            } finally {
+                uploadBtn.textContent = "Upload";
+                uploadBtn.disabled = false;
+            }
+        }
+
+        async function loadPhotos() {
+            const list = document.getElementById('photosList'); // Ensure this ID exists in HTML
+            // If photos view doesn't exist yet, we might need to create it. 
+            // For now assuming existing structure or I need to add it.
+            if (!list) return;
+
+            list.innerHTML = '<div class="col-span-full text-center py-12 text-stone-400">Loading photos...</div>';
+
+            try {
+                const q = query(collection(db, "photos"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+
+                list.innerHTML = '';
+                if (querySnapshot.empty) {
+                    list.innerHTML = '<div class="col-span-full text-center py-12 text-stone-400 italic">No photos found.</div>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const el = document.createElement('div');
+                    el.className = "relative group aspect-square bg-stone-100 rounded-lg overflow-hidden border border-stone-200";
+                    el.innerHTML = `
+                        <img src="${data.url}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            <button onclick="deletePhoto('${doc.id}', '${data.storagePath}')" class="bg-white/90 p-2 rounded-full text-red-500 hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                             <p class="text-white text-xs truncate">${data.caption || 'No caption'}</p>
+                        </div>
+                    `;
+                    list.appendChild(el);
+                });
+            } catch (e) {
+                console.error("Error loading photos", e);
+            }
+        }
+
+        async function deletePhoto(id, storagePath) {
+            if (!confirm("Delete this photo?")) return;
+            try {
+                // Delete from Storage
+                if (storagePath) {
+                    const imgRef = ref(storage, storagePath);
+                    await deleteObject(imgRef);
+                }
+                // Delete from Firestore
+                await deleteDoc(doc(db, "photos", id));
+                loadPhotos();
+            } catch (e) {
+                alert("Error deleting photo: " + e.message);
+            }
+        }
+
+        // --- WRITINGS LOGIC ---
         async function loadWritings() {
             const list = document.getElementById('writingsList');
+            if (!list) return;
             list.innerHTML = '<tr><td colspan="4" class="text-center py-4">Loading...</td></tr>';
 
             try {
-                // Fetch essays sorted by date
-                const q = query(collection(db, "essays"), orderBy("date", "desc"));
+                const q = query(collection(db, "essays"), orderBy("createdAt", "desc"));
                 const querySnapshot = await getDocs(q);
                 list.innerHTML = '';
 
@@ -386,9 +532,7 @@
         async function openEditModal(id = null) {
             editModal.classList.remove('hidden');
             editingId = id;
-
             if (id) {
-                // Edit Mode: Fetch Content
                 try {
                     const docSnap = await getDoc(doc(db, "essays", id));
                     if (docSnap.exists()) {
@@ -397,103 +541,62 @@
                         document.getElementById('editDate').value = data.date;
                         document.getElementById('editContent').value = data.content;
                     }
-                } catch (e) {
-                    alert("Error loading essay: " + e.message);
-                }
+                } catch (e) { alert("Error: " + e.message); }
             } else {
-                // New Mode
                 document.getElementById('editTitle').value = '';
                 document.getElementById('editDate').value = new Date().toLocaleDateString('ko-KR').replace(/\. /g, '.').replace('.', '');
                 document.getElementById('editContent').value = '';
             }
         }
-
-        function closeModal() {
-            editModal.classList.add('hidden');
-            editingId = null;
-        }
+        function closeModal() { editModal.classList.add('hidden'); editingId = null; }
 
         async function saveEssay() {
             const title = document.getElementById('editTitle').value;
             const date = document.getElementById('editDate').value;
             const content = document.getElementById('editContent').value;
-
-            if (!title || !date || !content) {
-                alert("Please fill all fields");
-                return;
-            }
-
+            if (!title) return alert("Title required");
             try {
                 if (editingId) {
-                    // Update
-                    await updateDoc(doc(db, "essays", editingId), {
-                        title, date, content
-                    });
-                    alert("Essay updated!");
+                    await updateDoc(doc(db, "essays", editingId), { title, date, content });
+                    alert("Updated!");
                 } else {
-                    // Create
-                    await addDoc(collection(db, "essays"), {
-                        title,
-                        date,
-                        content,
-                        createdAt: serverTimestamp()
-                    });
-                    alert("Essay saved successfully!");
+                    await addDoc(collection(db, "essays"), { title, date, content, createdAt: serverTimestamp() });
+                    alert("Saved!");
                 }
-                closeModal();
-                showView('writings');
-            } catch (e) {
-                console.error("Error saving document: ", e);
-                alert("Error saving: " + e.message);
-            }
+                closeModal(); showView('writings');
+            } catch (e) { alert("Error: " + e.message); }
         }
-
         async function deleteEssay(id) {
-            if (!confirm("Delete this essay?")) return;
-            try {
-                await deleteDoc(doc(db, "essays", id));
-                loadWritings();
-            } catch (e) {
-                alert("Error deleting: " + e.message);
-            }
-        };
+            if (!confirm("Delete?")) return;
+            try { await deleteDoc(doc(db, "essays", id)); loadWritings(); } catch (e) { alert(e.message); }
+        }
 
         async function loadAdminComments() {
             const listContainer = document.getElementById('adminCommentList');
+            if (!listContainer) return;
             listContainer.innerHTML = '<div class="text-center py-12 text-stone-400 italic">Loading comments...</div>';
-
             try {
                 const commentsQuery = query(collectionGroup(db, 'comments'), orderBy('createdAt', 'desc'));
                 const querySnapshot = await getDocs(commentsQuery);
-
                 listContainer.innerHTML = '';
-
-                if (querySnapshot.empty) {
-                    listContainer.innerHTML = '<div class="text-center py-12 text-stone-400 italic">No comments found.</div>';
-                    return;
-                }
-
+                if (querySnapshot.empty) { listContainer.innerHTML = '<div class="text-center py-12 text-stone-400 italic">No comments found.</div>'; return; }
                 for (const commentDoc of querySnapshot.docs) {
                     const comment = commentDoc.data();
                     const essayId = commentDoc.ref.parent.parent.id;
                     const commentId = commentDoc.id;
-
                     const el = document.createElement('div');
                     el.className = "bg-white p-6 rounded-lg shadow-sm border border-stone-200 flex justify-between items-start mb-4";
                     const dateStr = comment.createdAt ? comment.createdAt.toDate().toLocaleDateString() : (comment.date || 'Unknown');
-
                     el.innerHTML = `
                         <div>
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="font-bold text-sm text-stone-800">${comment.name}</span>
-                                <span class="text-xs text-stone-400">on <span class="font-bold text-stone-600">Essay ID: ${essayId.slice(0, 5)}...</span></span>
+                                <span class="text-xs text-stone-400">on Essay ID: ${essayId.slice(0, 5)}...</span>
                                 <span class="text-[10px] text-stone-300">• ${dateStr}</span>
                             </div>
                             <p class="text-stone-600 text-sm">${comment.content}</p>
                         </div>
-                        <button onclick="deleteComment('${essayId}', '${commentId}')" class="text-red-400 hover:text-red-600 p-2">
-                            <span class="material-symbols-outlined text-lg">delete</span>
-                        </button>
+                        <button onclick="deleteComment('${essayId}', '${commentId}')" class="text-red-400 hover:text-red-600 p-2"><span class="material-symbols-outlined text-lg">delete</span></button>
                     `;
                     listContainer.appendChild(el);
                 }
@@ -502,16 +605,9 @@
                 listContainer.innerHTML = '<div class="text-center py-12 text-red-400 italic">Error loading data.</div>';
             }
         }
-
         async function deleteComment(essayId, commentId) {
-            if (!confirm("Delete this comment?")) return;
-            try {
-                await deleteDoc(doc(db, "essays", essayId, "comments", commentId));
-                loadAdminComments(); // Reload
-                loadStats(); // Reload stats
-            } catch (e) {
-                alert("Error deleting comment: " + e.message);
-            }
+            if (!confirm("Delete comment?")) return;
+            try { await deleteDoc(doc(db, "essays", essayId, "comments", commentId)); loadAdminComments(); loadStats(); } catch (e) { alert("Error: " + e.message); }
         };
 
         function showView(viewId) {
@@ -522,6 +618,7 @@
 
             if (viewId === 'comments') loadAdminComments();
             if (viewId === 'writings') loadWritings();
+            if (viewId === 'photography') loadPhotos();
         }
     </script>
 </body>
