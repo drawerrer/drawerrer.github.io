@@ -1,0 +1,309 @@
+
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>영유의 서랍장</title>
+    <link rel="icon" type="image/png" href="../웹사이트 제작/img/Favicon_logo.png">
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    body {
+      margin: 0;
+      font-family: 'Pretendard', sans-serif;
+      background-color: #D4E0EE;
+      color: #2c2c2c;
+      line-height: 1.7;
+      transition: background-color 0.3s ease;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 60px 70px 30px 70px;
+    }
+
+    .logo {
+      margin-bottom: 25px;
+    }
+
+    .logo img {
+      display: block;
+      height: 60px;
+      object-fit: contain;
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #2c2c2c;
+      font-weight: 500;
+      font-size: 17px;
+      letter-spacing: -0.3px;
+      transition: color 0.3s;
+    }
+
+    nav a:hover, nav a.active {
+      color: #729960;
+    }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 30px 80px;
+    }
+
+    section {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .post-list {
+      list-style: none;
+      padding: 0;
+      margin: 40px 0 0 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .post-list li {
+      font-size: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .post-list li:hover {
+      color: #729960;
+    }
+
+    .post-list li span.date {
+      color: #729960;
+      font-weight: 500;
+      margin-right: 10px;
+      font-size: 15px;
+    }
+
+    .post-content {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .post-content.active {
+      display: block;
+    }
+
+    .post-content h2 {
+      font-size: 20px;
+      color: #2c2c2c;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .post-content .date {
+      color: #729960;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .post-content p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #333;
+      white-space: pre-line;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 30px;
+      color: #729960;
+      text-decoration: none;
+      font-size: 15px;
+      transition: opacity 0.3s;
+    }
+
+    .back-link:hover {
+      opacity: 0.7;
+    }
+
+    .photo-gallery img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      margin-top: 20px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: rgba(0,0,0,0.4);
+      padding-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../웹사이트 제작/img/copenhagen_logo.png" alt="로고">
+    </div>
+    <nav>
+      <a href="#" id="diaryLink" class="active">일기장</a>
+      <a href="#" id="photoLink">사진 모음집</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 📖 일기장 -->
+    <section id="diary" class="active">
+      <ul class="post-list">
+        <li data-id="1"><span class="date">2025.10.12</span> - 단풍이 시작된 아침</li>
+        <li data-id="2"><span class="date">2025.10.12</span> - 첫 인사</li>
+      </ul>
+
+      <!-- 상세 글 -->
+      <div class="post-content" id="post1">
+        <h2>단풍이 시작된 아침</h2>
+        <span class="date">2025.10.12</span>
+        <p>
+창문을 여니 공기가 달라져 있었다.  
+조금 더 차갑고, 조금 더 선명했다.  
+길가의 나무들이 서서히 색을 바꾸기 시작했고,  
+나는 그 변화를 가만히 바라보았다.
+        </p>
+        <a href="#" class="back-link">← 목록으로 돌아가기</a>
+      </div>
+
+      <div class="post-content" id="post2">
+        <h2>첫 인사</h2>
+        <span class="date">2025.10.12</span>
+        <p>
+웹사이트를 만들었다. 글 쓰는 공간이 블로그만으로는 부족해서가 아니다. 한 번쯤 내 개인 웹사이트를 만들어보고 싶었다. 디자인부터 글자 하나까지 다 내 머릿속에서 나온 무언가를 갖고 싶었다. 
+
+원래 만들고 싶었던 웹사이트의 형태는 지금이랑 조금 다르다. 내가 여행지에서 모아온 쪼가리(티켓, 어느 미술관의 브로슈어, 일회용 아이스크림 스푼, 빵 봉지 등) 들을 스캔해서 아카이빙한 형태의 사이트를 만들고 싶었다. 그치만 레이아웃도 아직 구상하지 않았을 뿐더러, html, java, CSS 등 컴퓨터 용어에 익숙지 않은 내가 처음부터 무리하게 시도하다가는 금방 질려버릴 것 같았다. 그래서 Chat GPT 와 컴퓨터 공학을 전공하는 동생의 도움으로 초기 형태의 사이트를 만들었다.
+
+이제부터 이 공간을 어떻게 채울지를 생각하면 조금 신난다. 좋아요나 댓글 등에 구애받지 않는 오롯한 공간에서 내가 하고 싶은 건 다 해볼 요량이다. 시간이 더 흐르면 아카이빙 형태의 사이트도 만들어볼 수 있지 않을까.
+        </p>
+        <a href="#" class="back-link">← 목록으로 돌아가기</a>
+      </div>
+    </section>
+
+    <!-- 📸 사진 모음집 -->
+    <section id="photos">
+      <ul class="post-list">
+        <li data-id="p1"><span class="date">2025.09.20</span> - 하늘을 담은 창문</li>
+        <li data-id="p2"><span class="date">2025.08.14</span> - 여름밤 불빛</li>
+        <li data-id="p3"><span class="date">2025.08.09</span> - 여름방학</li>
+      </ul>
+
+      <!-- 사진 상세보기 -->
+      <div class="post-content" id="p1">
+        <h2>하늘을 담은 창문</h2>
+        <span class="date">2025.09.20</span>
+        <p>
+햇살이 유리창에 비치는 순간,  
+그 안에 작은 하늘이 담겼다.
+        </p>
+        <div class="photo-gallery">
+          <img src="https://via.placeholder.com/400x250?text=하늘사진1" alt="하늘을 담은 창문 사진">
+        </div>
+        <a href="#" class="back-link">← 목록으로 돌아가기</a>
+      </div>
+
+      <div class="post-content" id="p2">
+        <h2>여름밤 불빛</h2>
+        <span class="date">2025.08.14</span>
+        <p>
+늦은 밤, 거리의 조명이 따뜻했다.  
+그 불빛 속에서 여름의 끝을 느꼈다.
+        </p>
+        <div class="photo-gallery">
+          <img src="https://via.placeholder.com/400x250?text=여름밤사진1" alt="여름밤 불빛 사진">
+        </div>
+        <a href="#" class="back-link">← 목록으로 돌아가기</a>
+      </div>
+
+      <div class="post-content" id="p3">
+        <h2>여름방학</h2>
+        <span class="date">2025.08.09</span>
+        <p>
+할머니의 텃밭에 호박잎이 가득 자랐다.
+보지도 않은 영화 <키구지로의 여름> 이 절로 생각나는 모습이었다.
+        </p>
+        <div class="photo-gallery">
+          <img src="../웹사이트 제작/영광/IMG_1711.heic" alt="여름방학 사진">
+        </div>
+        <a href="#" class="back-link">← 목록으로 돌아가기</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2025 영유의 서랍장. All rights reserved.
+  </footer>
+
+  <script>
+    // 📚 탭 전환
+    const diaryLink = document.getElementById('diaryLink');
+    const photoLink = document.getElementById('photoLink');
+    const diarySection = document.getElementById('diary');
+    const photoSection = document.getElementById('photos');
+
+    diaryLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      diarySection.classList.add('active');
+      photoSection.classList.remove('active');
+      diaryLink.classList.add('active');
+      photoLink.classList.remove('active');
+    });
+
+    photoLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      photoSection.classList.add('active');
+      diarySection.classList.remove('active');
+      photoLink.classList.add('active');
+      diaryLink.classList.remove('active');
+    });
+
+    // ✍️ 일기장 상세보기
+    document.querySelectorAll('#diary .post-list li').forEach(item => {
+      item.addEventListener('click', () => {
+        const id = item.dataset.id;
+        document.querySelector('#diary .post-list').style.display = 'none';
+        document.querySelector(`#post${id}`).classList.add('active');
+      });
+    });
+
+    // 📸 사진 모음집 상세보기
+    document.querySelectorAll('#photos .post-list li').forEach(item => {
+      item.addEventListener('click', () => {
+        const id = item.dataset.id;
+        document.querySelector('#photos .post-list').style.display = 'none';
+        document.querySelector(`#${id}`).classList.add('active');
+      });
+    });
+
+    // 🔙 뒤로가기 버튼 (공용)
+    document.querySelectorAll('.back-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.post-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.post-list').forEach(list => list.style.display = 'block');
+      });
+    });
+  </script>

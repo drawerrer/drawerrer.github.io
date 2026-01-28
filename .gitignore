@@ -1,0 +1,22 @@
+.DS_Store
+node_modules/
+dist/
+*.log
+
+# Backups and Old Versions
+old_index.html
+최종본_1013.html
+*.pdf
+admin_page_prd.md
+
+# OS specific
+.AppleDouble
+.LSOverride
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might contain sensitive info (though none in this static site)
+.env

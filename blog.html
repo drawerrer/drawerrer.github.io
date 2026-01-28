@@ -125,11 +125,11 @@
         }
 
         .bedroom-wall {
-            background-color: var(--wall-color);
-            background-image: 
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px),
-                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px);
-            background-size: auto;
+            background-image: url('assets/Wall.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* background-color: var(--wall-color); */ /* Optional fallback */
         }
 
         .lamp-glow-effect {
@@ -137,8 +137,12 @@
         }
 
         .floor-texture {
-            background: linear-gradient(to bottom, var(--floor-base) 0%, rgba(0,0,0,0) 100%),
-                        repeating-linear-gradient(90deg, var(--floor-stripe) 0, var(--floor-stripe) 80px, transparent 81px);
+            background-image: url('assets/Floor.png');
+            background-size: cover;
+            background-position: center bottom;
+            background-repeat: no-repeat;
+            /* Remove gradient/stripes if image is full coverage, or blend it */
+            /* Assuming the image is a complete texture */
         }
 
         .cabinet-lighting {
