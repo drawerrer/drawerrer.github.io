@@ -43,6 +43,24 @@
    git remote add origin https://github.com/사용자아이디/저장소이름.git
    git push -u origin main
    ```
+   git push -u origin main
+   ```
+
+## 5. 중요: GitHub 인증 토큰(Token) 발급 방법
+2021년부터 GitHub는 터미널에서 비밀번호 대신 **Personal Access Token**을 사용해야 합니다.
+**토큰은 한 번 닫으면 다시 볼 수 없으므로, 생성 직후 어딘가에 복사해두어야 합니다!**
+
+### 토큰 생성 순서
+1. [GitHub 토큰 설정 페이지](https://github.com/settings/tokens/new)로 접속합니다.
+2. **Note** 칸에 용도(예: `Macbook Website`)를 적습니다.
+3. **Expiration**(유효 기간)을 설정합니다. (계속 쓸 거라면 `No expiration` 추천)
+4. **Select scopes**에서 **`repo`** 체크박스를 반드시 선택합니다. (가장 중요! ✅)
+5. 맨 아래 **Generate token** 녹색 버튼을 누릅니다.
+6. `ghp_`로 시작하는 긴 코드가 나오면 **복사** 버튼을 누릅니다. **(지금 복사 안 하면 영영 못 봅니다!)**
+
+### 터미널에서 사용하기
+터미널에서 `Password:` 입력이 나올 때, 방금 복사한 토큰을 **붙여넣기(Command+V)** 하고 엔터를 칩니다.
+*(보안상 화면에는 아무 글자도 안 뜨니 당황하지 말고 엔터를 누르세요.)*
 
 ## 4. GitHub Pages로 웹사이트 공개하기 (선택 사항)
 올린 파일을 실제 웹사이트 주소로 접속하고 싶다면:

@@ -129,7 +129,12 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            /* background-color: var(--wall-color); */ /* Optional fallback */
+            transition: background-image 0.5s ease;
+        }
+
+        .dark .bedroom-wall {
+            /* Dark overlay on top of the image */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('assets/Wall.png');
         }
 
         .lamp-glow-effect {
@@ -141,8 +146,11 @@
             background-size: cover;
             background-position: center bottom;
             background-repeat: no-repeat;
-            /* Remove gradient/stripes if image is full coverage, or blend it */
-            /* Assuming the image is a complete texture */
+            transition: filter 0.5s ease;
+        }
+
+        .dark .floor-texture {
+            filter: brightness(0.3);
         }
 
         .cabinet-lighting {
