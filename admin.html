@@ -230,6 +230,16 @@
                         <!-- Injected via JS -->
                     </div>
                 </section>
+
+                <hr class="border-stone-200 dark:border-zinc-700">
+
+                <!-- 3. Photography Comments Section -->
+                <section>
+                    <h2 class="text-sm font-bold uppercase text-stone-500 mb-4 tracking-wider">Photography Comments</h2>
+                    <div class="space-y-4" id="adminPhotoCommentList">
+                        <!-- Injected via JS -->
+                    </div>
+                </section>
             </div>
 
             <!-- VIEW: PHOTOGRAPHY -->
@@ -344,7 +354,9 @@
         window.closePhotoModal = closePhotoModal;
         window.uploadPhoto = uploadPhoto;
         window.deletePhoto = deletePhoto;
-        window.deleteGuestbook = deleteGuestbook; // Added missing assignment
+        window.deletePhoto = deletePhoto;
+        window.deleteGuestbook = deleteGuestbook;
+        window.deletePhotoComment = deletePhotoComment; // Added missing assignment
 
         const loginScreen = document.getElementById('loginScreen');
         const adminApp = document.getElementById('adminApp');
@@ -626,7 +638,87 @@
         async function loadCommunity() {
             loadAdminComments();
             loadGuestbook();
+            loadPhotoComments();
         }
+
+        async function loadPhotoComments() {
+            const listContainer = document.getElementById('adminPhotoCommentList');
+            if (!listContainer) return;
+            listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">Loading photo comments...</div>';
+
+            try {
+                // Query all 'comments' subcollections inside 'photos' using collectionGroup
+                // Note: Ensure index exists for 'comments' collectionGroup ordered by createdAt desc
+                const q = query(collectionGroup(db, 'comments'), orderBy('createdAt', 'desc'));
+                const querySnapshot = await getDocs(q);
+
+                listContainer.innerHTML = '';
+                if (querySnapshot.empty) {
+                    listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">No photography comments found.</div>';
+                    return;
+                }
+
+                // Filter out essay comments if they share the same subcollection name 'comments'
+                // Check parent collection name
+                const photosComments = [];
+                querySnapshot.forEach(doc => {
+                    if (doc.ref.parent.parent.parent.id === 'photos') { // photos/{id}/comments/{docId} -> parent=comments, parent.parent={photoDoc}, parent.parent.parent=photos ?? No.
+                        // Structure: db -> collection('photos') -> doc(photoId) -> collection('comments') -> doc(commentId)
+                        // doc.ref.parent = collection('comments')
+                        // doc.ref.parent.parent = doc(photoId)
+                        // doc.ref.parent.parent.parent = collection('photos')
+                        photosComments.push({ id: doc.id, ref: doc.ref, ...doc.data() });
+                    }
+                    // Wait, 'essays' also has 'comments'. We need to distinguish.
+                    // Essay: essays/{id}/comments/{docId}
+                    // Photo: photos/{id}/comments/{docId}
+                    // doc.ref.parent.parent.parent.id check is correct.
+                });
+
+                // Re-sort in JS just in case mixture messed up order or we filtered
+                photosComments.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+
+                if (photosComments.length === 0) {
+                    listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">No photography comments found.</div>';
+                    return;
+                }
+
+                photosComments.forEach(comment => {
+                    const photoId = comment.ref.parent.parent.id;
+                    const dateStr = comment.createdAt ? comment.createdAt.toDate().toLocaleDateString() : 'Unknown';
+
+                    const el = document.createElement('div');
+                    el.className = "bg-white p-4 rounded-lg shadow-sm border border-stone-200 flex justify-between items-start mb-2";
+                    el.innerHTML = `
+                         <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="badge bg-purple-100 text-purple-800 text-[10px] px-2 py-0.5 rounded">Photo Memory</span>
+                                <span class="font-bold text-sm text-stone-800">${comment.author || 'Guest'}</span>
+                                <span class="text-xs text-stone-400">on Photo ID: ${photoId.slice(0, 5)}...</span>
+                                <span class="text-[10px] text-stone-300">• ${dateStr}</span>
+                            </div>
+                            <p class="text-stone-600 text-sm font-serif italic">"${comment.content}"</p>
+                        </div>
+                        <button onclick="deletePhotoComment('${photoId}', '${comment.id}')" class="text-red-400 hover:text-red-600 p-2"><span class="material-symbols-outlined text-sm">delete</span></button>
+                    `;
+                    listContainer.appendChild(el);
+                });
+
+            } catch (e) {
+                console.error("Error loading photo comments", e);
+                listContainer.innerHTML = `<div class="text-center py-4 text-red-400 italic">Error: ${e.message}</div>`;
+            }
+        }
+
+        async function deletePhotoComment(photoId, commentId) {
+            if (!confirm("Delete this comment?")) return;
+            try {
+                await deleteDoc(doc(db, "photos", photoId, "comments", commentId));
+                loadPhotoComments();
+                loadStats();
+            } catch (e) { alert("Error: " + e.message); }
+        }
+
 
         async function loadAdminComments() {
             const listContainer = document.getElementById('adminCommentList');
