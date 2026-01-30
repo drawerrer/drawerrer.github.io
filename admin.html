@@ -312,17 +312,22 @@
                     </div>
                     <div class="flex-1 space-y-4">
                         <div>
-                            <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Caption /
-                                Content</label>
-                            <textarea id="managePhotoCaption" rows="6" maxlength="500"
+                            <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Title</label>
+                            <input type="text" id="managePhotoTitle"
+                                class="w-full border border-stone-300 rounded p-2 text-sm text-stone-800 font-bold focus:ring-2 focus:ring-stone-500 bg-white"
+                                placeholder="Photo Title">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Content / Story</label>
+                            <textarea id="managePhotoContent" rows="6" maxlength="1000"
                                 class="w-full border border-stone-300 rounded p-3 text-sm text-stone-800 focus:ring-2 focus:ring-stone-500 bg-white"
                                 placeholder="Write the story behind this photo..."></textarea>
-                            <p class="text-[10px] text-stone-400 text-right mt-1">This text appears on the postcard
-                                view.</p>
+                            <p class="text-[10px] text-stone-400 text-right mt-1">Detailed story for the postcard view.
+                            </p>
                         </div>
                         <button onclick="savePhotoDetails()"
                             class="w-full bg-stone-800 text-white py-2 rounded text-sm font-bold hover:bg-stone-700 transition-colors">
-                            Update Content
+                            Update Details
                         </button>
                     </div>
                 </div>
@@ -616,7 +621,9 @@
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     document.getElementById('managePhotoPreview').src = data.url;
-                    document.getElementById('managePhotoCaption').value = data.caption || '';
+                    // Backward compatibility: use caption as title if title missing, content empty
+                    document.getElementById('managePhotoTitle').value = data.title || data.caption || '';
+                    document.getElementById('managePhotoContent').value = data.content || '';
                 }
             } catch (e) { console.error(e); }
 
@@ -631,11 +638,17 @@
 
         async function savePhotoDetails() {
             if (!managingPhotoId) return;
-            const caption = document.getElementById('managePhotoCaption').value;
+            const title = document.getElementById('managePhotoTitle').value;
+            const content = document.getElementById('managePhotoContent').value;
             try {
-                await updateDoc(doc(db, "photos", managingPhotoId), { caption: caption });
-                alert("Caption updated!");
-                loadPhotos(); // Refresh grid caption
+                // Save both, and keep caption synced with title for legacy/grid view if needed
+                await updateDoc(doc(db, "photos", managingPhotoId), {
+                    title: title,
+                    content: content,
+                    caption: title // Keep caption as a short-hand/fallback for grid
+                });
+                alert("Details updated!");
+                loadPhotos(); // Refresh grid
             } catch (e) { alert("Error: " + e.message); }
         }
 

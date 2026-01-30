@@ -189,13 +189,19 @@
                 <!-- Header (Close & Metadata) -->
                 <div class="p-6 border-b border-stone-100 flex justify-between items-start">
                     <div>
-                        <h2 class="font-display text-2xl font-bold text-stone-800 tracking-wide" id="modalCaption">
+                        <h2 class="font-display text-2xl font-bold text-stone-800 tracking-wide" id="modalTitle">
                             Untitled</h2>
                         <p class="font-serif italic text-stone-500 text-sm mt-1" id="modalDate">Jan 01, 2026</p>
                     </div>
                     <button onclick="closePhotoModal()" class="text-stone-400 hover:text-red-500 transition-colors">
                         <span class="material-symbols-outlined text-3xl">cancel</span>
                     </button>
+                </div>
+
+                <!-- Content Body -->
+                <div class="px-6 py-4 border-b border-stone-50 bg-stone-50/50">
+                    <p id="modalDescription"
+                        class="font-serif text-stone-700 text-base leading-relaxed whitespace-pre-wrap"></p>
                 </div>
 
                 <!-- Comments List -->
@@ -309,10 +315,11 @@
             document.getElementById('charCount').textContent = `${count}/200`;
         }
 
-        async function openPhotoModal(photoId, url, caption, date) {
+        async function openPhotoModal(photoId, url, title, content, date) {
             currentPhotoId = photoId;
             document.getElementById('modalImage').src = url;
-            document.getElementById('modalCaption').textContent = caption || "Untitled Memory";
+            document.getElementById('modalTitle').textContent = title || "Untitled Memory";
+            document.getElementById('modalDescription').textContent = content || "No story available.";
             document.getElementById('modalDate').textContent = date || "Unknown Date"; // You might need to format timestamp
 
             photoModal.classList.remove('hidden');
@@ -441,20 +448,23 @@
 
                 // Click to open modal
                 const dateStr = photo.createdAt ? new Date(photo.createdAt.seconds * 1000).toLocaleDateString() : '';
-                container.onclick = () => openPhotoModal(photo.id, photo.url, photo.caption, dateStr);
+                // Backward compatibility: title = title or caption
+                const displayTitle = photo.title || photo.caption || 'Untitled';
+                const displayContent = photo.content || '';
+                container.onclick = () => openPhotoModal(photo.id, photo.url, displayTitle, displayContent, dateStr);
 
                 // Image
                 const img = document.createElement('img');
                 img.src = photo.url;
                 img.className = "w-full h-[85%] object-cover block bg-gray-100";
                 img.loading = "lazy";
-                img.alt = photo.caption || "Memory";
+                img.alt = displayTitle;
 
-                // Caption Area
+                // Caption Area - Show Title Only
                 const caption = document.createElement('div');
                 caption.className = "h-[15%] flex items-center justify-center";
                 // Show caption if exists, else number
-                const captionText = photo.caption ? photo.caption : `#${index + 1}`;
+                const captionText = displayTitle ? displayTitle : `#${index + 1}`;
                 caption.innerHTML = `<span class="font-elegant text-stone-400 text-lg md:text-sm truncate px-2">${captionText}</span>`;
 
                 container.appendChild(img);
