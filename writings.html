@@ -236,7 +236,7 @@
                     <!-- Stamp List Container (Inside Drawer) -->
                     <!-- Stamp List Container (Inside Drawer) -->
                     <div id="stampListContainer"
-                        class="relative z-30 w-full h-full overflow-y-auto scrollbar-hide flex flex-col-reverse justify-start pb-4 pt-4 px-4 md:px-0">
+                        class="relative z-30 w-full h-full overflow-y-auto scrollbar-hide flex flex-col justify-start pb-4 pt-4 px-4 md:px-0">
                         <!-- Stamps injected via JS -->
                     </div>
                 </div>
@@ -397,7 +397,7 @@
                     // If we sort desc, index 0 is newest. 
                     // If we want Archive 01 to be oldest, we need total count - index? 
                     // Let's just use index+1 for now.
-                    const stageText = `ARCHIVE ${String(index + 1).padStart(2, '0')}`;
+                    const stageText = `ARCHIVE ${String(sortedEssays.length - index).padStart(2, '0')}`;
 
                     strip.innerHTML = `
                         <div class="flex items-center gap-8 w-full">
