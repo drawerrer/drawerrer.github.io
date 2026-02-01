@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3GW6KD4C2P"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-3GW6KD4C2P');
+    </script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Writings Cabinet | Archive</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&amp;family=Mrs+Saint+Delafield&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script>
+        // Check for saved theme preference or use system preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            if (html.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+    </script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#8B735B",
+                        "wood-light": "#DCC6A1",
+                        "wood-dark": "#5D4037",
+                        "paper-aged": "#FDFCF8",
+                        "folder-manila": "#EFE6D5",
+                        "folder-divider": "#5D4037",
+                        "paper-clean": "#F9F7F2",
+                        "brass": "#B8860B",
+                        "brass-dark": "#8B6B0E",
+                    },
+                    fontFamily: {
+                        display: ["Pretendard Variable", "Pretendard", "sans-serif"],
+                        serif: ["Pretendard Variable", "Pretendard", "serif"],
+                        sans: ["Pretendard Variable", "Pretendard", "sans-serif"],
+                        script: ["Caveat", "cursive"],
+                        elegant: ["Mrs Saint Delafield", "cursive"],
+                    }
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        /* GLOBAL UTILS */
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* VIEW 1: FOLDER STACK STYLES */
+        /* DRAWER FRAME STYLES (MATCHING PHOTOGRAPHY) */
+        .perspective-2000 {
+            perspective: 2000px
+        }
+        .drawer-tilt {
+            transform: none;
+            transform-style: preserve-3d
+        }
+        .drawer-shadow {
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.4), 0 30px 60px -30px rgba(0, 0, 0, 0.5)
+        }
+        .scrim-gradient {
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%)
+        }
+        .wood-texture {
+            background-color: #e5d3b3;
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAb_Qd6Xc2iIrfeMmHCSkJ4BcCemUIkWBBP05BoJhL8d0I98O_g5xPlrjSkZ5UcvUtXN_yx1LWtEGj5jvyZn1agNnavqWBIExrRYroBuQAZMJ08bZ25iRABJHupxUnGIfMOFCM_BuM-ypROkW_jHSa1RIZ35fMJZEvQY7ffOxBVnRbCL73zYW2xqBPFPLljdQ4uf5Y9TPT9cz585lhkK9CguKRrXhYUCsnAeCKx98chN9jTr-29WtDMpI7LgDm7ny6HrFfmAOW8mXJI);
+            background-size: cover;
+        }
+        .folder-tab {
+            clip-path: path("M 0 40 L 0 8 C 0 3, 3 0, 8 0 L 132 0 C 137 0, 140 3, 140 8 L 140 40 Z")
+        }
+        .divider-tab {
+            clip-path: path("M 0 45 L 0 10 C 0 4, 4 0, 10 0 L 170 0 C 176 0, 180 4, 180 10 L 180 45 Z")
+        }
+        .drawer-inner-shadow {
+            box-shadow: inset 0 100px 150px rgba(0, 0, 0, 0.9), inset 0 -40px 60px rgba(0, 0, 0, 0.6)
+        }
+        .paper-texture-overlay {
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuB0gRHJqUPXR6v_eeRV-6Hh4pYF-8dR87RHuIWny2RrlzW00S3gndwg33oUCbiGgGsoaSTH55-APoFiQ5zl0uWhZOtOsrldWNZX3GeoHVImqsFJvn6f6Bf59xS_PR6ajEi64A2uxRFlQKHVg2WBBkXCvNxWRdTJqsY7dSkVpb_Jd_JA0VC57VtDzgyuVKW9QJZqvYyl5E-5vdsmFR97t3U6DUSaRwmKGGDuVdWpF526cYb1PxdEMVVgAF2H1gowUR37C6p98uzt14Aa);
+            background-size: 400px;
+        }
+        .folder-stack-item {
+            transition: transform 0.3s ease;
+        }
+        .folder-stack-item:hover {
+            transform: translateY(-15px) translateZ(20px);
+        }
+
+        /* VIEW 2: READING MODE STYLES */
+        .wood-grain-bg {
+            background-color: #120907;
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAnAHcVxzFVWiT__NaEbwJtConwZ__vmh_kE35cyC54Rg_VkjZNtAqGHRaI-E-zUkYxFNUFfVpiWinlpMpoqM8cFwgPXscjIdod0BnpWv_JRAP_uBndqj4xOQfGbZ95B3rOhVfKtEbsDvJLs6FQCH4Z4xU4nyUufu8ijAsEIlBp5mUiWyNeRNLHHh5Rkn2GkYbnW_h2WDKEuu0h9mb46izxovIuMO0S94aE8k8bszZgQa9hjf_24VHNtpRtonBxOiqz4twkSG9OyRpm);
+            background-blend-mode: multiply;
+            background-size: cover;
+        }
+        .paper-texture-read {
+            background-color: #F9F7F2;
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuB0gRHJqUPXR6v_eeRV-6Hh4pYF-8dR87RHuIWny2RrlzW00S3gndwg33oUCbiGgGsoaSTH55-APoFiQ5zl0uWhZOtOsrldWNZX3GeoHVImqsFJvn6f6Bf59xS_PR6ajEi64A2uxRFlQKHVg2WBBkXCvNxWRdTJqsY7dSkVpb_Jd_JA0VC57VtDzgyuVKW9JqvYyl5E-5vdsmFR97t3U6DUSaRwmKGGDuVdWpF526cYb1PxdEMVVgAF2H1gowUR37C6p98uzt14Aa);
+            background-size: 600px;
+            background-blend-mode: soft-light;
+            box-shadow: 
+                0 0 100px rgba(0,0,0,0.6),
+                0 30px 60px rgba(0,0,0,0.4);
+        }
+        .brass-tab {
+            background: linear-gradient(145deg, #d4af37, #8b6b0e);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.4), inset 1px 1px 1px rgba(255,255,255,0.3);
+            border: 1px solid #7d5e0a;
+        }
+        .focused-lighting {
+            background: radial-gradient(circle at center, rgba(255,250,220,0.08) 0%, rgba(0,0,0,0.7) 100%);
+        }
+        .drop-cap::first-letter {
+            font-family: 'Playfair Display', serif;
+            float: left;
+            font-size: 4.8rem;
+            line-height: 1;
+            padding-right: 0.75rem;
+            padding-top: 0.25rem;
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+
+        /* TRANSITIONS */
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.5s ease;
+        }
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+    </style>
+    <style>
+        .wood-grain-bg {
+            background-color: #2c241b;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        /* Serrated Edge Mask */
+        .scalloped-edge {
+            --mask: radial-gradient(10px at 50% calc(100% - 12px), #000 99%, #0000 101%) calc(50% - 16px) 100%/32px 100%,
+                radial-gradient(10px at 50% calc(100% + 2px), #0000 99%, #000 101%) 50% 100%/32px 100% repeat-x;
+            /* Simple jagged edge using readable standard syntax or fallback */
+            /* Let's use a simpler repeatable radial gradient mask for top and bottom */
+            mask-image: radial-gradient(circle at 15px 0, transparent 0, transparent 5px, black 6px);
+            mask-size: 30px 20px;
+            mask-repeat: repeat-x;
+            mask-position: top;
+        }
+
+        .ticket-strip {
+            mask-image:
+                radial-gradient(circle at center top, transparent 6px, black 6.5px),
+                radial-gradient(circle at center bottom, transparent 6px, black 6.5px);
+            mask-size: 24px 100%;
+            /* Spacing of the holes */
+            mask-repeat: repeat-x;
+            mask-position: top center, bottom center;
+            mask-composite: intersect;
+            /* ensure both masks apply */
+            -webkit-mask-image:
+                radial-gradient(circle at center top, transparent 6px, black 6.5px),
+                radial-gradient(circle at center bottom, transparent 6px, black 6.5px);
+            -webkit-mask-size: 24px 100%;
+            -webkit-mask-repeat: repeat-x;
+            -webkit-mask-position: top center, bottom center;
+            -webkit-mask-composite: source-in;
+        }
+
+        @font-face {
+            font-family: 'StampFont';
+            src: local('Courier New'), monospace;
+            /* Fallback for now */
+        }
+    </style>
+</head>
+
+<body class="bg-[#Fdfcf0] dark:bg-zinc-950 font-sans h-screen overflow-hidden transition-colors duration-1000">
+
+    <!-- === VIEW 1: STAMP LIST (INSIDE DRAWER) === -->
+    <div id="folderView" class="relative z-10 w-full h-full transition-opacity duration-500">
+        <div
+            class="fixed inset-0 z-0 bg-gradient-to-tr from-stone-900/40 via-transparent to-white/10 pointer-events-none">
+        </div>
+        <main
+            class="relative z-10 h-full w-full flex flex-col items-center justify-center p-0 md:p-12 perspective-2000">
+
+            <!-- Back Navigation -->
+            <a class="fixed top-8 left-8 z-[250] flex items-center justify-center text-stone-700 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white transition-colors group bg-white/40 dark:bg-black/30 backdrop-blur-md p-3 rounded-full border border-white/40 dark:border-white/10 shadow-sm"
+                href="blog.html">
+                <span class="material-symbols-outlined text-lg">arrow_back</span>
+            </a>
+
+            <!-- Drawer Frame (Restored) -->
+            <div
+                class="drawer-tilt relative w-full h-full md:h-auto md:max-w-5xl bg-[#DCC6A1] p-0 md:p-5 rounded-none md:rounded-sm drawer-shadow border-t-0 md:border-t-4 border-l-0 md:border-l-2 border-white/40 md:border-white/20 flex flex-col">
+                <div class="absolute -top-4 left-0 w-full h-4 bg-[#C8B28E] rounded-t-sm hidden md:block"></div>
+                <div
+                    class="wood-texture p-0 md:p-4 border-none md:border-2 border-black/20 shadow-none md:shadow-inner relative flex-1 md:h-[600px] overflow-hidden">
+                    <div class="absolute inset-0 pointer-events-none scrim-gradient opacity-50 z-50"></div>
+
+                    <!-- Stamp List Container (Inside Drawer) -->
+                    <!-- Stamp List Container (Inside Drawer) -->
+                    <div id="stampListContainer"
+                        class="relative z-30 w-full h-full overflow-y-auto scrollbar-hide flex flex-col justify-start pb-4 pt-4 px-4 md:px-0">
+                        <!-- Stamps injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Label (Drawer Front) - Sticky Bottom on Mobile -->
+                <div
+                    class="h-16 bg-[#DCC6A1] border-t-2 border-black/15 flex flex-col items-center justify-center relative z-[200] shadow-md shrink-0">
+                    <div class="flex items-center gap-4 bg-white/90 px-4 py-1.5 border border-black/20 shadow-sm mb-1">
+                        <span class="text-[10px] font-bold text-gray-400">01</span>
+                        <span class="font-display text-sm tracking-[0.3em] font-medium text-gray-800">WRITINGS</span>
+                    </div>
+                    <div class="w-24 h-2 border-x-2 border-b-2 border-black/20 rounded-b-xl mt-1"></div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Theme Toggle (Fixed Top Right) -->
+        <nav class="fixed top-8 right-8 z-50 flex items-center gap-4">
+            <button
+                class="p-3 rounded-full bg-white/40 backdrop-blur-md border border-white/40 text-stone-800 hover:scale-110 transition-all shadow-lg"
+                onclick="toggleTheme()">
+                <span class="material-symbols-outlined block dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- === VIEW 2: READING MODE === -->
+    <div id="readingView"
+        class="fixed inset-0 z-[300] hidden opacity-0 transition-opacity duration-700 bg-[#Fdfcf0] dark:bg-zinc-900 flex items-center justify-center p-0 m-0">
+
+        <nav class="fixed top-8 left-8 z-[100]">
+            <button
+                class="flex items-center gap-3 text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white transition-all group px-4 py-2"
+                onclick="closeReadingView()">
+                <span class="material-symbols-outlined text-xl">arrow_back</span>
+                <span class="text-xs uppercase tracking-[0.2em] font-bold">Back</span>
+            </button>
+        </nav>
+
+        <div
+            class="relative z-20 w-full max-w-3xl h-full overflow-y-auto rounded-none flex flex-col scrollbar-hide pt-20 px-8">
+            <header class="pb-12 text-center border-b border-stone-200 dark:border-stone-800 mb-12">
+                <p class="font-mono text-xs text-stone-400 mb-4 uppercase tracking-widest" id="docDateDisplay">
+                    2025.10.12</p>
+                <h1 class="font-serif text-2xl md:text-4xl text-stone-900 dark:text-stone-100 leading-tight"
+                    id="docTitle">
+                    Title
+                </h1>
+            </header>
+
+            <article class="prose prose-stone max-w-none pb-40 dark:prose-invert" id="docContent">
+                <!-- Content -->
+            </article>
+
+            <!-- COMMENT SECTION -->
+            <section class="pb-24 max-w-none w-full border-t border-stone-200 dark:border-stone-800 pt-12">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="font-bold text-stone-900 dark:text-stone-100 text-xs tracking-widest uppercase">Comments
+                        (<span id="commentCount">0</span>)</h3>
+                </div>
+
+                <div id="commentList" class="space-y-8 mb-12"></div>
+
+                <form id="commentForm" class="bg-stone-100 dark:bg-zinc-800 p-6 rounded-sm">
+                    <h4 class="text-xs font-bold text-stone-500 uppercase mb-4 tracking-widest">Leave a Note</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <input type="text" name="name" placeholder="Name" required
+                            class="bg-transparent border-b border-stone-300 dark:border-stone-600 py-2 text-sm focus:outline-none focus:border-stone-800 dark:text-stone-200">
+                        <input type="password" name="password" placeholder="Password (to delete)" required
+                            class="bg-transparent border-b border-stone-300 dark:border-stone-600 py-2 text-sm focus:outline-none focus:border-stone-800 dark:text-stone-200">
+                    </div>
+                    <textarea name="content" placeholder="Message..." required rows="3"
+                        class="w-full bg-transparent border-b border-stone-300 dark:border-stone-600 py-2 text-sm focus:outline-none focus:border-stone-800 mb-4 dark:text-stone-200"></textarea>
+                    <div class="flex justify-end">
+                        <button type="submit"
+                            class="bg-stone-800 text-white px-6 py-2 text-xs font-bold uppercase tracking-widest hover:bg-stone-600 transition-colors">
+                            Post
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script type="module">
+        import { db } from './js/firebase-config.js';
+        import { collection, getDocs, addDoc, query, orderBy, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const folderView = document.getElementById('folderView');
+        const stampListContainer = document.getElementById('stampListContainer');
+        const readingView = document.getElementById('readingView');
+        const docTitle = document.getElementById('docTitle');
+        const docDateDisplay = document.getElementById('docDateDisplay');
+        const commentList = document.getElementById('commentList');
+        const commentCount = document.getElementById('commentCount');
+        const commentForm = document.getElementById('commentForm');
+        const docContent = document.getElementById('docContent');
+
+        let currentDocId = '';
+        let cachedEssays = {}; // { id: data }
+
+        // Make functions globally available for HTML onclick attributes
+        window.closeReadingView = closeReadingView;
+        window.openReadingView = openReadingView; // Added this as it's called from onclick
+
+        // Palette from reference
+        const palette = [
+            '#CCA43B', // Mustard
+            '#A4B8E0', // Periwinkle
+            '#E8E0D0', // Cream
+            '#F0EAD6', // Light Yellow
+            '#A4C639', // Lime
+            '#E97451', // Salmon
+            '#4B3621'  // Dark Brown
+        ];
+
+        window.addEventListener('DOMContentLoaded', loadFolders);
+
+        async function loadFolders() {
+            stampListContainer.innerHTML = '<div class="text-center pt-10 text-stone-500 italic">Loading archive...</div>';
+
+            try {
+                // Fetch essays from Firestore (Newest first)
+                // We use 'createdAt' for reliable sorting. If missing (legacy), it might be excluded, 
+                // so we can fallback or just rely on new data being correct.
+                const q = query(collection(db, "essays"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+
+                cachedEssays = {};
+                const sortedEssays = [];
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    cachedEssays[doc.id] = data;
+                    sortedEssays.push({ id: doc.id, ...data });
+                });
+
+                stampListContainer.innerHTML = '';
+
+                if (sortedEssays.length === 0) {
+                    stampListContainer.innerHTML = '<div class="text-center pt-10 text-stone-500 italic">No essays found.</div>';
+                    return;
+                }
+
+                sortedEssays.forEach((essay, index) => {
+                    const color = palette[index % palette.length];
+                    const strip = document.createElement('div');
+
+                    // Styling
+                    strip.className = "ticket-strip w-full h-16 flex items-center justify-between px-6 md:px-12 cursor-pointer hover:brightness-110 transition-all -mt-[2px] relative z-0 hover:z-10";
+                    strip.style.backgroundColor = color;
+                    strip.onclick = () => openReadingView(essay.id);
+
+                    // Stage text: Archive 01, 02... based on index? 
+                    // If we sort desc, index 0 is newest. 
+                    // If we want Archive 01 to be oldest, we need total count - index? 
+                    // Let's just use index+1 for now.
+                    const stageText = `ARCHIVE ${String(sortedEssays.length - index).padStart(2, '0')}`;
+
+                    strip.innerHTML = `
+                        <div class="flex items-center gap-8 w-full">
+                            <span class="font-mono text-[10px] uppercase tracking-widest opacity-60 w-20 shrink-0 border-b border-black/10 pb-1">${stageText}</span>
+                            <span class="font-bold text-sm md:text-base uppercase tracking-wider text-stone-800/90 truncate flex-1 block text-center">${essay.title}</span>
+                             <span class="font-mono text-[10px] uppercase tracking-widest opacity-60 w-20 shrink-0 text-right border-b border-black/10 pb-1">${essay.date}</span>
+                        </div>
+                    `;
+
+                    stampListContainer.appendChild(strip);
+                });
+            } catch (error) {
+                console.error("Error loading essays:", error);
+                alert("Error loading writings: " + error.message); // Added for debugging
+                stampListContainer.innerHTML = '<div class="text-center pt-10 text-red-500 italic">Failed to load archive.</div>';
+            }
+        }
+
+
+        function openReadingView(id) {
+            folderView.classList.add('opacity-0');
+            setTimeout(() => {
+                folderView.classList.add('hidden');
+                readingView.classList.remove('hidden');
+                readingView.querySelector('div').scrollTop = 0;
+
+                setTimeout(() => {
+                    readingView.classList.remove('opacity-0');
+                    loadEssayContent(id);
+                }, 50);
+            }, 500);
+        }
+
+        function closeReadingView() {
+            readingView.classList.add('opacity-0');
+            setTimeout(() => {
+                readingView.classList.add('hidden');
+                folderView.classList.remove('hidden');
+                setTimeout(() => {
+                    folderView.classList.remove('opacity-0');
+                }, 50);
+            }, 500);
+        }
+
+        async function loadEssayContent(id) {
+            const essay = cachedEssays[id];
+            if (essay) {
+                currentDocId = id;
+                docTitle.textContent = essay.title;
+                docDateDisplay.textContent = essay.date;
+                docContent.innerHTML = essay.content;
+                loadComments(id);
+            }
+        }
+
+        async function loadComments(docId) {
+            commentList.innerHTML = '<p class="text-center text-xs text-stone-400 italic">Loading comments...</p>';
+
+            try {
+                // Fetch comments from subcollection 'comments'
+                const commentsRef = collection(db, "essays", docId, "comments");
+                const q = query(commentsRef, orderBy("createdAt", "asc"));
+                const querySnapshot = await getDocs(q);
+
+                commentList.innerHTML = '';
+                commentCount.textContent = querySnapshot.size;
+
+                if (querySnapshot.empty) {
+                    commentList.innerHTML = '<p class="text-center text-xs text-stone-400 italic">No comments yet.</p>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const comment = doc.data();
+                    const date = comment.createdAt ? comment.createdAt.toDate().toLocaleDateString() : 'Just now';
+
+                    const el = document.createElement('div');
+                    el.className = 'border-b border-black/5 pb-4 last:border-0';
+                    el.innerHTML = `
+                        <div class="flex justify-between items-baseline mb-2">
+                            <span class="font-bold text-sm text-stone-800 dark:text-stone-200">${comment.name}</span>
+                            <span class="text-[10px] text-stone-400 font-mono">${date}</span>
+                        </div>
+                        <p class="text-sm text-stone-600 dark:text-stone-400 leading-relaxed font-serif">${comment.content}</p>
+                    `;
+                    commentList.appendChild(el);
+                });
+            } catch (error) {
+                console.error("Error loading comments:", error);
+                commentList.innerHTML = '<p class="text-center text-xs text-red-400 italic">Error loading comments.</p>';
+            }
+        }
+
+        commentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(commentForm);
+            const name = formData.get('name');
+            const password = formData.get('password'); // Note: storing password in plain text for this demo/MVP as per user logic
+            const content = formData.get('content');
+
+            if (!currentDocId) return;
+
+            try {
+                await addDoc(collection(db, "essays", currentDocId, "comments"), {
+                    name,
+                    password,
+                    content,
+                    createdAt: serverTimestamp()
+                });
+
+                commentForm.reset();
+                loadComments(currentDocId); // Reload comments
+            } catch (error) {
+                console.error("Error adding comment:", error);
+                alert("Failed to post comment.");
+            }
+        });
+    </script>
+</body>
+
+</html>

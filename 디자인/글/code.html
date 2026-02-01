@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Philosophy of Time | Vertical Folder View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=Space+Grotesk:wght@300;400;500;600&amp;family=Caveat:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#8B735B",
+                        "wood-light": "#DCC6A1",
+                        "wood-dark": "#5D4037",
+                        "paper-aged": "#FDFCF8",
+                        "folder-manila": "#E6D5B8",
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk", "sans-serif"],
+                        serif: ["Playfair Display", "serif"],
+                        sans: ["Inter", "sans-serif"],
+                        script: ["Caveat", "cursive"],
+                    }
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24
+    }
+.perspective-3000 {
+    perspective: 3000px
+    }
+.drawer-container {
+    transform: rotatex(8deg);
+    transform-style: preserve-3d
+    }
+.wood-grain {
+    background-color: #5D4037;
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAnAHcVxzFVWiT__NaEbwJtConwZ__vmh_kE35cyC54Rg_VkjZNtAqGHRaI-E-zUkYxFNUFfVpiWinlpMpoqM8cFwgPXscjIdod0BnpWv_JRAP_uBndqj4xOQfGbZ95B3rOhVfKtEbsDvJLs6FQCH4Z4xU4nyUufu8ijAsEIlBp5mUiWyNeRNLHHh5Rkn2GkYbnW_h2WDKEuu0h9mb46izxovIuMO0S94aE8k8bszZgQa9hjf_24VHNtpRtonBxOiqz4twkSG9OyRpm);
+    background-blend-mode: overlay
+    }
+.card-stack {
+    transform-style: preserve-3d
+    }
+.folder-tab {
+    clip-path: path("M 0 100 L 0 20 C 0 10, 5 0, 15 0 L 140 0 C 150 0, 160 10, 170 30 L 170 100 Z")
+    }
+.raised-card {
+    transform: translatey(-480px) translatez(150px);
+    box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.4), 0 30px 60px -30px rgba(0, 0, 0, 0.5);
+    transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)
+    }
+.drawer-inner-shadow {
+    box-shadow: inset 0 30px 60px rgba(0, 0, 0, 0.6)
+    }
+.paper-texture {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuB0gRHJqUPXR6v_eeRV-6Hh4pYF-8dR87RHuIWny2RrlzW00S3gndwg33oUCbiGgGsoaSTH55-APoFiQ5zl0uWhZOtOsrldWNZX3GeoHVImqsFJvn6f6Bf59xS_PR6ajEi64A2uxRFlQKHVg2WBBkXCvNxWRdTJqsY7dSkVpb_Jd_JA0VC57VtDzgyuVKW9QJZqvYyl5E-5vdsmFR97t3U6DUSaRwmKGGDuVdWpF526cYb1PxdEMVVgAF2H1gowUR37C6p98uzt14Aa)
+    }
+.photo-tape {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(2px);
+    transform: rotate(-3deg);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)
+    }
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px
+    }
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent
+    }
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px
+    }</style>
+</head>
+<body class="bg-[#D4CEC1] dark:bg-zinc-950 font-sans h-screen overflow-hidden">
+<div class="fixed inset-0 z-0 bg-gradient-to-tr from-stone-900/10 via-transparent to-white/20 pointer-events-none"></div>
+<main class="relative z-10 h-full w-full flex flex-col items-center justify-center p-4 md:p-12 perspective-3000">
+<div class="fixed top-8 left-8 z-[150] flex gap-6">
+<a class="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors group bg-white/60 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/40 shadow-lg" href="#">
+<span class="material-symbols-outlined text-sm">keyboard_double_arrow_down</span>
+<span class="text-[10px] uppercase tracking-widest font-display font-bold">Return to Stack</span>
+</a>
+<a class="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors group bg-white/60 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/40 shadow-lg" href="#">
+<span class="material-symbols-outlined text-sm">close</span>
+<span class="text-[10px] uppercase tracking-widest font-display font-bold">Close Drawer</span>
+</a>
+</div>
+<div class="drawer-container relative w-full max-w-5xl h-[520px] mt-40">
+<div class="absolute -bottom-24 left-0 right-0 h-36 wood-grain rounded-b-xl border-t-2 border-white/10 shadow-2xl flex flex-col items-center justify-center z-[100]">
+<div class="w-56 h-28 bg-[#3E2723] rounded-sm shadow-inner mb-4 border border-black/20 flex items-center justify-center p-3">
+<div class="bg-paper-aged w-full h-full flex flex-col items-center justify-center border-2 border-[#D7CCC8] shadow-sm">
+<span class="text-[9px] font-bold text-gray-400 mb-1 tracking-widest">VOL. IV</span>
+<span class="font-display text-lg tracking-[0.4em] font-bold text-gray-800 uppercase">Writings</span>
+</div>
+</div>
+<div class="w-48 h-1 bg-black/50 rounded-full blur-[2px]"></div>
+</div>
+<div class="relative h-full wood-grain p-1 rounded-t-sm shadow-2xl overflow-visible border-x-[16px] border-t-[16px] border-[#3E2723]">
+<div class="absolute inset-0 drawer-inner-shadow pointer-events-none z-10"></div>
+<div class="absolute inset-0 bg-black/30 pointer-events-none"></div>
+<div class="card-stack relative h-full flex items-end justify-center pb-0 px-8">
+<div class="absolute w-[94%] h-[400px] bg-[#C5B59A] bottom-2 z-1 border-t border-black/10 rounded-t-md transform translate-z-[-40px]">
+<div class="absolute -top-8 left-4 w-44 h-10 bg-[#C5B59A] folder-tab"></div>
+</div>
+<div class="absolute w-[94%] h-[400px] bg-[#D1C1A5] bottom-4 z-2 border-t border-black/10 rounded-t-md transform translate-z-[-30px]">
+<div class="absolute -top-8 left-40 w-44 h-10 bg-[#D1C1A5] folder-tab flex items-center justify-center">
+<span class="font-script text-gray-600 text-lg opacity-60">Metaphysics</span>
+</div>
+</div>
+<div class="absolute w-[94%] h-[400px] bg-[#DDD0B5] bottom-6 z-3 border-t border-black/10 rounded-t-md transform translate-z-[-20px]">
+<div class="absolute -top-8 left-80 w-44 h-10 bg-[#DDD0B5] folder-tab flex items-center justify-center">
+<span class="font-script text-gray-600 text-lg opacity-60">Observations</span>
+</div>
+</div>
+<div class="raised-card absolute w-[96%] h-[800px] bg-paper-aged rounded-sm z-50 flex flex-col overflow-hidden border border-black/5">
+<div class="absolute inset-0 pointer-events-none opacity-50 paper-texture"></div>
+<div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/60 via-transparent to-black/[0.05]"></div>
+<div class="relative h-14 w-full">
+<div class="absolute -top-10 left-12 h-14 w-64 flex items-center justify-center bg-paper-aged folder-tab shadow-[0_-5px_15px_rgba(0,0,0,0.1)] z-50">
+<span class="font-script text-gray-800 text-2xl leading-none whitespace-nowrap px-8 pt-4">Philosophy of Time</span>
+</div>
+</div>
+<div class="flex-1 p-12 md:p-20 pt-10 overflow-y-auto custom-scrollbar">
+<div class="flex flex-col lg:flex-row justify-between items-start gap-12">
+<div class="max-w-2xl flex-1">
+<div class="flex items-center gap-4 mb-6">
+<span class="h-px w-10 bg-stone-300"></span>
+<span class="font-display text-[11px] tracking-[0.4em] text-stone-500 uppercase font-semibold">Entry No. 04 — Oct 2023</span>
+</div>
+<h1 class="font-serif italic text-6xl text-stone-900 leading-tight mb-10">The Philosophy of Perpetual Time</h1>
+<div class="prose prose-stone prose-lg max-w-none">
+<p class="font-serif text-xl leading-relaxed text-stone-700 first-letter:text-7xl first-letter:font-serif first-letter:mr-4 first-letter:float-left first-letter:leading-[0.8] first-letter:text-stone-900">
+                                            In the quiet corners of the archive, where the dust settles like memories, one begins to wonder if time is truly linear. We measure our lives in ticking clocks and digital pulses, yet the heart remembers in seasons and echoes.
+                                        </p>
+<p class="font-serif text-xl leading-relaxed text-stone-700 mt-8">
+                                            The transition from the tactile to the ephemeral has changed our relationship with the past. To hold a card is to hold a moment; to scroll is to let it slip through our fingers like water. This study explores the weight of physical archives in a world of Weightless data.
+                                        </p>
+<div class="mt-10 h-px w-40 bg-stone-200"></div>
+<p class="font-serif text-xl leading-relaxed text-stone-800 mt-10 italic border-l-4 border-stone-200 pl-8">
+                                            "Time is not a line, but a series of rooms we have left, but whose doors remain slightly ajar."
+                                        </p>
+<p class="font-serif text-xl leading-relaxed text-stone-700 mt-8">
+                                            When we look back at these vertical files, we see not just data, but a physical manifestation of thought. Each folder holds a weight, a texture, and a scent that digital repositories simply cannot replicate. It is in these physical limitations that we find true permanence.
+                                        </p>
+</div>
+</div>
+<div class="w-full lg:w-80 flex flex-col items-center pt-4">
+<div class="relative p-4 bg-white shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700 ease-in-out group">
+<div class="absolute -top-5 left-1/2 -translate-x-1/2 w-20 h-8 photo-tape z-10"></div>
+<div class="w-full aspect-[4/5] bg-stone-100 overflow-hidden relative">
+<img alt="Vintage Library" class="object-cover w-full h-full sepia-[0.3] brightness-90 group-hover:sepia-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDX76aDnTg1k9VCNenb5g_g_P6eOYllxD72b_ywnCla00_H8DiTvj1VRzdJhvLFZszKj92qosChRw0QQCkM4zsdgwGzqOj-gxm6tOMA1TgjKa4ePmJHdHzV2mY2QbMPxW6ljpQ3EzYUqvChDEUiY-exOQUNIoD31q1vjcU87TY471YwlQwELOvGMrSbl31ls-DwlTOSanR4kn86xs8YYBmOfHotpgjLIKHwrY4N7NDzk1i2J-Mo7aicg5y3d8lt5IOF9qxYvFz3rySu"/>
+<div class="absolute inset-0 bg-black/5"></div>
+</div>
+<div class="mt-5 text-center">
+<p class="font-script text-stone-500 text-lg">The Old Library Archive, 1974</p>
+</div>
+</div>
+<div class="mt-16 w-full space-y-6 px-4">
+<div class="flex justify-between items-end border-b border-stone-100 pb-3">
+<span class="text-[10px] uppercase tracking-widest font-display text-stone-400 font-bold">Catalog</span>
+<span class="font-serif italic text-stone-600">The Memento Series</span>
+</div>
+<div class="flex justify-between items-end border-b border-stone-100 pb-3">
+<span class="text-[10px] uppercase tracking-widest font-display text-stone-400 font-bold">Location</span>
+<span class="font-serif italic text-stone-600">Drawer 04, Row B</span>
+</div>
+<div class="flex justify-between items-end border-b border-stone-100 pb-3">
+<span class="text-[10px] uppercase tracking-widest font-display text-stone-400 font-bold">Ref No.</span>
+<span class="font-serif italic text-stone-600">ARCH-09-PT</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute w-[94%] h-[120px] bg-folder-manila bottom-0 z-[60] border-t-2 border-white/20 rounded-t-md shadow-[0_-10px_30px_rgba(0,0,0,0.1)]">
+<div class="absolute -top-8 left-1/4 w-44 h-10 bg-folder-manila folder-tab flex items-center justify-center shadow-[-5px_-5px_10px_rgba(0,0,0,0.05)]">
+<span class="font-script text-gray-700 text-lg">Urban Decay</span>
+</div>
+<div class="absolute -top-8 left-[60%] w-44 h-10 bg-[#EFDEBF] folder-tab flex items-center justify-center shadow-[-5px_-5px_10px_rgba(0,0,0,0.05)]">
+<span class="font-script text-gray-700 text-lg">Digital Soul</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="fixed bottom-12 left-12 flex flex-col">
+<h2 class="font-display text-2xl font-black tracking-tight text-stone-900 uppercase">Archive Browser</h2>
+<p class="text-[11px] uppercase tracking-[0.5em] mt-2 text-stone-500 font-bold">Document 04 / 12</p>
+</div>
+<div class="fixed bottom-12 right-12 text-stone-400 font-display text-[10px] uppercase tracking-widest flex items-center gap-4 font-bold">
+<span>Drag vertical folders to browse</span>
+<span class="w-12 h-px bg-stone-300"></span>
+</div>
+</main>
+<nav class="fixed top-8 right-8 z-[150]">
+<button class="p-3 rounded-full bg-white/60 backdrop-blur-md border border-white/40 text-stone-800 hover:scale-110 transition-all shadow-lg" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-symbols-outlined block dark:hidden">dark_mode</span>
+<span class="material-symbols-outlined hidden dark:block">light_mode</span>
+</button>
+</nav>
+
+</body></html>

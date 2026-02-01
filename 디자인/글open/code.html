@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Full-screen Essay Content View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&amp;family=Space+Grotesk:wght@300;400;500;600&amp;family=Caveat:wght@400;600&amp;family=Mrs+Saint+Delafield&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#5D4037",
+                        "wood-dark": "#1A0F0D",
+                        "paper-clean": "#F9F7F2",
+                        "brass": "#B8860B",
+                        "brass-dark": "#8B6B0E",
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk", "sans-serif"],
+                        serif: ["Playfair Display", "serif"],
+                        sans: ["Inter", "sans-serif"],
+                        script: ["Caveat", "cursive"],
+                        elegant: ["Mrs Saint Delafield", "cursive"],
+                    }
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24
+        }
+        .wood-grain-bg {
+            background-color: #120907;
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAnAHcVxzFVWiT__NaEbwJtConwZ__vmh_kE35cyC54Rg_VkjZNtAqGHRaI-E-zUkYxFNUFfVpiWinlpMpoqM8cFwgPXscjIdod0BnpWv_JRAP_uBndqj4xOQfGbZ95B3rOhVfKtEbsDvJLs6FQCH4Z4xU4nyUufu8ijAsEIlBp5mUiWyNeRNLHHh5Rkn2GkYbnW_h2WDKEuu0h9mb46izxovIuMO0S94aE8k8bszZgQa9hjf_24VHNtpRtonBxOiqz4twkSG9OyRpm);
+            background-blend-mode: multiply;
+            background-size: cover;
+        }
+        .paper-texture {
+            background-color: #F9F7F2;
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuB0gRHJqUPXR6v_eeRV-6Hh4pYF-8dR87RHuIWny2RrlzW00S3gndwg33oUCbiGgGsoaSTH55-APoFiQ5zl0uWhZOtOsrldWNZX3GeoHVImqsFJvn6f6Bf59xS_PR6ajEi64A2uxRFlQKHVg2WBBkXCvNxWRdTJqsY7dSkVpb_Jd_JA0VC57VtDzgyuVKW9QJZqvYyl5E-5vdsmFR97t3U6DUSaRwmKGGDuVdWpF526cYb1PxdEMVVgAF2H1gowUR37C6p98uzt14Aa);
+            background-size: 600px;
+            background-blend-mode: soft-light;
+            box-shadow: 
+                0 0 100px rgba(0,0,0,0.6),
+                0 30px 60px rgba(0,0,0,0.4);
+        }
+        .brass-tab {
+            background: linear-gradient(145deg, #d4af37, #8b6b0e);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.4), inset 1px 1px 1px rgba(255,255,255,0.3);
+            border: 1px solid #7d5e0a;
+        }
+        .focused-lighting {
+            background: radial-gradient(circle at center, rgba(255,250,220,0.08) 0%, rgba(0,0,0,0.7) 100%);
+        }
+        .drop-cap::first-letter {
+            font-family: 'Playfair Display', serif;
+            float: left;
+            font-size: 4.8rem;
+            line-height: 1;
+            padding-right: 0.75rem;
+            padding-top: 0.25rem;
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="wood-grain-bg h-screen overflow-hidden flex items-center justify-center p-0 m-0 relative">
+<div class="fixed inset-0 backdrop-blur-sm bg-black/60 z-0"></div>
+<div class="fixed inset-0 focused-lighting z-10 pointer-events-none"></div>
+<nav class="fixed top-8 left-8 z-[100]">
+<button class="flex items-center gap-3 text-stone-300 hover:text-white transition-all group px-4 py-2 rounded-sm border border-white/10 hover:border-white/30 backdrop-blur-md bg-white/5">
+<span class="material-symbols-outlined text-xl">arrow_back</span>
+<span class="text-xs uppercase tracking-[0.3em] font-display font-medium">Back to Folder</span>
+</button>
+</nav>
+<nav class="fixed top-8 right-8 z-[100]">
+<button class="brass-tab group flex items-center gap-2 px-6 py-2.5 rounded-t-sm transition-transform hover:-translate-y-1">
+<span class="text-[10px] uppercase tracking-[0.4em] font-display font-bold text-stone-900/80">Close</span>
+<span class="material-symbols-outlined text-stone-900 text-lg">close</span>
+</button>
+</nav>
+<div class="relative z-20 w-full max-w-4xl h-[94vh] mt-4 overflow-y-auto paper-texture rounded-sm flex flex-col scrollbar-hide border border-white/5">
+<div class="absolute inset-0 pointer-events-none shadow-[inset_0_0_80px_rgba(139,115,91,0.05)]"></div>
+<header class="pt-28 pb-16 px-16 md:px-24 text-center">
+<div class="inline-block mb-8 h-px w-20 bg-stone-300"></div>
+<h1 class="font-serif italic text-6xl md:text-8xl text-stone-950 leading-tight">
+                The Metaphysics of <br/>
+<span class="not-italic font-normal">Digital Decay</span>
+</h1>
+<p class="font-script text-3xl text-stone-600 mt-8 italic">November 14th, 1994</p>
+</header>
+<article class="px-16 md:px-32 pb-40 prose prose-stone lg:prose-xl max-w-none">
+<p class="drop-cap text-stone-900 leading-relaxed font-serif text-justify text-xl">
+                Everything that is built eventually succumbs to the patient hunger of time. In the physical realm, we see this as rust, as crumbling brick, as the slow encroaching of ivy upon forgotten walls. But what of the digital? We were promised a medium that was eternal, a perfect preservation of thought that would never yellow like paper or rot like wood. We were misled.
+            </p>
+<p class="text-stone-900 leading-relaxed font-serif text-justify text-xl">
+                The degradation of a file is a silent, invisible tragedy. Bits flip in the dark of a spinning platter; magnetic charges weaken; links rot as the servers that anchored them vanish into the ether of bankruptcy and obsolescence.
+            </p>
+<div class="my-20 flex flex-col items-center">
+<div class="relative p-4 bg-white shadow-2xl rotate-1 border border-stone-100">
+<img alt="Vintage camera" class="grayscale sepia-[.2] contrast-125 brightness-95 w-full max-w-md h-auto block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeH7rYtF-3E8O_90meFwR8vpegDbV8n9DnxclSHZvz-lnSulK9lOpod0FmWQy6CGXEm044dQC9pYigsrIDusizK-YRYdzmYibOaW1Z0jTiKI3Flnu1xWVhgAk2hmGmXY0_95-C5txpRiN7Ltn62tWv6uVo8n1cOJnQ7ZuvCPqn94ldNrN2ioniGqAY98VqQ9u9jcpu3f6fHfzkkt70on3SzY1a3xk7WFJrsZ77b4g-iX2wH_giC6slWOvDO5unG5j2YIl0AATLW6AE"/>
+<div class="absolute inset-0 pointer-events-none border border-black/5"></div>
+<div class="mt-4 font-script text-xl text-stone-700 text-center">Observed remnants of the first generation</div>
+</div>
+</div>
+<p class="text-stone-900 leading-relaxed font-serif text-justify text-xl">
+                We are now the curators of a vanishing library. Our archives are not made of stone but of electricity, a fragile current that must be constantly maintained to exist. If the power fails, if the format shifts, if the keys are lost—the knowledge ceases to be. It does not wait in the dust like a Dead Sea Scroll; it simply evaporates.
+            </p>
+<blockquote class="border-l-4 border-stone-800 pl-8 my-16 italic text-stone-950 font-serif text-2xl">
+                "The ghost in the machine is not a spirit, but the sound of the machine slowly failing."
+            </blockquote>
+<div class="my-16 flex justify-center">
+<div class="w-56 opacity-60 grayscale sepia">
+<img alt="Sketch" class="w-full h-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCXK9EFrqK8FMIBlxaaUGbqxjOSSeZyG2159-AHZn1LsjYVE9RU2V5JPT6NM2SrjNPGdMiAZaJxpWdP2AyffhmNiLqi9ahITKMYdZnJoE3V8z1LXQ5f-BMgnDN6CL8OM39tFT7TYs9N-Iij3w-PIk_FW5d2LmCU4vxiujFYm8hiyjxKLLL17AvcZDWwu9DC31vEv6gMYRc8Kcqv9pxHRFEH3yblL8jahd5OkAngXYm2tnlXtKtKzZaHwMb3W52sEVDpF39kEFnD8_Z"/>
+</div>
+</div>
+<p class="text-stone-900 leading-relaxed font-serif text-justify text-xl">
+                To write is to resist this decay. To print is to surrender to a different kind of ending, one that at least leaves a corpse behind. As I look at these files, these digital 'scrolls' I have accumulated, I wonder which of them will be legible to the eyes of a century from now. 
+            </p>
+<div class="mt-24 flex items-center justify-center gap-6">
+<span class="h-px w-12 bg-stone-300"></span>
+<span class="material-symbols-outlined text-stone-400">adjust</span>
+<span class="h-px w-12 bg-stone-300"></span>
+</div>
+<div class="mt-12 text-center">
+<p class="font-elegant text-5xl text-stone-500">Rowan</p>
+</div>
+</article>
+<footer class="mt-auto border-t border-stone-200/60 p-10 flex justify-between items-center bg-stone-100/20">
+<div class="text-[11px] uppercase tracking-[0.4em] font-display font-bold text-stone-600">
+                Entry #042 // Volume III
+            </div>
+<div class="flex gap-6">
+<button class="p-2 text-stone-500 hover:text-stone-950 transition-colors">
+<span class="material-symbols-outlined text-2xl">share</span>
+</button>
+<button class="p-2 text-stone-500 hover:text-stone-950 transition-colors">
+<span class="material-symbols-outlined text-2xl">bookmark_add</span>
+</button>
+</div>
+</footer>
+</div>
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] opacity-40 hover:opacity-100 transition-opacity">
+<div class="flex flex-col items-center gap-2 text-white/70 text-[10px] uppercase tracking-[0.5em] font-display">
+<span>Scroll to read</span>
+<span class="material-symbols-outlined animate-bounce">keyboard_arrow_down</span>
+</div>
+</div>
+<div class="fixed top-0 bottom-0 left-0 w-48 z-30 pointer-events-none bg-gradient-to-r from-black/40 to-transparent"></div>
+<div class="fixed top-0 bottom-0 right-0 w-48 z-30 pointer-events-none bg-gradient-to-l from-black/40 to-transparent"></div>
+
+</body></html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3GW6KD4C2P"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-3GW6KD4C2P');
+    </script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Community Drawer | Collective Archive</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=Space+Grotesk:wght@300;400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script>
+        // Check for saved theme preference or use system preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            if (html.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+    </script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#8B735B",
+                        "wood-light": "#E5D3B3",
+                        "wood-dark": "#7C6246",
+                        "paper-aged": "#F4F1EA",
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk", "sans-serif"],
+                        serif: ["Playfair Display", "serif"],
+                        sans: ["Inter", "sans-serif"],
+                        script: ["Caveat", "cursive"],
+                        elegant: ["Mrs Saint Delafield", "cursive"],
+                        hand: ["Nanum Pen Script", "cursive"],
+                    }
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24
+    }
+.perspective-2000 {
+    perspective: 2000px
+    }
+.drawer-tilt {
+    transform: rotatex(20deg);
+    transform-style: preserve-3d
+    }
+.compartment {
+    box-shadow: inset 2px 2px 10px rgba(0, 0, 0, 0.3), inset -1px -1px 2px rgba(255, 255, 255, 0.15);
+    background-color: rgba(0, 0, 0, 0.1)
+    }
+.wood-texture {
+    background-color: #dcc6a1;
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuC_MrSaZotVYPBLV-UiMfa5DVVMHBI8t0h7Co6_yTAg9GPGuKcl8rkcVsId4URWgRiKpYdpjMtZR5AT-SiHyBNBNfO8IW-2qkFH-YRoe-nwIRQNxc55YTWuZV0jEVsgVG9gXpE8MWegYbtUw2HkQFPjqQiMpD_qRzrUCra30QijZZUKpDZyoB0UGy-o4OWsKRrPUbGRcn9K58MDo_Vmz9GI_9ItoS2CVve_Ch3a-HIYX4Q1wWQnspkabGRbXtidingScd71cEE8KwNM);
+    background-blend-mode: multiply
+    }
+.drawer-shadow {
+    box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.4), 0 30px 60px -30px rgba(0, 0, 0, 0.5)
+    }
+.scrim-gradient {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%)
+    }
+.paper-stack {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 2px 0 #fff, 0 3px 0 rgba(0, 0, 0, 0.1), 0 4px 0 #fff, 0 5px 0 rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.15)
+    }
+.pencil {
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3))
+    }
+.paperclip {
+    border: 1.5px solid #a1a1aa;
+    border-radius: 10px;
+    width: 8px;
+    height: 20px;
+    position: relative
+    }
+.paperclip::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 6px;
+    border: 1px solid #a1a1aa;
+    border-radius: 6px;
+    border-top: none
+    }
+        .glass-paperweight {
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.1) 40%, rgba(0, 0, 0, 0.1) 100%);
+            border-radius: 50% 50% 10% 10%;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2), inset 0 -2px 10px rgba(255,255,255,0.4);
+            backdrop-filter: blur(2px);
+        }
+        .candle-glow {
+            box-shadow: 0 0 40px 10px rgba(255, 160, 60, 0.3);
+        }
+        .candle-flame {
+            background: radial-gradient(circle at center, #fff 0%, #ffd700 40%, #ff8c00 100%);
+            filter: blur(1px);
+        }
+        .binder-clip {
+            position: relative;
+            width: 20px;
+            height: 12px;
+            background: #333;
+            border-radius: 1px;
+        }
+        .binder-clip::before, .binder-clip::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            width: 8px;
+            height: 10px;
+            border: 1.5px solid #999;
+            border-radius: 4px 4px 0 0;
+            border-bottom: none;
+        }
+        .binder-clip::before { left: 2px; }
+        .binder-clip::after { right: 2px; }
+    </style>
+</head>
+
+<body class="bg-gray-200 dark:bg-zinc-950 font-sans h-screen overflow-hidden">
+    <div class="fixed inset-0 z-0 bg-white/40 dark:bg-black/60 backdrop-blur-md"></div>
+    <main class="relative z-10 h-full w-full flex items-center justify-center p-8 perspective-2000">
+        <a class="fixed top-8 left-8 z-50 flex items-center justify-center text-stone-700 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white transition-colors group bg-white/40 dark:bg-black/30 backdrop-blur-md p-3 rounded-full border border-white/40 dark:border-white/10 shadow-sm"
+            href="blog.html">
+            <span class="material-symbols-outlined text-lg">arrow_back</span>
+        </a>
+        <div <!-- Drawer Frame (Wood) -->
+            <div
+                class="drawer-tilt relative w-full h-full md:h-auto md:max-w-5xl bg-[#DCC6A1] p-0 md:p-5 rounded-none md:rounded-sm drawer-shadow border-t-0 md:border-t-4 border-l-0 md:border-l-2 border-white/40 md:border-white/20 flex flex-col">
+                <div class="absolute -top-4 left-0 w-full h-4 bg-[#C8B28E] rounded-t-sm hidden md:block"></div>
+                <div
+                    class="wood-texture p-0 md:p-6 border-none md:border-2 border-black/30 shadow-none md:shadow-inner relative flex-1 min-h-0 md:min-h-[600px] flex flex-col overflow-hidden">
+                    <div class="absolute inset-0 pointer-events-none scrim-gradient opacity-50 z-50"></div>
+
+                    <!-- MOBILE/DESKTOP HYBRID LAYOUT -->
+
+                    <!-- 1. WRITE A NOTE (Sticky Top) -->
+                    <div class="relative z-40 bg-[#FDFCF9] p-6 shadow-md border-b-2 border-black/10 shrink-0">
+                        <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-b from-black/5 to-transparent"></div>
+                        <h2 class="font-display text-xs font-bold text-gray-400 tracking-widest uppercase mb-3">Leave a
+                            Note</h2>
+                        <form id="guestbookForm" class="flex flex-col gap-3">
+                            <div class="flex gap-2">
+                                <input type="text" id="visitorName" placeholder="Name" required
+                                    class="w-1/3 bg-gray-50 border-b border-gray-200 p-2 text-sm font-serif focus:outline-none focus:border-stone-500 placeholder:text-gray-300">
+                                <input type="text" id="visitorMessage" placeholder="Message..." required
+                                    class="flex-1 bg-gray-50 border-b border-gray-200 p-2 text-sm font-serif focus:outline-none focus:border-stone-500 placeholder:text-gray-300">
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit"
+                                    class="px-4 py-1.5 bg-stone-800 text-white text-[10px] uppercase font-bold tracking-widest hover:bg-stone-600 transition-colors rounded-sm shadow-sm">
+                                    Post
+                                </button>
+                            </div>
+                        </form>
+                        <!-- Decorative Pins/Tape -->
+                        <div
+                            class="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-yellow-100/50 rotate-1 shadow-sm border border-white/20 backdrop-blur-[1px]">
+                        </div>
+                    </div>
+
+                    <!-- 2. MESSAGE LIST (Scrollable Bottom) -->
+                    <div id="guestbookList"
+                        class="relative z-30 flex-1 overflow-y-auto scrollbar-hide p-4 md:p-8 space-y-4">
+                        <!-- Messages injected via JS -->
+                        <div class="text-center py-10 opacity-50">
+                            <p class="font-serif italic text-stone-500">Loading messages...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Label -->
+                <div
+                    class="h-16 bg-[#DCC6A1] border-t-2 border-black/15 flex flex-col items-center justify-center relative shrink-0 z-[60]">
+                    <div class="flex items-center gap-4 bg-white/90 px-4 py-1.5 border border-black/20 shadow-sm mb-1">
+                        <span class="text-[10px] font-bold text-gray-400">03</span>
+                        <span class="font-display text-sm tracking-[0.3em] font-medium text-gray-800">COMMUNITY</span>
+                    </div>
+                    <div class="w-24 h-2 border-x-2 border-b-2 border-black/20 rounded-b-xl mt-1"></div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+
+
+    </main>
+    <nav class="fixed top-8 right-8 z-50">
+        <button
+            class="p-3 rounded-full bg-white/40 backdrop-blur-md border border-white/40 text-stone-800 hover:scale-110 transition-all shadow-lg"
+            onclick="toggleTheme()">
+            <span class="material-symbols-outlined block dark:hidden">dark_mode</span>
+            <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+        </button>
+    </nav>
+
+    <script type="module">
+        import { db } from './js/firebase-config.js';
+        import { collection, addDoc, getDocs, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // Guestbook Logic
+        const guestbookForm = document.getElementById('guestbookForm');
+        const guestbookList = document.getElementById('guestbookList');
+        const visitorName = document.getElementById('visitorName');
+        const visitorMessage = document.getElementById('visitorMessage');
+
+        // Initial Data loading
+        renderGuestbook();
+
+        async function renderGuestbook() {
+            guestbookList.innerHTML = '<div class="text-center py-10 opacity-50"><p class="font-serif italic text-stone-500">Loading messages...</p></div>';
+
+            try {
+                const q = query(collection(db, "guestbook"), orderBy("createdAt", "desc"), limit(50));
+                const querySnapshot = await getDocs(q);
+
+                guestbookList.innerHTML = '';
+
+                if (querySnapshot.empty) {
+                    // Fallback/Seed data only if DB is empty
+                    guestbookList.innerHTML = '<div class="text-center py-10 opacity-50"><p class="font-serif italic text-stone-500">Be the first to leave a note.</p></div>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const note = doc.data();
+                    const date = note.createdAt ? note.createdAt.toDate().toLocaleDateString('en-CA').replace(/-/g, '.') : note.date; // Fallback for old data format
+
+                    const card = document.createElement('div');
+                    // Random rotation/color logic can stay client-side or be stored.
+                    // Storing color ensures consistent look for everyone.
+                    const rotate = Math.random() * 2 - 1;
+
+                    card.className = `p-4 shadow-sm border border-black/5 transform transition-transform hover:scale-[1.01] ${note.color || 'bg-[#FDFCF9]'}`;
+                    card.style.transform = `rotate(${rotate}deg)`;
+
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-2 opacity-60">
+                             <span class="font-display text-[10px] tracking-widest uppercase">MEMO</span>
+                             <span class="font-mono text-[9px]">${date}</span>
+                        </div>
+                        <p class="font-serif text-stone-800 text-sm leading-relaxed mb-3">${note.message}</p>
+                        <div class="flex justify-end">
+                            <span class="font-script text-lg text-stone-600">- ${note.name}</span>
+                        </div>
+                        <!-- Paper texture overlay -->
+                        <div class="absolute inset-0 bg-noise opacity-[0.03] pointer-events-none"></div>
+                    `;
+
+                    guestbookList.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error loading guestbook:", error);
+                guestbookList.innerHTML = '<div class="text-center py-10 opacity-50"><p class="font-serif italic text-red-500">Error loading messages.</p></div>';
+            }
+        }
+
+        guestbookForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = visitorName.value;
+            const message = visitorMessage.value;
+            // No custom date generation needed, use serverTimestamp
+
+            // Random paper color
+            const colors = ["bg-[#FDFCF9]", "bg-[#F9F7F2]", "bg-[#F0EAD6]", "bg-[#EFE6D5]"];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+            try {
+                await addDoc(collection(db, "guestbook"), {
+                    name,
+                    message,
+                    color: randomColor,
+                    createdAt: serverTimestamp(),
+                    date: new Date().toLocaleDateString('en-CA').replace(/-/g, '.') // Store string date for simpler display if needed
+                });
+
+                visitorName.value = '';
+                visitorMessage.value = '';
+                renderGuestbook(); // Refresh list
+            } catch (error) {
+                console.error("Error signing guestbook:", error);
+                alert("Failed to sign guestbook.");
+            }
+        });
+    </script>
+</body>
+
+</html>

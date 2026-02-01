@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Portfolio Cabinet | Creative Space</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&amp;family=Space+Grotesk:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#8B735B", // Deep oak color
+              "background-light": "#F7F7F7",
+              "background-dark": "#121212",
+              "wood-light": "#DCC6A1",
+              "wood-dark": "#7C6246",
+              "tray-gray": "#CBD5E1",
+              "tray-dark": "#334155",
+            },
+            fontFamily: {
+              display: ["Space Grotesk", "sans-serif"],
+              sans: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+            },
+            animation: {
+              'slide-out': 'slideOut 0.4s ease-out forwards',
+            },
+            keyframes: {
+              slideOut: {
+                '0%': { transform: 'translateX(0)' },
+                '100%': { transform: 'translateX(20px)' },
+              }
+            }
+          },
+        },
+      };
+    </script>
+<style>
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .cabinet-shadow {
+            box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+        }
+        .dark .cabinet-shadow {
+            box-shadow: 20px 20px 60px #0a0a0a, -5px -5px 30px #1e1e1e;
+        }
+        .tray-content {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tray-trigger:hover .tray-content {
+            transform: translateY(-8px) scale(1.02);
+            z-index: 50;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .tray-trigger:hover .label-text {
+            opacity: 1;
+            transform: translateX(0);
+        }.floor {
+            background: linear-gradient(to bottom, #e5e5e5 0%, #d4d4d4 100%);
+        }
+        .dark .floor {
+            background: linear-gradient(to bottom, #1a1a1a 0%, #0a0a0a 100%);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-sans overflow-hidden">
+<nav class="fixed top-8 right-8 z-50 flex items-center gap-4">
+<button class="p-2 rounded-full bg-white/80 dark:bg-black/20 backdrop-blur-md border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-200 hover:scale-110 transition-all" onclick="document.documentElement.classList.toggle('dark')">
+<svg class="h-5 w-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<svg class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</nav>
+<main class="relative h-screen w-full flex flex-col items-center justify-end">
+<div class="absolute inset-0 bg-background-light dark:bg-background-dark transition-colors duration-500"></div>
+<div class="relative z-10 w-full max-w-lg mb-48 sm:mb-24 perspective-1000">
+<div class="relative mx-auto w-[320px] sm:w-[400px] bg-wood-light dark:bg-wood-dark p-2 sm:p-3 rounded-sm cabinet-shadow border-t-2 border-l-2 border-white/20">
+<div class="h-4 w-full border-b border-black/10 flex items-center justify-center">
+<div class="h-1 w-8 bg-black/20 rounded-full"></div>
+</div>
+<div class="h-10 flex items-center justify-center border-b border-black/10">
+<div class="w-1 h-3 bg-black/40 rounded-full"></div>
+</div>
+<div class="space-y-1.5 mt-2">
+<a class="tray-trigger block relative group" href="#">
+<div class="tray-content h-10 sm:h-12 bg-tray-gray dark:bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/10 transition-transform duration-300 transform group-hover:-translate-x-8 group-hover:translate-y-[-2px] group-hover:bg-slate-200 dark:group-hover:bg-slate-700">
+<span class="text-xs sm:text-sm font-bold text-gray-600 dark:text-gray-400 w-8">1</span>
+<span class="font-display font-medium text-gray-800 dark:text-gray-100 tracking-wider">WRITINGS</span>
+<div class="absolute top-1/2 -right-2 h-6 w-1 bg-black/5 dark:bg-white/5"></div>
+</div>
+</a>
+<a class="tray-trigger block relative group" href="#">
+<div class="tray-content h-10 sm:h-12 bg-slate-200 dark:bg-slate-800 flex items-center px-4 rounded-sm border-b border-black/10 -translate-x-12 translate-y-[-4px] shadow-lg group-hover:-translate-x-16">
+<span class="text-xs sm:text-sm font-bold text-gray-600 dark:text-gray-400 w-8">2</span>
+<span class="font-display font-medium text-gray-800 dark:text-gray-100 tracking-wider">PHOTOGRAPHY</span>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 flex gap-1 opacity-50">
+<div class="w-2 h-2 rounded-full bg-amber-800/30"></div>
+<div class="w-2 h-3 rounded-full bg-amber-800/20"></div>
+</div>
+</div>
+</a>
+<a class="tray-trigger block relative group" href="#">
+<div class="tray-content h-10 sm:h-12 bg-tray-gray dark:bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/10 transition-transform duration-300 transform group-hover:-translate-x-8 group-hover:translate-y-[-2px] group-hover:bg-slate-200 dark:group-hover:bg-slate-700">
+<span class="text-xs sm:text-sm font-bold text-gray-600 dark:text-gray-400 w-8">3</span>
+<span class="font-display font-medium text-gray-800 dark:text-gray-100 tracking-wider uppercase">Community</span>
+</div>
+</a>
+<script>
+                        const trayNames = {
+                            4: "ARCHIVE",
+                            5: "NOTES",
+                            6: "LAB",
+                            7: "STORE",
+                            8: "CONTACT",
+                            9: "JOURNAL",
+                            10: "RESOURCES",
+                            11: "VIDEOS",
+                            12: "SKETCHES",
+                            13: "COLLECTION",
+                            14: "ABOUT"
+                        };
+                        for (let i = 4; i <= 14; i++) {
+                            document.write(`
+                                <div class="tray-trigger relative group cursor-pointer">
+                                    <div class="tray-content h-8 sm:h-10 bg-tray-gray/80 dark:bg-tray-dark/80 flex items-center px-4 rounded-sm border-b border-black/10 transition-transform duration-300 transform group-hover:-translate-x-4 group-hover:bg-white dark:group-hover:bg-slate-700">
+                                        <span class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 w-8">${i}</span>
+                                        <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[10px] sm:text-xs font-display tracking-widest text-gray-400 uppercase">${trayNames[i]}</span>
+                                    </div>
+                                </div>
+                            `);
+                        }
+                    </script>
+</div>
+<div class="mt-4 pt-2 border-t-2 border-black/10">
+<div class="h-10 sm:h-12 bg-wood-light/80 dark:bg-wood-dark/80 rounded-sm flex items-center justify-center">
+<div class="w-12 h-1 bg-black/20 rounded-full"></div>
+</div>
+</div>
+<div class="h-10 sm:h-12 mt-2 bg-[#4A5D4E] dark:bg-[#2D3A30] rounded-b-sm border-t border-black/10"></div>
+</div>
+<div class="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[120%] h-12 bg-black/10 dark:bg-black/40 blur-2xl rounded-full"></div>
+</div>
+<div class="absolute bottom-0 w-full h-1/4 floor z-0">
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: repeating-linear-gradient(90deg, transparent, transparent 100px, rgba(0,0,0,0.1) 100px, rgba(0,0,0,0.1) 101px);"></div>
+</div>
+<div class="absolute bottom-12 left-12 opacity-30 dark:opacity-20 pointer-events-none select-none">
+<h1 class="font-display text-4xl font-bold tracking-tighter text-gray-900 dark:text-white">COLLECTIVE<br/>ARCHIVE</h1>
+<p class="text-xs uppercase tracking-[0.2em] mt-2 text-gray-600 dark:text-gray-400">Personal Blog &amp; Hub v2.0</p>
+</div>
+</main>
+<div class="fixed bottom-8 right-8 text-gray-400 dark:text-gray-600 font-display text-[10px] uppercase tracking-widest animate-pulse pointer-events-none">
+        Hover to explore drawers
+    </div>
+
+</body></html>
