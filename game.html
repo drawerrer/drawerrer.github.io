@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>추억의 물 링 던지기 게임</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        #game-container {
+            position: relative;
+            width: 90%;
+            max-width: 400px;
+            aspect-ratio: 4/5;
+            /* Deep Sea Gradient as fallback */
+            background-color: #006994;
+            background-image: url('images/fantasy_bg.png'), linear-gradient(180deg, #00b4db 0%, #0083b0 100%);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 12px solid #27ae60;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-sizing: border-box;
+            pointer-events: none;
+            /* Allow clicks to pass through container */
+        }
+
+        #push-btn-left,
+        #push-btn-right {
+            pointer-events: auto;
+            width: 70px;
+            height: 70px;
+            border: 2px solid rgba(255, 215, 0, 0.7);
+            /* Gold border */
+            border-radius: 50%;
+            color: #fff;
+
+            /* Glassmorphism */
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        #push-btn-left:active,
+        #push-btn-right:active {
+            transform: scale(0.95);
+            background: rgba(255, 230, 0, 0.3);
+            /* Golden glow */
+        }
+
+
+
+        .instruction {
+            margin-top: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <div class="controls">
+        <button id="push-btn-left">L</button>
+        <button id="push-btn-right">R</button>
+    </div>
+    <p class="instruction">버튼을 클릭하여 링을 막대에 끼워보세요!</p>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const btnLeft = document.getElementById('push-btn-left');
+        const btnRight = document.getElementById('push-btn-right');
+
+        canvas.width = 400;
+        canvas.height = 500;
+
+        // 환경 변수
+        // 환경 변수
+        const gravity = 0.04;      // 중력
+        const friction = 0.975;    // 물 저항 (조금 더 가볍게, 0.96 -> 0.975)
+        const ringRadius = 15;
+        const ringInnerRadius = 7;
+
+        // 기울기 변수 (gamma: -90 ~ 90)
+        let tiltAngle = 0;
+
+        // 막대 설정 (2개) - 상하반전 (천장에서 내려옴), 화면 중앙(400)까지
+        const poles = [
+            { x: 130, y: 400, width: 10, height: 500 }, // y is the TIP position
+            { x: 270, y: 400, width: 10, height: 500 }
+        ];
+
+        // 링 객체 생성 (10개, 각기 다른 색상)
+        // 링 객체 생성 (10개, 테마 색상: Gold, Pearl, Coral, Aqua)
+        const rings = [];
+        const colors = [
+            '#FFD700', // Gold
+            '#FF7F50', // Coral
+            '#E0FFFF', // Light Cyan (Pearl)
+            '#FFD700', // Gold
+            '#FF69B4', // Hot Pink (Shell)
+            '#00FFFF', // Aqua
+            '#FFD700', // Gold
+            '#FF7F50', // Coral
+            '#E0FFFF', // Pearl
+            '#FF69B4'  // Pink
+        ];
+
+        // 기포 객체 배열
+        const bubbles = [];
+
+        class Bubble {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = Math.random() * 3 + 2; // 2~5px
+                this.speed = Math.random() * 2 + 1; // 1~3 px/frame
+                this.alpha = 1;
+                this.wobble = Math.random() * Math.PI * 2;
+            }
+
+            update() {
+                this.y -= this.speed;
+                this.alpha -= 0.01; // 천천히 투명해짐
+                this.wobble += 0.05; // Wobble speed reduced
+                this.x += Math.sin(this.wobble) * 0.2; // Reduced sway amplitude
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        class Ring {
+            constructor(index) {
+                this.reset(index);
+            }
+
+            reset(index) {
+                this.x = 50 + (index * 30);
+                this.y = canvas.height - 40;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = 0;
+                this.color = colors[index];
+                this.isHooked = false;
+                this.targetPole = null;
+
+                // 3D Rotation Properties
+                this.angleX = 0; // Tumbling (front/back flip), 0 = flat
+                this.angleZ = 0; // Spinning (left/right)
+                this.velAngleX = 0;
+                this.velAngleZ = 0;
+            }
+
+            update() {
+                // 물리 법칙 적용 (공통)
+                this.vy += gravity;
+                this.vx *= friction;
+                this.vy *= friction;
+
+                // 기울기 물리 효과 적용
+                // 왼쪽 기울기(gamma < 0) -> 왼쪽으로 힘 (오른쪽에서 압력)
+                // 압력 세기: 기포 압력의 1/5 수준 (0.015)
+                if (tiltAngle) {
+                    this.vx += tiltAngle * 0.015;
+                }
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.isHooked && this.targetPole) {
+                    // 막대에 걸린 상태 로직
+                    // 1. 강제 정렬 (Snap to Center & Flat)
+                    const poleCenter = this.targetPole.x + this.targetPole.width / 2;
+                    this.x += (poleCenter - this.x) * 0.3; // 부드럽게가 아니라 좀 더 빠르게 자석처럼
+
+                    // 회전 제거 (완전 평면 '-' 모양)
+                    this.angleX = 0;
+                    this.angleZ = 0;
+                    this.velAngleX = 0;
+                    this.velAngleZ = 0;
+
+                    // 좌우 이동 거의 제한 (막대 타고 내려오기 때문에 X축 고정)
+                    if (Math.abs(this.x - poleCenter) < 1) {
+                        this.x = poleCenter;
+                        this.vx = 0;
+                    } else {
+                        // 아직 중심 아니면 감속하며 이동
+                        this.vx *= 0.5;
+                    }
+
+                    // 2. 바닥/스택 충돌 로직 (막대 타고 미끄러져 내려옴)
+                    let floorLimit = this.targetPole.y - 10;
+                    const stackSpacing = 14;
+
+                    // 모든 링을 순회하며 내 아래에 있는 가장 높은 링을 찾음
+                    rings.forEach(other => {
+                        if (other !== this && other.isHooked && other.targetPole === this.targetPole) {
+                            // 나보다 아래에 있는 링(other.y > this.y) 확인
+                            // 또는 이미 바닥에 안착한 링들 위에 쌓여야 함
+                            if (other.y > this.y || Math.abs(other.y - this.y) < stackSpacing) {
+                                floorLimit = Math.min(floorLimit, other.y - stackSpacing);
+                            }
+                        }
+                    });
+
+                    // 바닥보다 위에 있으면 계속 떨어짐 (Slide down)
+                    if (this.y < floorLimit) {
+                        // 물속이라 천천히 떨어짐 (Gravity applies via standard update, but maybe reduce fall speed on pole?)
+                        // this.vy is already updated by gravity above.
+                        // Friction might be higher sliding down a pole?
+                        this.vy *= 0.9;
+                    } else {
+                        // 바닥에 닿음
+                        this.y = floorLimit;
+                        this.vy = 0; // 멈춤
+                    }
+                } else {
+                    // 자유 상태 로직
+
+                    // 벽 충돌 (좌우)
+                    if (this.x - ringRadius < 0) {
+                        this.x = ringRadius;
+                        this.vx *= -0.5;
+                    } else if (this.x + ringRadius > canvas.width) {
+                        this.x = canvas.width - ringRadius;
+                        this.vx *= -0.5;
+                    }
+
+                    // 바닥 및 천장 충돌
+                    if (this.y + ringRadius > canvas.height) {
+                        this.y = canvas.height - ringRadius;
+                        this.vy *= -0.3;
+                    } else if (this.y - ringRadius < 0) {
+                        this.y = ringRadius;
+                        this.vy *= -0.3;
+                    }
+
+                    // 막대 걸림 판정 (Hanging Pole - Strict Tip Entry)
+                    poles.forEach(pole => {
+                        const poleCenter = pole.x + (pole.width / 2);
+
+                        // 1. X축 정렬 엄격 검사 (Strict Alignment)
+                        // 링의 중심이 막대 중심과 거의 일치해야 함 (오차 10px 이내)
+                        if (Math.abs(this.x - poleCenter) < 10) {
+
+                            // 2. Y축 팁(Tip) 진입 검사
+                            // '최상단'(입구)인 pole.y 근처를 지나가야만 함.
+                            // 기둥의 몸통(shaft) 중간을 뚫고 들어오면 안 됨.
+                            if (Math.abs(this.y - pole.y) < 15) {
+                                this.isHooked = true;
+                                this.targetPole = pole;
+                                this.vx = 0; // 잡히는 순간 수평 속도 제거
+                                this.vy = 2; // 잡히면 아래로 떨어지기 시작 (Slide start)
+
+                                // 성공 이펙트 (Snap flat)
+                                this.angleX = 0;
+                                this.angleZ = 0;
+                            }
+                        }
+                    });
+                }
+                // 3D 회전 물리 업데이트
+                if (!this.isHooked) {
+                    this.angleX += this.velAngleX;
+                    this.angleZ += this.velAngleZ;
+
+                    // 물 저항으로 인한 회전 감속 (Damping)
+                    this.velAngleX *= 0.95;
+                    this.velAngleZ *= 0.95;
+                } else {
+                    // 걸렸을 때는 회전 강제 정지 및 평평하게 보정 (Smooth reset to flat)
+                    this.angleX *= 0.6; // 빠르게 0으로 복귀
+                    this.angleZ *= 0.6;
+                    this.velAngleX = 0;
+                    this.velAngleZ = 0;
+
+                    if (Math.abs(this.angleX) < 0.05) this.angleX = 0;
+                    if (Math.abs(this.angleZ) < 0.05) this.angleZ = 0;
+                }
+
+                // 바닥 근처에서도 평평해지기 (Strict Flatness on Floor)
+                if (this.y >= canvas.height - 40 && !this.isHooked) {
+                    // 바닥에 가까워지면 강제로 평평하게 만들기
+                    this.angleX *= 0.7;
+                    this.velAngleX = 0;
+                    this.velAngleZ *= 0.9;
+
+                    // 거의 바닥이면 완전 평면 고정
+                    if (this.y >= canvas.height - 25) {
+                        this.angleX = 0;
+                        this.angleZ = 0;
+                    }
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angleZ);
+
+                // Perspective / 3D Look
+                const baseRy = 5; // Very flat when laying down
+                // dynamicRy increases as it tumbles (angleX approaches 90 deg)
+                const dynamicRy = baseRy + (15 * Math.abs(Math.sin(this.angleX)));
+                const rx = 20;
+
+                // Color Logic
+                ctx.lineWidth = 4; // Thickness of the ring wire
+
+                // 1. Draw "Back" half of the ring (for depth)
+                // We simulate depth by drawing the ring in layers or using a "thick" stroke effect.
+                // A simple way to do "Coin/Torus" style:
+
+                // Shadow/Thickness layer (slightly offset down)
+                const thickness = 4;
+
+                // Draw bottom thickness (only clearly visible if somewhat flat)
+                if (Math.abs(Math.sin(this.angleX)) < 0.8) {
+                    ctx.beginPath();
+                    ctx.ellipse(0, thickness, rx, dynamicRy, 0, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(0,0,0,0.3)'; // Shadow
+                    ctx.lineWidth = 4;
+                    ctx.stroke();
+                }
+
+                // Main Ring Body
+                // Use the stripe pattern logic, but made simpler for better 3D readability
+                const segments = 12;
+                const segmentAngle = (Math.PI * 2) / segments;
+
+                for (let i = 0; i < segments; i++) {
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, rx, dynamicRy, 0, i * segmentAngle, (i + 1) * segmentAngle);
+
+                    // Alternating colors for stripes
+                    ctx.strokeStyle = i % 2 === 0 ? this.color : '#ecf0f1'; // Color + White stripes
+                    ctx.lineWidth = 5;
+                    ctx.stroke();
+                }
+
+                // High Specular Highlight (Simulate glossy plastic/glass)
+                ctx.beginPath();
+                ctx.ellipse(0, 0, rx, dynamicRy, 0, Math.PI * 1.2, Math.PI * 1.8);
+                ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.restore();
+            }
+
+            applyPush(direction) {
+                // 깊이에 따른 압력 조절
+                // 화면 아래(y=500 내외)일수록 1.0에 가깝고, 위(y=0)로 갈수록 약해짐 (최소 0.2 정도)
+                // 이를 통해 고리에 걸린 링이 쉽게 빠지지 않도록 함
+
+                const depthRatio = Math.max(0, Math.min(1, this.y / canvas.height));
+                // 위쪽에서는 힘이 30%, 아래쪽에서는 100%
+                const pressureMultiplier = 0.3 + (depthRatio * 0.7);
+
+                // 기본 솟구치는 힘
+                const baseForce = Math.random() * 3 + 2;
+                this.vy -= baseForce * pressureMultiplier;
+
+                // 방향에 따른 추가 힘 (X축, Y축)
+                // 이 또한 압력의 영향을 받아 약해져야 함
+                if (direction === 'left') {
+                    this.vx += (Math.random() * 2) * pressureMultiplier;
+                    this.vy -= (Math.random() * 2) * pressureMultiplier;
+                    // No random rotation - steady push
+                } else {
+                    this.vx -= (Math.random() * 2) * pressureMultiplier;
+                    this.vy -= (Math.random() * 2) * pressureMultiplier;
+                    // No random rotation
+                }
+            }
+        }
+
+        // 초기 링 생성
+        for (let i = 0; i < 10; i++) {
+            rings.push(new Ring(i));
+        }
+
+        function spawnBubbles(side) {
+            const count = 10; // 한번에 발생할 기포 수
+            for (let i = 0; i < count; i++) {
+                // 위치: 바닥 근처, 왼쪽 버튼이면 왼쪽 영역, 오른쪽이면 오른쪽 영역
+                let startX;
+                if (side === 'left') {
+                    startX = Math.random() * (canvas.width / 2);
+                } else {
+                    startX = (canvas.width / 2) + Math.random() * (canvas.width / 2);
+                }
+                bubbles.push(new Bubble(startX, canvas.height + 10)); // 화면 아래에서 시작
+            }
+        }
+
+        function drawPoles() {
+            poles.forEach(pole => {
+                // Medieval/Royal Column Style
+
+                // 1. Column Shaft (Fluted Gradient)
+                // Use a repeating gradient to simulate fluting (grooves)
+                const grad = ctx.createLinearGradient(pole.x, 0, pole.x + pole.width, 0);
+                grad.addColorStop(0, '#7f8c8d');
+                grad.addColorStop(0.2, '#bdc3c7');
+                grad.addColorStop(0.3, '#95a5a6'); // Groove
+                grad.addColorStop(0.5, '#ecf0f1'); // Light highlight
+                grad.addColorStop(0.7, '#95a5a6'); // Groove
+                grad.addColorStop(0.8, '#bdc3c7');
+                grad.addColorStop(1, '#7f8c8d');
+
+                ctx.fillStyle = grad;
+                // Extend from TOP (Ceiling) to bottom tip (pole.y)
+                // This makes it look like it's hanging from the ceiling
+                ctx.fillRect(pole.x, 150, pole.width, pole.y - 150);
+
+                // 2. Ornate Capital (Medieval Palace Style)
+                const capX = pole.x - 8;
+                const capY = pole.y;
+                const capWidth = pole.width + 16;
+                const capHeight = 25;
+
+                // Gold/Stone Gradient for Capital
+                const capGrad = ctx.createLinearGradient(capX, 0, capX + capWidth, 0);
+                capGrad.addColorStop(0, '#d4ac0d'); // Dark Gold
+                capGrad.addColorStop(0.5, '#f1c40f'); // Gold
+                capGrad.addColorStop(1, '#b7950b'); // Dark Gold
+
+                ctx.fillStyle = capGrad;
+
+                // Tiered Capital (Inverted for Hanging Pole)
+                // We draw it upside down effectively at the tip
+
+                // Top connection (Visually "bottom" of the capital since it's inverted)
+                ctx.beginPath();
+                ctx.moveTo(pole.x, pole.y);
+                ctx.lineTo(pole.x + pole.width, pole.y);
+                ctx.lineTo(capX + capWidth - 4, capY + 10);
+                ctx.lineTo(capX + 4, capY + 10);
+                ctx.closePath();
+                ctx.fill();
+
+                // Main Block
+                ctx.fillRect(capX, capY + 10, capWidth, 10);
+
+                // Decorative "Jewel" or detail on capital tip
+                ctx.fillStyle = '#1abc9c'; // Emerald
+                ctx.beginPath();
+                ctx.arc(pole.x + pole.width / 2, capY + 15, 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function drawWaterEffect() {
+            // 물결이나 기포 느낌 (선택 사항)
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 기포 업데이트 및 그리기
+            for (let i = bubbles.length - 1; i >= 0; i--) {
+                const b = bubbles[i];
+                b.update();
+                b.draw();
+                if (b.alpha <= 0 || b.y < -10) {
+                    bubbles.splice(i, 1);
+                }
+            }
+
+            drawPoles();
+
+            rings.forEach(ring => {
+                ring.update();
+                ring.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        // 일반적인 디바이스 오리엔테이션 리스너 (Android 등 권한 요청이 필요 없는 경우)
+        if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+            window.addEventListener('deviceorientation', (event) => {
+                // gamma가 null일 수 있으므로 체크
+                if (event.gamma !== null) tiltAngle = event.gamma;
+            });
+        }
+
+        let permissionRequested = false;
+
+        const handlePush = (direction, e) => {
+            if (e && e.cancelable) e.preventDefault(); // 다중 터치/클릭 방지 및 스크롤 방지
+
+            // iOS 13+ DeviceOrientation 권한 요청
+            if (!permissionRequested &&
+                typeof DeviceOrientationEvent !== 'undefined' &&
+                typeof DeviceOrientationEvent.requestPermission === 'function') {
+
+                permissionRequested = true;
+                DeviceOrientationEvent.requestPermission()
+                    .then(response => {
+                        if (response === 'granted') {
+                            window.addEventListener('deviceorientation', (event) => {
+                                if (event.gamma !== null) tiltAngle = event.gamma;
+                            });
+                        }
+                    })
+                    .catch(console.error);
+            }
+
+            rings.forEach(ring => ring.applyPush(direction));
+
+            // 기포 생성 효과 추가
+            spawnBubbles(direction);
+        };
+
+        // 마우스 클릭 이벤트
+        btnLeft.addEventListener('mousedown', (e) => handlePush('left', e));
+        btnRight.addEventListener('mousedown', (e) => handlePush('right', e));
+
+        // 모바일 터치 이벤트 (지연 시간 제거)
+        btnLeft.addEventListener('touchstart', (e) => handlePush('left', e), { passive: false });
+        btnRight.addEventListener('touchstart', (e) => handlePush('right', e), { passive: false });
+
+        animate();
+    </script>
+</body>
+
+</html>
