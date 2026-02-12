@@ -334,7 +334,20 @@ export function initMusicPlayer() {
                 'onReady': onPlayerReady,
                 'onStateChange': onPlayerStateChange
             }
-        if(event.data === YT.PlayerState.PLAYING) {
+        });
+    };
+
+    function onPlayerReady(event) {
+        // Player ready
+        if (playlist.length > 0) {
+            loadTrack(currentIndex, false);
+        }
+        // Set Volume
+        player.setVolume(50);
+    }
+
+    function onPlayerStateChange(event) {
+        if (event.data === YT.PlayerState.PLAYING) {
             isPlaying = true;
             elStateIcon.textContent = 'play_arrow';
             btnPlayPauseIcon.textContent = 'pause';
