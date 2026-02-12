@@ -10,11 +10,21 @@ export function initMusicPlayer() {
         /* Music Player Container */
         #musicPlayerContainer {
             position: fixed;
-            bottom: 20px;
+            bottom: calc(20px + env(safe-area-inset-bottom));
             right: 20px;
             z-index: 2147483647;
             font-family: 'Inter', sans-serif;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @media (max-width: 768px) {
+            .music-fab {
+                width: 60px !important;
+                height: 60px !important;
+            }
+            .music-fab span {
+                font-size: 32px !important;
+            }
         }
 
         /* Minimized State (Fab) */
