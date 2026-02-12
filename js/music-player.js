@@ -3,6 +3,7 @@ import { db } from './firebase-config.js';
 import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 export function initMusicPlayer() {
+    console.log("Initializing Music Player...");
     // 1. Inject Styles
     const style = document.createElement('style');
     style.textContent = `
@@ -11,7 +12,7 @@ export function initMusicPlayer() {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            z-index: 9999;
+            z-index: 2147483647;
             font-family: 'Inter', sans-serif;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
