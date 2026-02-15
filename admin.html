@@ -84,37 +84,51 @@
     </div>
 
     <!-- === ADMIN DASHBOARD (Hidden by default) === -->
-    <div id="adminApp" class="flex w-full h-full hidden">
+    <div id="adminApp" class="flex w-full h-full hidden relative">
+
+        <!-- Mobile Overlay -->
+        <div id="sidebarOverlay" onclick="toggleSidebar()"
+            class="fixed inset-0 bg-black/50 z-40 hidden md:hidden glass-effect transition-opacity"></div>
+
+        <!-- Hamburger Button -->
+        <button onclick="toggleSidebar()"
+            class="md:hidden fixed top-4 left-4 z-50 p-2 bg-white/80 dark:bg-zinc-800/80 backdrop-blur rounded-full shadow-lg text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-zinc-700">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
 
         <!-- Sidebar -->
-        <aside class="w-64 bg-stone-100 dark:bg-zinc-950 border-r border-stone-200 dark:border-zinc-800 flex flex-col">
-            <div class="p-6 border-b border-stone-200 dark:border-zinc-800">
+        <aside id="adminSidebar"
+            class="w-64 bg-stone-100 dark:bg-zinc-950 border-r border-stone-200 dark:border-zinc-800 flex flex-col fixed inset-y-0 left-0 z-50 transform -translate-x-full md:translate-x-0 md:relative transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+            <div class="p-6 border-b border-stone-200 dark:border-zinc-800 flex justify-between items-center">
                 <h2 class="font-display font-bold text-lg tracking-wider">ADMIN</h2>
+                <button onclick="toggleSidebar()" class="md:hidden text-stone-400 hover:text-stone-600">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
             </div>
-            <nav class="flex-1 p-4 space-y-2">
-                <button onclick="showView('dashboard')" id="nav-dashboard"
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <button onclick="showView('dashboard'); toggleSidebar()" id="nav-dashboard"
                     class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-md text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors text-sm text-left">
                     <span class="material-symbols-outlined text-lg">dashboard</span>
                     Dashboard
                 </button>
                 <div class="pt-4 pb-2 px-4 text-[10px] font-bold text-stone-400 uppercase tracking-widest">Content</div>
-                <button onclick="showView('writings')" id="nav-writings"
+                <button onclick="showView('writings'); toggleSidebar()" id="nav-writings"
                     class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-md text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors text-sm text-left">
                     <span class="material-symbols-outlined text-lg">edit_note</span>
                     Writings
                 </button>
                 <li class="sidebar-item p-3 mb-2 rounded-lg cursor-pointer hover:bg-stone-200 dark:hover:bg-zinc-800 text-stone-600 dark:text-stone-400 font-medium transition-colors flex items-center gap-3"
-                    id="nav-comments" onclick="showView('comments')">
+                    id="nav-comments" onclick="showView('comments'); toggleSidebar()">
                     <span class="material-symbols-outlined text-[20px]">forum</span>
                     <span class="text-sm">Community</span>
                 </li>
-                <button onclick="showView('photography')" id="nav-photography"
+                <button onclick="showView('photography'); toggleSidebar()" id="nav-photography"
                     class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-md text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors text-sm text-left">
                     <span class="material-symbols-outlined text-lg">photo_library</span>
                     Photography
                 </button>
                 <div class="pt-4 pb-2 px-4 text-[10px] font-bold text-stone-400 uppercase tracking-widest">System</div>
-                <button onclick="showView('music')" id="nav-music"
+                <button onclick="showView('music'); toggleSidebar()" id="nav-music"
                     class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-md text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors text-sm text-left">
                     <span class="material-symbols-outlined text-lg">music_note</span>
                     Music Manager
@@ -135,7 +149,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 bg-[#f8f7f6] dark:bg-zinc-900 overflow-y-auto p-8 relative">
+        <main class="flex-1 bg-[#f8f7f6] dark:bg-zinc-900 overflow-y-auto p-8 relative pt-20 md:pt-8 transition-all">
 
             <!-- VIEW: MUSIC MANAGER -->
             <div id="view-music" class="content-view hidden space-y-8">
@@ -455,6 +469,7 @@
         window.closeManagePhotoModal = closeManagePhotoModal;
         window.savePhotoDetails = savePhotoDetails;
         window.deleteInternalPhotoComment = deleteInternalPhotoComment;
+        window.toggleSidebar = toggleSidebar;
 
         const loginScreen = document.getElementById('loginScreen');
         const adminApp = document.getElementById('adminApp');
@@ -462,8 +477,18 @@
         const editModal = document.getElementById('editModal');
         const photoModal = document.getElementById('photoModal');
         const managePhotoModal = document.getElementById('managePhotoModal');
+        const sidebar = document.getElementById('adminSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
         let editingId = null;
         let managingPhotoId = null;
+
+        function toggleSidebar() {
+            // Only toggle on mobile
+            if (window.innerWidth >= 768) return;
+
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
 
         // Check Access on Auth State Change
         onAuthStateChanged(auth, (user) => {
