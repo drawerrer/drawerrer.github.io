@@ -248,9 +248,18 @@ export function initMusicPlayer() {
     const btnPlayPauseIcon = document.querySelector('#btnPlayPause span');
 
     // UI Toggles
-    fab.addEventListener('click', () => {
+    fab.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent immediate closing
         fab.classList.add('hidden-player');
         body.classList.remove('hidden-player');
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!body.classList.contains('hidden-player') && !container.contains(e.target)) {
+            body.classList.add('hidden-player');
+            fab.classList.remove('hidden-player');
+        }
     });
 
     // Minmize when clicking outside? Or maybe a close button?
