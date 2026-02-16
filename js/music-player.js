@@ -31,19 +31,20 @@ export function initMusicPlayer() {
         .music-fab {
             width: 50px;
             height: 50px;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.6); /* Darker for better visibility */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: transform 0.2s;
+            z-index: 2147483647; /* Ensure z-index is here too just in case */
         }
-        .music-fab:hover { transform: scale(1.1); }
-        .music-fab span { font-size: 24px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .music-fab:hover { transform: scale(1.1); background: rgba(0, 0, 0, 0.8); }
+        .music-fab span { font-size: 24px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
         /* Expanded State (iPod Glass) */
         .ipod-body {
