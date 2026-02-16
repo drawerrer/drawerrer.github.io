@@ -263,57 +263,7 @@ export function initMusicPlayer() {
         }
     });
 
-    // Draggable Logic
-    makeDraggable(container);
 
-    function makeDraggable(element) {
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        const dragHandler = element.querySelector('.ipod-body') || element;
-
-        dragHandler.onmousedown = dragMouseDown;
-        dragHandler.ontouchstart = dragMouseDown; // Mobile support
-
-        function dragMouseDown(e) {
-            // Prevent dragging if clicking internal controls
-            if (e.target.closest('.click-wheel') || e.target.closest('.ipod-screen')) return;
-
-            e = e || window.event;
-            e.preventDefault();
-            // Get mouse cursor position at startup
-            pos3 = e.clientX || e.touches[0].clientX;
-            pos4 = e.clientY || e.touches[0].clientY;
-            document.onmouseup = closeDragElement;
-            document.onmousemove = elementDrag;
-            document.ontouchend = closeDragElement;
-            document.ontouchmove = elementDrag;
-        }
-
-        function elementDrag(e) {
-            e = e || window.event;
-            // Calculate new cursor position
-            const clientX = e.clientX || e.touches[0].clientX;
-            const clientY = e.clientY || e.touches[0].clientY;
-
-            pos1 = pos3 - clientX;
-            pos2 = pos4 - clientY;
-            pos3 = clientX;
-            pos4 = clientY;
-
-            // Set element's new position
-            element.style.top = (element.offsetTop - pos2) + "px";
-            element.style.left = (element.offsetLeft - pos1) + "px";
-            element.style.bottom = "auto"; // Override fixed bottom
-            element.style.right = "auto";  // Override fixed right
-        }
-
-        function closeDragElement() {
-            // Stop moving when mouse button is released
-            document.onmouseup = null;
-            document.onmousemove = null;
-            document.ontouchend = null;
-            document.ontouchmove = null;
-        }
-    }
 
     // Minmize when clicking outside? Or maybe a close button?
     // Let's make "MENU" toggle playlist, and long press MENU minimize? 
