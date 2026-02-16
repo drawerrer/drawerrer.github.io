@@ -31,33 +31,33 @@ export function initMusicPlayer() {
         .music-fab {
             width: 50px;
             height: 50px;
-            background: #e5e5e5;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            border: 1px solid #d4d4d4;
             transition: transform 0.2s;
         }
         .music-fab:hover { transform: scale(1.1); }
-        .music-fab span { font-size: 24px; color: #555; }
+        .music-fab span { font-size: 24px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 
-        /* Expanded State (iPod) */
+        /* Expanded State (iPod Glass) */
         .ipod-body {
             width: 200px;
             height: 320px;
-            background: #fdfdfd;
-            border-radius: 20px;
-            box-shadow: 
-                inset 0 0 10px rgba(0,0,0,0.05),
-                0 20px 40px rgba(0,0,0,0.2);
-            border: 1px solid #e0e0e0;
+            border-radius: 24px;
+            background: linear-gradient(148deg, rgba(224, 224, 224, 0.20) 0%, rgba(189, 189, 189, 0.20) 50%, rgba(158, 158, 158, 0.20) 100%);
+            box-shadow: 0 1px 1px 0 rgba(255, 255, 255, 0.80) inset, 0 10px 30px 0 rgba(0, 0, 0, 0.30);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             display: flex;
             flex-direction: column;
-            padding: 15px;
-            gap: 15px;
+            padding: 20px;
+            gap: 20px;
             transform-origin: bottom right;
         }
 
@@ -65,26 +65,25 @@ export function initMusicPlayer() {
 
         /* Screen */
         .ipod-screen {
-            background: #fff;
-            border: 2px solid #555;
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 6px;
-            height: 120px;
+            height: 110px;
             overflow: hidden;
             position: relative;
             display: flex;
             flex-direction: column;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
         
         .screen-header {
-            background: #eee;
-            border-bottom: 1px solid #ccc;
-            padding: 2px 5px;
+            padding: 4px 8px;
             font-size: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: bold;
+            font-weight: 600;
             color: #555;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
         .screen-content {
@@ -97,30 +96,31 @@ export function initMusicPlayer() {
             text-align: center;
         }
 
-        .track-title { font-size: 12px; font-weight: bold; color: #333; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
-        .track-artist { font-size: 10px; color: #666; }
+        .track-title { font-size: 13px; font-weight: 700; color: #222; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2;}
+        .track-artist { font-size: 11px; color: #555; font-weight: 500; }
         
         /* Playlist Overlay within Screen */
         .screen-playlist {
             position: absolute;
             inset: 0;
-            background: #fff;
+            background: rgba(255,255,255,0.95);
             z-index: 10;
             overflow-y: auto;
-            font-size: 10px;
+            font-size: 11px;
             display: none;
         }
         .screen-playlist.show { display: block; }
         .playlist-item {
-            padding: 4px 8px;
-            border-bottom: 1px solid #eee;
+            padding: 6px 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
             cursor: pointer;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: #444;
         }
-        .playlist-item:hover { background: #3b82f6; color: white; }
-        .playlist-item.active { background: #3b82f6; color: white; font-weight: bold; }
+        .playlist-item:hover { background: rgba(0,0,0,0.05); }
+        .playlist-item.active { background: #555; color: white; font-weight: bold; }
 
         /* Controls (Click Wheel) */
         .click-wheel-area {
@@ -133,44 +133,45 @@ export function initMusicPlayer() {
         .click-wheel {
             width: 140px;
             height: 140px;
-            background: #f0f0f0;
-            border-radius: 50%;
+            border-radius: 9999px;
+            background: radial-gradient(70.71% 70.71% at 50% 50%, rgba(255, 255, 255, 0.20) 0%, rgba(245, 245, 245, 0.20) 100%);
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.10) inset, 0 2px 2px 0 rgba(255, 255, 255, 0.50);
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .wheel-btn {
             position: absolute;
-            color: #999;
+            color: #f5f5f5; /* Light icon color for glass look */
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
             font-size: 10px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
             width: 30px;
             height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: color 0.2s;
+            transition: opacity 0.2s;
         }
-        .wheel-btn:hover { color: #555; }
+        .wheel-btn:hover { opacity: 0.8; }
         
-        .btn-menu { top: 10px; }
-        .btn-prev { left: 10px; }
-        .btn-next { right: 10px; }
-        .btn-play { bottom: 10px; }
+        .btn-menu { top: 15px; font-size: 9px; letter-spacing: 1px; }
+        .btn-prev { left: 15px; }
+        .btn-next { right: 15px; }
+        .btn-play { bottom: 15px; }
 
         .center-btn {
-            width: 50px;
-            height: 50px;
-            background: #ddd;
-            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, rgba(209, 209, 209, 0.80) 0%, rgba(176, 176, 176, 0.80) 100%);
+            box-shadow: 0 1px 2px 0 rgba(255, 255, 255, 0.50) inset, 0 1px 2px 0 rgba(0, 0, 0, 0.20);
             cursor: pointer;
-            transition: background 0.2s;
         }
-        .center-btn:active { background: #ccc; }
+        .center-btn:active { transform: scale(0.98); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
 
         /* YouTube Hidden */
         #ytPlayerFrame { position: absolute; top: -9999px; left: -9999px; width: 0; height: 0; opacity: 0; pointer-events: none; }
@@ -190,36 +191,33 @@ export function initMusicPlayer() {
         <div id="ipodBody" class="ipod-body hidden-player">
             <div class="ipod-screen">
                 <div class="screen-header">
-                    <span id="playerStateIcon" class="material-symbols-outlined text-[10px]">stop</span>
-                    <span id="batteryIcon" class="material-symbols-outlined text-[10px] rotate-90">battery_full</span>
+                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">lock</span></span>
+                    <span id="playerStateIcon" class="material-symbols-outlined text-[12px]">stop</span>
+                    <span id="batteryIcon" class="material-symbols-outlined text-[12px] rotate-90">battery_full</span>
                 </div>
                 <!-- Main View -->
                 <div class="screen-content" id="screenMain">
                     <div id="trackTitle" class="track-title">Not Playing</div>
                     <div id="trackArtist" class="track-artist">Select a Song</div>
-                    <div class="mt-2 w-full h-1 bg-gray-200 rounded overflow-hidden">
+                    <div class="mt-3 w-3/4 h-1 bg-gray-300/50 rounded-full overflow-hidden">
                         <div id="progressBar" class="h-full bg-blue-500 w-0"></div>
                     </div>
                 </div>
                 <!-- Playlist View -->
                 <div class="screen-playlist scrollbar-hide" id="screenPlaylist">
-                    <div class="p-2 text-center text-gray-400 italic">Empty</div>
+                    <div class="p-2 text-center text-gray-500 italic">Empty</div>
                 </div>
             </div>
 
             <div class="click-wheel-area">
                 <div class="click-wheel">
                     <div class="wheel-btn btn-menu" id="btnMenu">MENU</div>
-                    <div class="wheel-btn btn-prev" id="btnPrev"><span class="material-symbols-outlined text-lg">skip_previous</span></div>
-                    <div class="wheel-btn btn-next" id="btnNext"><span class="material-symbols-outlined text-lg">skip_next</span></div>
-                    <div class="wheel-btn btn-play" id="btnPlayPause"><span class="material-symbols-outlined text-lg">play_arrow</span></div> <!-- Label shows Play/Pause -->
+                    <div class="wheel-btn btn-prev" id="btnPrev"><span class="material-symbols-outlined text-[20px]">skip_previous</span></div>
+                    <div class="wheel-btn btn-next" id="btnNext"><span class="material-symbols-outlined text-[20px]">skip_next</span></div>
+                    <div class="wheel-btn btn-play" id="btnPlayPause"><span class="material-symbols-outlined text-[20px]">play_arrow</span></div> <!-- Label shows Play/Pause -->
                     
                     <div class="center-btn" id="btnCenter"></div>
                 </div>
-            </div>
-            
-            <div class="text-center">
-                 <input type="range" id="volumeSlider" min="0" max="100" value="50" class="w-3/4 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer">
             </div>
         </div>
         
