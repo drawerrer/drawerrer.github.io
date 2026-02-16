@@ -419,9 +419,7 @@ export function initMusicPlayer() {
     document.getElementById('btnPrev').addEventListener('click', prevTrack);
     document.getElementById('btnNext').addEventListener('click', nextTrack);
 
-    document.getElementById('volumeSlider').addEventListener('input', (e) => {
-        if (player) player.setVolume(e.target.value);
-    });
+
 
     // Load Youtube Script
     const tag = document.createElement('script');
