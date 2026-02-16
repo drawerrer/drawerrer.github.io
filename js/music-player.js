@@ -286,15 +286,26 @@ export function initMusicPlayer() {
 
     // Load Playlist
     async function loadPlaylist() {
+        console.log("Loading playlist...");
         try {
             const q = query(collection(db, "music"), orderBy("createdAt", "desc"));
             const snapshot = await getDocs(q);
+            console.log(`Snapshot size: ${snapshot.size}`);
             playlist = [];
-            snapshot.forEach(doc => playlist.push({ id: doc.id, ...doc.data() }));
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                console.log("Track found:", data.title);
+                playlist.push({ id: doc.id, ...data });
+            });
 
             renderPlaylist();
+
             if (playlist.length > 0) {
+                console.log("Playlist loaded, loading first track.");
                 loadTrack(0, false); // Load first track but don't autoplay initially
+            } else {
+                console.warn("Playlist is empty.");
+                screenPlaylist.innerHTML = '<div class="p-2 text-center text-gray-500 italic">No songs found</div>';
             }
         } catch (e) {
             console.error("Music Load Error", e);
