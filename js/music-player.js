@@ -12,7 +12,7 @@ export function initMusicPlayer() {
             position: fixed;
             bottom: calc(20px + env(safe-area-inset-bottom));
             right: 20px;
-            z-index: 2147483647;
+            z-index: 99999999;
             font-family: 'Inter', sans-serif;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -31,20 +31,20 @@ export function initMusicPlayer() {
         .music-fab {
             width: 50px;
             height: 50px;
-            background: rgba(0, 0, 0, 0.6); /* Darker for better visibility */
+            background: rgba(255, 255, 255, 0.4); /* Revert to transparent white */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 50%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.4);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: transform 0.2s;
-            z-index: 2147483647; /* Ensure z-index is here too just in case */
+            z-index: 99999999;
         }
-        .music-fab:hover { transform: scale(1.1); background: rgba(0, 0, 0, 0.8); }
-        .music-fab span { font-size: 24px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .music-fab:hover { transform: scale(1.1); background: rgba(255, 255, 255, 0.6); }
+        .music-fab span { font-size: 24px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 
         /* Expanded State (iPod Glass) */
         .ipod-body {
@@ -254,9 +254,10 @@ export function initMusicPlayer() {
     });
 
     // Close when clicking outside
+    // Close when clicking outside
     document.addEventListener('click', (e) => {
-        // Ignore clicks on the theme toggle button (nav button)
-        if (e.target.closest('#themeToggleBtn')) return;
+        // Ignore clicks on ANY theme toggle button (desktop or mobile)
+        if (e.target.closest('[onclick*="toggleTheme"]')) return;
 
         if (!body.classList.contains('hidden-player') && !container.contains(e.target)) {
             body.classList.add('hidden-player');
