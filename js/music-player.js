@@ -10,7 +10,7 @@ export function initMusicPlayer() {
         /* Music Player Container */
         #musicPlayerContainer {
             position: fixed;
-            bottom: calc(20px + env(safe-area-inset-bottom));
+            bottom: 100px; /* DEBUG: Move up */
             right: 20px;
             z-index: 99999999;
             font-family: 'Inter', sans-serif;
@@ -31,7 +31,8 @@ export function initMusicPlayer() {
         .music-fab {
             width: 50px;
             height: 50px;
-            background: rgba(255, 255, 255, 0.4); /* Revert to transparent white */
+            background: red; /* DEBUG: Force visibility */
+            border: 2px solid white; /* DEBUG: Force visibility */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 50%;
@@ -43,7 +44,7 @@ export function initMusicPlayer() {
             transition: transform 0.2s;
             z-index: 99999999;
         }
-        .music-fab:hover { transform: scale(1.1); background: rgba(255, 255, 255, 0.6); }
+        .music-fab:hover { transform: scale(1.1); background: rgba(255, 0, 0, 0.8); }
         .music-fab span { font-size: 24px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 
         /* Expanded State (iPod Glass) */
