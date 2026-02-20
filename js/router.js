@@ -141,5 +141,5 @@ function getRelativePath(path) {
     // Basic helper to handle import paths
     // If path starts with /, it's absolute from root. 
     // `import` usually works fine with relative ./ or absolute /
-    return '.' + path; // assuming router.js is in /js/ and we want ./page-writings.js
+    return '..' + path; // ascending from js/ directory
 }
