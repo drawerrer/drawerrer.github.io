@@ -31,21 +31,43 @@ export function initMusicPlayer() {
         .music-fab {
             width: 50px;
             height: 50px;
-            background: red; /* DEBUG: Force visibility */
-            border: 2px solid white; /* DEBUG: Force visibility */
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.4);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.4);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
             z-index: 99999999;
         }
-        .music-fab:hover { transform: scale(1.1); background: rgba(255, 0, 0, 0.8); }
-        .music-fab span { font-size: 24px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .music-fab:hover { 
+            transform: scale(1.05); 
+            background: rgba(255, 255, 255, 0.6); 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.6);
+        }
+        .music-fab span { 
+            font-size: 24px; 
+            color: #4b5563; /* text-gray-600 */ 
+            transition: color 0.3s ease;
+        }
+
+        /* Dark Mode Overrides */
+        .dark .music-fab {
+            background: rgba(30, 41, 59, 0.4); /* slate-800 translucent */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.05);
+        }
+        .dark .music-fab:hover {
+            background: rgba(30, 41, 59, 0.6);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.1);
+        }
+        .dark .music-fab span {
+            color: #e2e8f0; /* text-slate-200 */
+        }
 
         /* Expanded State (iPod Glass) */
         .ipod-body {

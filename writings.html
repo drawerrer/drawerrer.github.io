@@ -295,33 +295,7 @@
                 <!-- Content -->
             </article>
 
-            <!-- COMMENT SECTION -->
-            <section class="pb-24 max-w-none w-full border-t border-stone-200 dark:border-stone-800 pt-12">
-                <div class="flex items-center justify-between mb-8">
-                    <h3 class="font-bold text-stone-900 dark:text-stone-100 text-xs tracking-widest uppercase">Comments
-                        (<span id="commentCount">0</span>)</h3>
-                </div>
 
-                <div id="commentList" class="space-y-8 mb-12"></div>
-
-                <form id="commentForm" class="bg-stone-100 dark:bg-zinc-800 p-6 rounded-sm">
-                    <h4 class="text-xs font-bold text-stone-500 uppercase mb-4 tracking-widest">Leave a Note</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <input type="text" name="name" placeholder="Name" required
-                            class="bg-transparent border-b border-stone-300 dark:border-stone-600 py-2 text-sm focus:outline-none focus:border-stone-800 dark:text-stone-200">
-                        <input type="password" name="password" placeholder="Password (to delete)" required
-                            class="bg-transparent border-b border-stone-300 dark:border-stone-600 py-2 text-sm focus:outline-none focus:border-stone-800 dark:text-stone-200">
-                    </div>
-                    <textarea name="content" placeholder="Message..." required rows="3"
-                        class="w-full bg-transparent border-b border-stone-300 dark:border-stone-600 py-2 text-sm focus:outline-none focus:border-stone-800 mb-4 dark:text-stone-200"></textarea>
-                    <div class="flex justify-end">
-                        <button type="submit"
-                            class="bg-stone-800 text-white px-6 py-2 text-xs font-bold uppercase tracking-widest hover:bg-stone-600 transition-colors">
-                            Post
-                        </button>
-                    </div>
-                </form>
-            </section>
         </div>
     </div>
 
@@ -335,9 +309,6 @@
         const readingView = document.getElementById('readingView');
         const docTitle = document.getElementById('docTitle');
         const docDateDisplay = document.getElementById('docDateDisplay');
-        const commentList = document.getElementById('commentList');
-        const commentCount = document.getElementById('commentCount');
-        const commentForm = document.getElementById('commentForm');
         const docContent = document.getElementById('docContent');
 
         let currentDocId = '';
@@ -451,72 +422,10 @@
                 docTitle.textContent = essay.title;
                 docDateDisplay.textContent = essay.date;
                 docContent.innerHTML = essay.content;
-                loadComments(id);
             }
         }
 
-        async function loadComments(docId) {
-            commentList.innerHTML = '<p class="text-center text-xs text-stone-400 italic">Loading comments...</p>';
 
-            try {
-                // Fetch comments from subcollection 'comments'
-                const commentsRef = collection(db, "essays", docId, "comments");
-                const q = query(commentsRef, orderBy("createdAt", "asc"));
-                const querySnapshot = await getDocs(q);
-
-                commentList.innerHTML = '';
-                commentCount.textContent = querySnapshot.size;
-
-                if (querySnapshot.empty) {
-                    commentList.innerHTML = '<p class="text-center text-xs text-stone-400 italic">No comments yet.</p>';
-                    return;
-                }
-
-                querySnapshot.forEach((doc) => {
-                    const comment = doc.data();
-                    const date = comment.createdAt ? comment.createdAt.toDate().toLocaleDateString() : 'Just now';
-
-                    const el = document.createElement('div');
-                    el.className = 'border-b border-black/5 pb-4 last:border-0';
-                    el.innerHTML = `
-                        <div class="flex justify-between items-baseline mb-2">
-                            <span class="font-bold text-sm text-stone-800 dark:text-stone-200">${comment.name}</span>
-                            <span class="text-[10px] text-stone-400 font-mono">${date}</span>
-                        </div>
-                        <p class="text-sm text-stone-600 dark:text-stone-400 leading-relaxed font-serif">${comment.content}</p>
-                    `;
-                    commentList.appendChild(el);
-                });
-            } catch (error) {
-                console.error("Error loading comments:", error);
-                commentList.innerHTML = '<p class="text-center text-xs text-red-400 italic">Error loading comments.</p>';
-            }
-        }
-
-        commentForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(commentForm);
-            const name = formData.get('name');
-            const password = formData.get('password'); // Note: storing password in plain text for this demo/MVP as per user logic
-            const content = formData.get('content');
-
-            if (!currentDocId) return;
-
-            try {
-                await addDoc(collection(db, "essays", currentDocId, "comments"), {
-                    name,
-                    password,
-                    content,
-                    createdAt: serverTimestamp()
-                });
-
-                commentForm.reset();
-                loadComments(currentDocId); // Reload comments
-            } catch (error) {
-                console.error("Error adding comment:", error);
-                alert("Failed to post comment.");
-            }
-        });
     </script>
     <script type="module">
         import { initMusicPlayer } from './js/music-player.js';

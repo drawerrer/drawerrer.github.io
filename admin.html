@@ -208,15 +208,7 @@
                         </div>
                         <p class="text-3xl font-display font-bold text-stone-800 dark:text-white" id="stat-essays">0</p>
                     </div>
-                    <div
-                        class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-sm border border-stone-200 dark:border-zinc-700">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-stone-500 text-xs font-bold uppercase tracking-wider">Pending Comments</h3>
-                            <span class="material-symbols-outlined text-stone-400">chat_bubble</span>
-                        </div>
-                        <p class="text-3xl font-display font-bold text-stone-800 dark:text-white" id="stat-comments">0
-                        </p>
-                    </div>
+
                     <div
                         class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-sm border border-stone-200 dark:border-zinc-700">
                         <div class="flex items-center justify-between mb-4">
@@ -283,15 +275,7 @@
                     </div>
                 </section>
 
-                <hr class="border-stone-200 dark:border-zinc-700">
 
-                <!-- 2. Comments Section -->
-                <section>
-                    <h2 class="text-sm font-bold uppercase text-stone-500 mb-4 tracking-wider">Essay Comments</h2>
-                    <div class="space-y-4" id="adminCommentList">
-                        <!-- Injected via JS -->
-                    </div>
-                </section>
             </div>
 
             <!-- VIEW: PHOTOGRAPHY -->
@@ -394,18 +378,7 @@
                     </div>
                 </div>
 
-                <hr class="border-stone-200">
 
-                <!-- 2. Manage Comments -->
-                <div>
-                    <h3 class="font-bold text-sm text-stone-800 mb-3 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">comment</span> Manage Comments
-                    </h3>
-                    <div id="managePhotoCommentsList"
-                        class="space-y-2 max-h-[200px] overflow-y-auto bg-stone-50 p-2 rounded border border-stone-200">
-                        <!-- Injected -->
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -456,7 +429,6 @@
         window.closeModal = closeModal;
         window.saveEssay = saveEssay;
         window.deleteEssay = deleteEssay;
-        window.deleteComment = deleteComment;
         window.openPhotoModal = openPhotoModal;
         window.closePhotoModal = closePhotoModal;
         window.uploadPhoto = uploadPhoto;
@@ -468,7 +440,6 @@
         window.openManagePhotoModal = openManagePhotoModal;
         window.closeManagePhotoModal = closeManagePhotoModal;
         window.savePhotoDetails = savePhotoDetails;
-        window.deleteInternalPhotoComment = deleteInternalPhotoComment;
         window.toggleSidebar = toggleSidebar;
 
         const loginScreen = document.getElementById('loginScreen');
@@ -537,10 +508,6 @@
             try {
                 const essaysSnap = await getDocs(collection(db, "essays"));
                 document.getElementById('stat-essays').textContent = essaysSnap.size;
-
-                // Count comments via collectionGroup
-                const commentsSnap = await getDocs(collectionGroup(db, 'comments'));
-                document.getElementById('stat-comments').textContent = commentsSnap.size;
 
                 // Photos stats (if element exists)
                 // const photosSnap = await getDocs(collection(db, "photos"));
@@ -700,8 +667,6 @@
                 }
             } catch (e) { console.error(e); }
 
-            // 2. Load Comments
-            loadManagePhotoComments(id);
         }
 
         function closeManagePhotoModal() {
@@ -722,49 +687,6 @@
                 });
                 alert("Details updated!");
                 loadPhotos(); // Refresh grid
-            } catch (e) { alert("Error: " + e.message); }
-        }
-
-        async function loadManagePhotoComments(photoId) {
-            const list = document.getElementById('managePhotoCommentsList');
-            list.innerHTML = '<div class="text-center py-4 text-stone-400 text-xs">Loading comments...</div>';
-
-            try {
-                const commentsRef = collection(db, "photos", photoId, "comments");
-                const q = query(commentsRef, orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
-
-                list.innerHTML = '';
-                if (querySnapshot.empty) {
-                    list.innerHTML = '<div class="text-center py-4 text-stone-400 text-xs italic">No comments on this photo.</div>';
-                    return;
-                }
-
-                querySnapshot.forEach(doc => {
-                    const data = doc.data();
-                    const el = document.createElement('div');
-                    el.className = "flex justify-between items-center bg-white p-2 rounded shadow-sm border border-stone-100 text-xs";
-                    el.innerHTML = `
-                        <div class="truncate pr-2">
-                             <span class="font-bold text-stone-700">${data.author || 'Guest'}:</span> 
-                             <span class="text-stone-600">${data.content}</span>
-                        </div>
-                        <button onclick="deleteInternalPhotoComment('${photoId}', '${doc.id}')" class="text-red-300 hover:text-red-500">
-                            <span class="material-symbols-outlined text-sm">remove_circle</span>
-                        </button>
-                    `;
-                    list.appendChild(el);
-                });
-            } catch (e) {
-                list.innerHTML = '<div class="text-red-400 text-xs">Error loading comments</div>';
-            }
-        }
-
-        async function deleteInternalPhotoComment(photoId, commentId) {
-            if (!confirm("Delete comment?")) return;
-            try {
-                await deleteDoc(doc(db, "photos", photoId, "comments", commentId));
-                loadManagePhotoComments(photoId); // Refresh internal list
             } catch (e) { alert("Error: " + e.message); }
         }
 
@@ -847,143 +769,9 @@
             try { await deleteDoc(doc(db, "essays", id)); loadWritings(); } catch (e) { alert(e.message); }
         }
 
-        // --- COMMUNITY & COMMENTS LOGIC ---
+        // --- COMMUNITY LOGIC ---
         async function loadCommunity() {
-            loadAdminComments();
             loadGuestbook();
-            // loadPhotoComments(); // Removed from Community view
-        }
-
-        /*      // Old Global Photo Comment Loader - Removed
-                async function loadPhotoComments() {
-                     const listContainer = document.getElementById('adminPhotoCommentList');
-                    if (!listContainer) return;
-                    listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">Loading photo comments...</div>';
-        
-                    try {
-                        // Query all 'comments' subcollections inside 'photos' using collectionGroup
-                        // Note: Ensure index exists for 'comments' collectionGroup ordered by createdAt desc
-                        const q = query(collectionGroup(db, 'comments'), orderBy('createdAt', 'desc'));
-                        const querySnapshot = await getDocs(q);
-        
-                        listContainer.innerHTML = '';
-                        if (querySnapshot.empty) {
-                            listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">No photography comments found.</div>';
-                            return;
-                        }
-        
-                        // Filter out essay comments if they share the same subcollection name 'comments'
-                        // Check parent collection name
-                        const photosComments = [];
-                        querySnapshot.forEach(doc => {
-                            if (doc.ref.parent.parent.parent.id === 'photos') { // photos/{id}/comments/{docId} -> parent=comments, parent.parent={photoDoc}, parent.parent.parent=photos ?? No.
-                                // Structure: db -> collection('photos') -> doc(photoId) -> collection('comments') -> doc(commentId)
-                                // doc.ref.parent = collection('comments')
-                                // doc.ref.parent.parent = doc(photoId)
-                                // doc.ref.parent.parent.parent = collection('photos')
-                                photosComments.push({ id: doc.id, ref: doc.ref, ...doc.data() });
-                            }
-                            // Wait, 'essays' also has 'comments'. We need to distinguish.
-                            // Essay: essays/{id}/comments/{docId}
-                            // Photo: photos/{id}/comments/{docId}
-                            // doc.ref.parent.parent.parent.id check is correct.
-                        });
-        
-                        // Re-sort in JS just in case mixture messed up order or we filtered
-                        photosComments.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
-        
-                        if (photosComments.length === 0) {
-                            listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">No photography comments found.</div>';
-                            return;
-                        }
-        
-                        photosComments.forEach(comment => {
-                            const photoId = comment.ref.parent.parent.id;
-                            const dateStr = comment.createdAt ? comment.createdAt.toDate().toLocaleDateString() : 'Unknown';
-        
-                            const el = document.createElement('div');
-                            el.className = "bg-white p-4 rounded-lg shadow-sm border border-stone-200 flex justify-between items-start mb-2";
-                            el.innerHTML = `
-                                 <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="badge bg-purple-100 text-purple-800 text-[10px] px-2 py-0.5 rounded">Photo Memory</span>
-                                        <span class="font-bold text-sm text-stone-800">${comment.author || 'Guest'}</span>
-                                        <span class="text-xs text-stone-400">on Photo ID: ${photoId.slice(0, 5)}...</span>
-                                        <span class="text-[10px] text-stone-300">• ${dateStr}</span>
-                                    </div>
-                                    <p class="text-stone-600 text-sm font-serif italic">"${comment.content}"</p>
-                                </div>
-                                <button onclick="deletePhotoComment('${photoId}', '${comment.id}')" class="text-red-400 hover:text-red-600 p-2"><span class="material-symbols-outlined text-sm">delete</span></button>
-                            `;
-                            listContainer.appendChild(el);
-                        });
-        
-                    } catch (e) {
-                        console.error("Error loading photo comments", e);
-                        listContainer.innerHTML = `<div class="text-center py-4 text-red-400 italic">Error: ${e.message}</div>`;
-                    }
-                }
-        
-                async function deletePhotoComment(photoId, commentId) {
-                    if (!confirm("Delete this comment?")) return;
-                    try {
-                        await deleteDoc(doc(db, "photos", photoId, "comments", commentId));
-                        loadPhotoComments();
-                        loadStats();
-                    } catch (e) { alert("Error: " + e.message); }
-                }
-        */
-
-
-        async function loadAdminComments() {
-            const listContainer = document.getElementById('adminCommentList');
-            if (!listContainer) return;
-            listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">Loading essay comments...</div>';
-
-            try {
-                // Try simple query without sorting first to avoid Index Error
-                const commentsQuery = query(collectionGroup(db, 'comments'));
-                const querySnapshot = await getDocs(commentsQuery);
-
-                listContainer.innerHTML = '';
-                if (querySnapshot.empty) {
-                    listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">No essay comments found.</div>';
-                    return;
-                }
-
-                // Client-side sort
-                const docs = [];
-                querySnapshot.forEach(doc => docs.push({ id: doc.id, ref: doc.ref, ...doc.data() }));
-                docs.sort((a, b) => {
-                    const tA = a.createdAt?.toMillis() || 0;
-                    const tB = b.createdAt?.toMillis() || 0;
-                    return tB - tA; // Descending
-                });
-
-                docs.forEach(comment => {
-                    const essayId = comment.ref.parent.parent.id;
-                    const dateStr = comment.createdAt ? comment.createdAt.toDate().toLocaleDateString() : (comment.date || 'Unknown');
-
-                    const el = document.createElement('div');
-                    el.className = "bg-white p-4 rounded-lg shadow-sm border border-stone-200 flex justify-between items-start mb-2";
-                    el.innerHTML = `
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="badge bg-stone-100 text-stone-600 text-[10px] px-2 py-0.5 rounded">Essay Comment</span>
-                                <span class="font-bold text-sm text-stone-800">${comment.name}</span>
-                                <span class="text-xs text-stone-400">on Essay ID: ${essayId.slice(0, 5)}...</span>
-                                <span class="text-[10px] text-stone-300">• ${dateStr}</span>
-                            </div>
-                            <p class="text-stone-600 text-sm">${comment.content}</p>
-                        </div>
-                        <button onclick="deleteComment('${essayId}', '${comment.id}')" class="text-red-400 hover:text-red-600 p-2"><span class="material-symbols-outlined text-sm">delete</span></button>
-                    `;
-                    listContainer.appendChild(el);
-                });
-            } catch (e) {
-                console.error("Error loading comments", e);
-                listContainer.innerHTML = `<div class="text-center py-4 text-red-400 italic">Error loading comments: ${e.message}</div>`;
-            }
         }
 
         async function loadGuestbook() {
@@ -1027,10 +815,7 @@
             }
         }
 
-        async function deleteComment(essayId, commentId) {
-            if (!confirm("Delete comment?")) return;
-            try { await deleteDoc(doc(db, "essays", essayId, "comments", commentId)); loadAdminComments(); loadStats(); } catch (e) { alert("Error: " + e.message); }
-        };
+
 
         async function deleteGuestbook(id) {
             if (!confirm("Delete this guestbook message?")) return;
