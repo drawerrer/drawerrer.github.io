@@ -1,5 +1,5 @@
 
-import { supabase } from './supabase-config.js';
+import { musicData } from './data.js';
 
 export function initMusicPlayer() {
     console.log("Initializing Music Player...");
@@ -314,15 +314,10 @@ export function initMusicPlayer() {
     });
 
     // Load Playlist
-    async function loadPlaylist() {
+    function loadPlaylist() {
         console.log("Loading playlist...");
         try {
-            const { data: musicTracks, error } = await supabase
-                .from('music')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) throw error;
+            const musicTracks = musicData;
 
             console.log(`Tracks found: ${musicTracks ? musicTracks.length : 0}`);
             playlist = musicTracks || [];
