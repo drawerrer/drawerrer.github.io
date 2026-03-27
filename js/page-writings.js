@@ -1,5 +1,5 @@
 
-import { supabase } from './supabase-config.js';
+import { writingsData } from './data.js';
 
 let cleanupFunc = null;
 
@@ -29,12 +29,8 @@ export function initWritings(container) {
         stampListContainer.innerHTML = '<div class="text-center pt-10 text-stone-500 italic">Loading archive...</div>';
 
         try {
-            const { data: essays, error } = await supabase
-                .from('essays')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) throw error;
+            // Fetch essays from local js/data.js instead of Supabase
+            const essays = [...writingsData].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
             cachedEssays = {};
             const sortedEssays = [];

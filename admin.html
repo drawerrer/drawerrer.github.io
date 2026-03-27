@@ -235,27 +235,14 @@
             <div id="view-writings" class="content-view hidden space-y-6">
                 <header class="flex justify-between items-center mb-8">
                     <h1 class="text-2xl font-bold font-display text-stone-800 dark:text-white">Writings</h1>
-                    <button onclick="openEditModal()"
-                        class="bg-stone-800 text-white px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 hover:bg-stone-700">
-                        <span class="material-symbols-outlined text-sm">add</span> New Essay
-                    </button>
                 </header>
-                <div
-                    class="bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-stone-200 dark:border-zinc-700 overflow-hidden">
-                    <table class="w-full text-sm text-left text-stone-600 dark:text-stone-400">
-                        <thead
-                            class="text-xs text-stone-500 uppercase bg-stone-50 dark:bg-zinc-900 border-b border-stone-200 dark:border-zinc-700">
-                            <tr>
-                                <th class="px-6 py-3">Title</th>
-                                <th class="px-6 py-3">Date</th>
-                                <th class="px-6 py-3">Status</th>
-                                <th class="px-6 py-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="writingsList">
-                            <!-- Injected via JS -->
-                        </tbody>
-                    </table>
+                <div class="bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-stone-200 dark:border-zinc-700 overflow-hidden p-8 text-center space-y-4">
+                    <span class="material-symbols-outlined text-4xl text-stone-400">code</span>
+                    <h2 class="text-lg font-bold text-stone-800 dark:text-white">Content Migrated to Local Storage</h2>
+                    <p class="text-stone-500 text-sm max-w-md mx-auto">
+                        For permanent stability and faster load times, the Writings database has been migrated to local files. 
+                        <strong>To add or edit an essay:</strong> please modify the <code>js/data.js</code> file manually and push to GitHub.
+                    </p>
                 </div>
             </div>
 
@@ -282,14 +269,14 @@
             <div id="view-photography" class="content-view hidden space-y-6">
                 <header class="flex justify-between items-center mb-8">
                     <h1 class="text-2xl font-bold font-display text-stone-800 dark:text-white">Photography</h1>
-                    <button onclick="openPhotoModal()"
-                        class="bg-stone-800 text-white px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 hover:bg-stone-700">
-                        <span class="material-symbols-outlined text-sm">cloud_upload</span> Upload Photo
-                    </button>
                 </header>
-                <div id="photosList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <!-- Photos injected via JS -->
-                    <div class="col-span-full text-center py-12 text-stone-400 italic">Click Upload to add photos.</div>
+                <div class="bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-stone-200 dark:border-zinc-700 overflow-hidden p-8 text-center space-y-4">
+                    <span class="material-symbols-outlined text-4xl text-stone-400">code</span>
+                    <h2 class="text-lg font-bold text-stone-800 dark:text-white">Content Migrated to Local Storage</h2>
+                    <p class="text-stone-500 text-sm max-w-md mx-auto">
+                        For permanent stability and to avoid upload limits, the Photography database has been migrated to local files. 
+                        <strong>To add a new photo:</strong> please upload the image file to the <code>assets</code> folder and add the entry to <code>js/data.js</code>, then push to GitHub.
+                    </p>
                 </div>
             </div>
 

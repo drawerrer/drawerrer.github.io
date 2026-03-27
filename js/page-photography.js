@@ -1,5 +1,5 @@
 
-import { supabase } from './supabase-config.js';
+import { photographyData } from './data.js';
 
 let cleanupFunc = null;
 
@@ -61,12 +61,8 @@ export function initPhotography(container) {
     async function loadPhotos() {
         if (!grid) return;
         try {
-            const { data: photos, error } = await supabase
-                .from('photos')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) throw error;
+            // Fetch photos from local js/data.js instead of Supabase
+            const photos = [...photographyData].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
             allPhotos = photos || [];
 
