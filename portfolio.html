@@ -96,10 +96,10 @@
             </header>
 
             <!-- PDF Iframe Container -->
-            <main class="flex-1 w-full relative z-10 bg-stone-100/50 dark:bg-stone-900/50 flex flex-col items-center justify-center p-0 sm:p-4 md:p-8">
+            <main class="flex-1 w-full relative z-10 bg-stone-100/50 dark:bg-stone-900/50 overflow-y-auto p-0 sm:p-4 md:p-8">
                 <!-- Wrapper for the iframe for nice dropshadow depending on viewport -->
-                <div class="w-full h-full max-w-6xl mx-auto sm:rounded-xl shadow-none sm:shadow-2xl overflow-hidden bg-white dark:bg-zinc-800 border border-transparent sm:border-black/5 sm:dark:border-white/10 flex flex-col">
-                    <iframe src="assets/Portfolio.pdf" class="w-full flex-1 border-0 bg-white dark:bg-stone-800" title="Portfolio PDF Viewer"></iframe>
+                <div class="w-full h-[500vh] max-w-6xl mx-auto sm:rounded-xl shadow-none sm:shadow-2xl overflow-hidden bg-white dark:bg-zinc-800 border border-transparent sm:border-black/5 sm:dark:border-white/10 flex flex-col">
+                    <iframe src="assets/Portfolio.pdf" class="w-full h-full border-0 bg-white dark:bg-stone-800" title="Portfolio PDF Viewer"></iframe>
                 </div>
             </main>
         </div>
