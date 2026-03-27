@@ -375,7 +375,6 @@ export function initMusicPlayer() {
                 player.cueVideoById(track.videoId);
                 isPlaying = false;
             }
-            updateUIState();
         }
         renderPlaylist(); // Update active state
     }
