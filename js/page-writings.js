@@ -1,6 +1,5 @@
 
-import { db } from './firebase-config.js';
-import { collection, getDocs, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { supabase } from './supabase-config.js';
 
 let cleanupFunc = null;
 
@@ -30,17 +29,22 @@ export function initWritings(container) {
         stampListContainer.innerHTML = '<div class="text-center pt-10 text-stone-500 italic">Loading archive...</div>';
 
         try {
-            const q = query(collection(db, "essays"), orderBy("createdAt", "desc"));
-            const querySnapshot = await getDocs(q);
+            const { data: essays, error } = await supabase
+                .from('essays')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
 
             cachedEssays = {};
             const sortedEssays = [];
 
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                cachedEssays[doc.id] = data;
-                sortedEssays.push({ id: doc.id, ...data });
-            });
+            if (essays) {
+                essays.forEach((data) => {
+                    cachedEssays[data.id] = data;
+                    sortedEssays.push(data);
+                });
+            }
 
             stampListContainer.innerHTML = '';
 

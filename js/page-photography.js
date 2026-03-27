@@ -1,6 +1,5 @@
 
-import { db } from './firebase-config.js';
-import { collection, getDocs, query, orderBy, limit, addDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { supabase } from './supabase-config.js';
 
 let cleanupFunc = null;
 
@@ -62,13 +61,14 @@ export function initPhotography(container) {
     async function loadPhotos() {
         if (!grid) return;
         try {
-            const q = query(collection(db, "photos"), orderBy("createdAt", "desc"));
-            const querySnapshot = await getDocs(q);
+            const { data: photos, error } = await supabase
+                .from('photos')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-            allPhotos = [];
-            querySnapshot.forEach((doc) => {
-                allPhotos.push({ id: doc.id, ...doc.data() });
-            });
+            if (error) throw error;
+
+            allPhotos = photos || [];
 
             renderGrid(true);
         } catch (error) {
@@ -105,7 +105,7 @@ export function initPhotography(container) {
             containerDiv.className = "polaroid-frame group relative aspect-[4/5] bg-white p-3 md:p-2 shadow-lg hover:shadow-2xl hover:scale-[1.02] hover:z-10 transition-all duration-300 cursor-pointer overflow-hidden transform-gpu";
             containerDiv.style.transform = `rotate(${polaroidRotation}deg)`;
 
-            const dateStr = photo.createdAt ? new Date(photo.createdAt.seconds * 1000).toLocaleDateString() : '';
+            const dateStr = photo.created_at ? new Date(photo.created_at).toLocaleDateString() : '';
             const displayTitle = photo.title || photo.caption || 'Untitled';
             const displayContent = photo.content || '';
 

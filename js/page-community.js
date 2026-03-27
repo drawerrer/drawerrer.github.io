@@ -1,6 +1,5 @@
 
-import { db } from './firebase-config.js';
-import { collection, addDoc, getDocs, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { supabase } from './supabase-config.js';
 
 let cleanupFunc = null;
 
@@ -15,19 +14,23 @@ export function initCommunity(container) {
         guestbookList.innerHTML = '<div class="text-center py-10 opacity-50"><p class="font-serif italic text-stone-500">Loading messages...</p></div>';
 
         try {
-            const q = query(collection(db, "guestbook"), orderBy("createdAt", "desc"), limit(50));
-            const querySnapshot = await getDocs(q);
+            const { data: messages, error } = await supabase
+                .from('guestbook')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(50);
+
+            if (error) throw error;
 
             guestbookList.innerHTML = '';
 
-            if (querySnapshot.empty) {
+            if (!messages || messages.length === 0) {
                 guestbookList.innerHTML = '<div class="text-center py-10 opacity-50"><p class="font-serif italic text-stone-500">Be the first to leave a note.</p></div>';
                 return;
             }
 
-            querySnapshot.forEach((doc) => {
-                const note = doc.data();
-                const date = note.createdAt ? new Date(note.createdAt.seconds * 1000).toLocaleDateString('en-CA').replace(/-/g, '.') : (note.date || 'Unknown');
+            messages.forEach((note) => {
+                const date = note.created_at ? new Date(note.created_at).toLocaleDateString('en-CA').replace(/-/g, '.') : (note.date || 'Unknown');
 
                 const card = document.createElement('div');
                 const rotate = Math.random() * 2 - 1;
@@ -70,13 +73,14 @@ export function initCommunity(container) {
         const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
         try {
-            await addDoc(collection(db, "guestbook"), {
+            const { error } = await supabase.from('guestbook').insert([{
                 name,
                 message,
                 color: randomColor,
-                createdAt: serverTimestamp(),
                 date: new Date().toLocaleDateString('en-CA').replace(/-/g, '.')
-            });
+            }]);
+
+            if (error) throw error;
 
             visitorName.value = '';
             visitorMessage.value = '';

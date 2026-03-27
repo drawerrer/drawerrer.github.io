@@ -1,6 +1,5 @@
 
-import { db } from './firebase-config.js';
-import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { supabase } from './supabase-config.js';
 
 export function initMusicPlayer() {
     console.log("Initializing Music Player...");
@@ -318,15 +317,21 @@ export function initMusicPlayer() {
     async function loadPlaylist() {
         console.log("Loading playlist...");
         try {
-            const q = query(collection(db, "music"), orderBy("createdAt", "desc"));
-            const snapshot = await getDocs(q);
-            console.log(`Snapshot size: ${snapshot.size}`);
-            playlist = [];
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                console.log("Track found:", data.title);
-                playlist.push({ id: doc.id, ...data });
-            });
+            const { data: musicTracks, error } = await supabase
+                .from('music')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            console.log(`Tracks found: ${musicTracks ? musicTracks.length : 0}`);
+            playlist = musicTracks || [];
+
+            if (playlist && playlist.length > 0) {
+                playlist.forEach(track => {
+                    console.log("Track found:", track.title);
+                });
+            }
 
             renderPlaylist();
 

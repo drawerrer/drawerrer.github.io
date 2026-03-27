@@ -4,6 +4,7 @@ const routes = {
     'writings.html': '/js/page-writings.js',
     'photography.html': '/js/page-photography.js',
     'community.html': '/js/page-community.js',
+    'portfolio.html': null,
     'blog.html': null // Home page, might default to no script or checking script.js
 };
 
