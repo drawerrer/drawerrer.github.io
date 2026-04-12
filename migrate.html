@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DB Migration (Firebase to Supabase)</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 40px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: left;
+            max-width: 600px;
+            margin: 20px auto;
+            overflow: auto;
+            max-height: 400px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Firebase ➡️ Supabase Migration</h1>
+    <p>보안 정책(Missing or insufficient permissions) 때문에 Firebase 관리자 계정 로그인이 필요합니다.<br>기존 사이트의 Admin 페이지 접속 시 사용하던 이메일과
+        비밀번호를 입력해주세요.</p>
+
+    <div style="margin-bottom: 20px;">
+        <input type="email" id="fbEmail" placeholder="Firebase Admin Email" required>
+        <input type="password" id="fbPassword" placeholder="Firebase Admin Password" required>
+        <button id="startBtn">데이터 이전 시작하기</button>
+    </div>
+
+    <pre id="log">대기 중...</pre>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        const supabaseUrl = 'https://khwqazhqlezfydrenljk.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtod3FhemhxbGV6ZnlkcmVubGprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMTA2NTEsImV4cCI6MjA4NzY4NjY1MX0.XLgNzh4WJEG5r40Zus-iNC-4ZGqqHJR2zIYSzoyP4h0';
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDrx0HxqenwEmurhVmA6vb5NjEm7EJOcMY",
+            authDomain: "my-cabinet-archive.firebaseapp.com",
+            projectId: "my-cabinet-archive",
+            storageBucket: "my-cabinet-archive.firebasestorage.app",
+            messagingSenderId: "62408826485",
+            appId: "1:62408826485:web:23423979a8f6a52329e23c",
+            measurementId: "G-3GW6KD4C2P"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const logEl = document.getElementById('log');
+        function lg(msg) { logEl.textContent += msg + '\n'; console.log(msg); }
+
+        document.getElementById('startBtn').onclick = async () => {
+            const email = document.getElementById('fbEmail').value;
+            const password = document.getElementById('fbPassword').value;
+
+            if (!email || !password) {
+                alert("이메일과 비밀번호를 모두 입력해주세요.");
+                return;
+            }
+
+            logEl.textContent = "진행 상황:\n---\n";
+            lg("🔐 Firebase 로그인 중...");
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                lg("✅ 로그인 성공! 데이터 이전을 시작합니다...");
+
+                // 1. Essays
+                lg("📝 에세이(Writings) 가져오는 중...");
+                const essays = await getDocs(collection(db, "essays"));
+                let essayData = [];
+                essays.forEach(doc => {
+                    const d = doc.data();
+                    essayData.push({ title: d.title, date: d.date, content: d.content, created_at: d.createdAt ? new Date(d.createdAt.toDate()).toISOString() : new Date().toISOString() });
+                });
+                if (essayData.length) {
+                    const { error } = await supabase.from('essays').insert(essayData);
+                    if (error) lg("❌ 에세이 에러: " + error.message);
+                    else lg(`✅ 에세이 ${essayData.length}개 복사 성공!`);
+                } else lg("ℹ️ 에세이가 없습니다.");
+
+                // 2. Photos
+                lg("📸 사진(Photography) 가져오는 중...");
+                const photos = await getDocs(collection(db, "photos"));
+                let photoData = [];
+                photos.forEach(doc => {
+                    const d = doc.data();
+                    photoData.push({ url: d.url, title: d.title || null, caption: d.caption || null, content: d.content || null, created_at: d.createdAt ? new Date(d.createdAt.toDate()).toISOString() : new Date().toISOString() });
+                });
+                if (photoData.length) {
+                    const { error } = await supabase.from('photos').insert(photoData);
+                    if (error) lg("❌ 사진 에러: " + error.message);
+                    else lg(`✅ 사진 ${photoData.length}개 복사 성공!`);
+                } else lg("ℹ️ 사진이 없습니다.");
+
+                // 3. Guestbook
+                lg("✉️ 방명록(Community) 가져오는 중...");
+                const gb = await getDocs(collection(db, "guestbook"));
+                let gbData = [];
+                gb.forEach(doc => {
+                    const d = doc.data();
+                    gbData.push({ name: d.name, message: d.message, color: d.color, date: d.date, created_at: d.createdAt ? new Date(d.createdAt.toDate()).toISOString() : new Date().toISOString() });
+                });
+                if (gbData.length) {
+                    const { error } = await supabase.from('guestbook').insert(gbData);
+                    if (error) lg("❌ 방명록 에러: " + error.message);
+                    else lg(`✅ 방명록 코멘트 ${gbData.length}개 복사 성공!`);
+                } else lg("ℹ️ 방명록 코멘트가 없습니다.");
+
+                // 4. Music
+                lg("🎵 배경음악(Music) 가져오는 중...");
+                const music = await getDocs(collection(db, "music"));
+                let musicData = [];
+                music.forEach(doc => {
+                    const d = doc.data();
+                    musicData.push({ title: d.title, artist: d.artist, videoId: d.videoId, created_at: d.createdAt ? new Date(d.createdAt.toDate()).toISOString() : new Date().toISOString() });
+                });
+                if (musicData.length) {
+                    const { error } = await supabase.from('music').insert(musicData);
+                    if (error) lg("❌ 배경음악 에러: " + error.message);
+                    else lg(`✅ 배경음악 ${musicData.length}곡 복사 성공!`);
+                } else lg("ℹ️ 배경음악이 없습니다.");
+
+                lg("\n🎉 모든 데이터 이전이 성공적으로 완료되었습니다!! 🎉");
+                lg("이제 홈페이지 탭을 새로고침 해보세요!");
+
+            } catch (e) {
+                lg("\n🚨 오류 발생: " + e.message);
+                console.error(e);
+            }
+        };
+    </script>
+</body>
+
+</html>

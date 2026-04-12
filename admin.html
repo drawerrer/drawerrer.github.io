@@ -13,6 +13,8 @@
     </script>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link rel="icon" type="image/png" href="assets/Favicon.png" />
+    <link rel="apple-touch-icon" href="assets/Favicon.png" />
     <title>Cabinet Admin | Collective Archive</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
     <link rel="stylesheet" as="style" crossorigin
@@ -82,34 +84,54 @@
     </div>
 
     <!-- === ADMIN DASHBOARD (Hidden by default) === -->
-    <div id="adminApp" class="flex w-full h-full hidden">
+    <div id="adminApp" class="flex w-full h-full hidden relative">
+
+        <!-- Mobile Overlay -->
+        <div id="sidebarOverlay" onclick="toggleSidebar()"
+            class="fixed inset-0 bg-black/50 z-40 hidden md:hidden glass-effect transition-opacity"></div>
+
+        <!-- Hamburger Button -->
+        <button onclick="toggleSidebar()"
+            class="md:hidden fixed top-4 left-4 z-50 p-2 bg-white/80 dark:bg-zinc-800/80 backdrop-blur rounded-full shadow-lg text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-zinc-700">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
 
         <!-- Sidebar -->
-        <aside class="w-64 bg-stone-100 dark:bg-zinc-950 border-r border-stone-200 dark:border-zinc-800 flex flex-col">
-            <div class="p-6 border-b border-stone-200 dark:border-zinc-800">
+        <aside id="adminSidebar"
+            class="w-64 bg-stone-100 dark:bg-zinc-950 border-r border-stone-200 dark:border-zinc-800 flex flex-col fixed inset-y-0 left-0 z-50 transform -translate-x-full md:translate-x-0 md:relative transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+            <div class="p-6 border-b border-stone-200 dark:border-zinc-800 flex justify-between items-center">
                 <h2 class="font-display font-bold text-lg tracking-wider">ADMIN</h2>
+                <button onclick="toggleSidebar()" class="md:hidden text-stone-400 hover:text-stone-600">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
             </div>
-            <nav class="flex-1 p-4 space-y-2">
-                <button onclick="showView('dashboard')" id="nav-dashboard"
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <button onclick="showView('dashboard'); toggleSidebar()" id="nav-dashboard"
                     class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-md text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors text-sm text-left">
                     <span class="material-symbols-outlined text-lg">dashboard</span>
                     Dashboard
                 </button>
                 <div class="pt-4 pb-2 px-4 text-[10px] font-bold text-stone-400 uppercase tracking-widest">Content</div>
-                <button onclick="showView('writings')" id="nav-writings"
+                <button onclick="showView('writings'); toggleSidebar()" id="nav-writings"
                     class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-md text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors text-sm text-left">
                     <span class="material-symbols-outlined text-lg">edit_note</span>
                     Writings
                 </button>
                 <li class="sidebar-item p-3 mb-2 rounded-lg cursor-pointer hover:bg-stone-200 dark:hover:bg-zinc-800 text-stone-600 dark:text-stone-400 font-medium transition-colors flex items-center gap-3"
-                    id="nav-comments" onclick="showView('comments')">
+                    id="nav-comments" onclick="showView('comments'); toggleSidebar()">
                     <span class="material-symbols-outlined text-[20px]">forum</span>
                     <span class="text-sm">Community</span>
                 </li>
-                <button onclick="showView('photography')" id="nav-photography"
+                <button onclick="showView('photography'); toggleSidebar()" id="nav-photography"
                     class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-md text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors text-sm text-left">
                     <span class="material-symbols-outlined text-lg">photo_library</span>
                     Photography
+                </button>
+                <div class="pt-4 pb-2 px-4 text-[10px] font-bold text-stone-400 uppercase tracking-widest">System</div>
+                <button onclick="showView('music'); toggleSidebar()" id="nav-music"
+                    class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-md text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors text-sm text-left">
+                    <span class="material-symbols-outlined text-lg">music_note</span>
+                    Music Manager
                 </button>
             </nav>
             <div class="p-4 border-t border-stone-200 dark:border-zinc-800">
@@ -127,7 +149,47 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 bg-[#f8f7f6] dark:bg-zinc-900 overflow-y-auto p-8 relative">
+        <main class="flex-1 bg-[#f8f7f6] dark:bg-zinc-900 overflow-y-auto p-8 relative pt-20 md:pt-8 transition-all">
+
+            <!-- VIEW: MUSIC MANAGER -->
+            <div id="view-music" class="content-view hidden space-y-8">
+                <header class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold font-display text-stone-800 dark:text-white">Music Manager</h1>
+                </header>
+
+                <!-- Add Music Form -->
+                <div
+                    class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-sm border border-stone-200 dark:border-zinc-700">
+                    <h2 class="text-sm font-bold uppercase text-stone-500 mb-4 tracking-wider">Add New Track</h2>
+                    <form onsubmit="handleAddMusic(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="musicTitle" placeholder="Song Title" required
+                                class="w-full px-4 py-2 border border-stone-300 dark:border-zinc-600 rounded text-sm bg-transparent dark:text-white">
+                            <input type="text" id="musicArtist" placeholder="Artist" required
+                                class="w-full px-4 py-2 border border-stone-300 dark:border-zinc-600 rounded text-sm bg-transparent dark:text-white">
+                        </div>
+                        <div class="flex gap-4">
+                            <input type="text" id="musicUrl" placeholder="YouTube URL (e.g. https://youtu.be/...)"
+                                required
+                                class="flex-1 px-4 py-2 border border-stone-300 dark:border-zinc-600 rounded text-sm bg-transparent dark:text-white">
+                            <button type="submit"
+                                class="bg-stone-800 text-white px-6 py-2 rounded text-sm font-bold hover:bg-stone-700 transition-colors text-nowrap">
+                                Add Track
+                            </button>
+                        </div>
+                        <p class="text-xs text-stone-400">Supported: standard URLs, youtu.be short links.</p>
+                    </form>
+                </div>
+
+                <!-- Music List -->
+                <div
+                    class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-sm border border-stone-200 dark:border-zinc-700">
+                    <h2 class="text-sm font-bold uppercase text-stone-500 mb-4 tracking-wider">Playlist</h2>
+                    <div id="adminMusicList" class="space-y-2">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
 
             <!-- VIEW: DASHBOARD -->
             <div id="view-dashboard" class="content-view space-y-8">
@@ -146,15 +208,7 @@
                         </div>
                         <p class="text-3xl font-display font-bold text-stone-800 dark:text-white" id="stat-essays">0</p>
                     </div>
-                    <div
-                        class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-sm border border-stone-200 dark:border-zinc-700">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-stone-500 text-xs font-bold uppercase tracking-wider">Pending Comments</h3>
-                            <span class="material-symbols-outlined text-stone-400">chat_bubble</span>
-                        </div>
-                        <p class="text-3xl font-display font-bold text-stone-800 dark:text-white" id="stat-comments">0
-                        </p>
-                    </div>
+
                     <div
                         class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-sm border border-stone-200 dark:border-zinc-700">
                         <div class="flex items-center justify-between mb-4">
@@ -181,27 +235,14 @@
             <div id="view-writings" class="content-view hidden space-y-6">
                 <header class="flex justify-between items-center mb-8">
                     <h1 class="text-2xl font-bold font-display text-stone-800 dark:text-white">Writings</h1>
-                    <button onclick="openEditModal()"
-                        class="bg-stone-800 text-white px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 hover:bg-stone-700">
-                        <span class="material-symbols-outlined text-sm">add</span> New Essay
-                    </button>
                 </header>
-                <div
-                    class="bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-stone-200 dark:border-zinc-700 overflow-hidden">
-                    <table class="w-full text-sm text-left text-stone-600 dark:text-stone-400">
-                        <thead
-                            class="text-xs text-stone-500 uppercase bg-stone-50 dark:bg-zinc-900 border-b border-stone-200 dark:border-zinc-700">
-                            <tr>
-                                <th class="px-6 py-3">Title</th>
-                                <th class="px-6 py-3">Date</th>
-                                <th class="px-6 py-3">Status</th>
-                                <th class="px-6 py-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="writingsList">
-                            <!-- Injected via JS -->
-                        </tbody>
-                    </table>
+                <div class="bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-stone-200 dark:border-zinc-700 overflow-hidden p-8 text-center space-y-4">
+                    <span class="material-symbols-outlined text-4xl text-stone-400">code</span>
+                    <h2 class="text-lg font-bold text-stone-800 dark:text-white">Content Migrated to Local Storage</h2>
+                    <p class="text-stone-500 text-sm max-w-md mx-auto">
+                        For permanent stability and faster load times, the Writings database has been migrated to local files. 
+                        <strong>To add or edit an essay:</strong> please modify the <code>js/data.js</code> file manually and push to GitHub.
+                    </p>
                 </div>
             </div>
 
@@ -221,29 +262,21 @@
                     </div>
                 </section>
 
-                <hr class="border-stone-200 dark:border-zinc-700">
 
-                <!-- 2. Comments Section -->
-                <section>
-                    <h2 class="text-sm font-bold uppercase text-stone-500 mb-4 tracking-wider">Essay Comments</h2>
-                    <div class="space-y-4" id="adminCommentList">
-                        <!-- Injected via JS -->
-                    </div>
-                </section>
             </div>
 
             <!-- VIEW: PHOTOGRAPHY -->
             <div id="view-photography" class="content-view hidden space-y-6">
                 <header class="flex justify-between items-center mb-8">
                     <h1 class="text-2xl font-bold font-display text-stone-800 dark:text-white">Photography</h1>
-                    <button onclick="openPhotoModal()"
-                        class="bg-stone-800 text-white px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 hover:bg-stone-700">
-                        <span class="material-symbols-outlined text-sm">cloud_upload</span> Upload Photo
-                    </button>
                 </header>
-                <div id="photosList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <!-- Photos injected via JS -->
-                    <div class="col-span-full text-center py-12 text-stone-400 italic">Click Upload to add photos.</div>
+                <div class="bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-stone-200 dark:border-zinc-700 overflow-hidden p-8 text-center space-y-4">
+                    <span class="material-symbols-outlined text-4xl text-stone-400">code</span>
+                    <h2 class="text-lg font-bold text-stone-800 dark:text-white">Content Migrated to Local Storage</h2>
+                    <p class="text-stone-500 text-sm max-w-md mx-auto">
+                        For permanent stability and to avoid upload limits, the Photography database has been migrated to local files. 
+                        <strong>To add a new photo:</strong> please upload the image file to the <code>assets</code> folder and add the entry to <code>js/data.js</code>, then push to GitHub.
+                    </p>
                 </div>
             </div>
 
@@ -332,18 +365,7 @@
                     </div>
                 </div>
 
-                <hr class="border-stone-200">
 
-                <!-- 2. Manage Comments -->
-                <div>
-                    <h3 class="font-bold text-sm text-stone-800 mb-3 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">comment</span> Manage Comments
-                    </h3>
-                    <div id="managePhotoCommentsList"
-                        class="space-y-2 max-h-[200px] overflow-y-auto bg-stone-50 p-2 rounded border border-stone-200">
-                        <!-- Injected -->
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -382,9 +404,7 @@
     </div>
 
     <script type="module">
-        import { auth, db } from './js/firebase-config.js'; // Storage removed
-        import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, updateDoc, getDoc, query, collectionGroup, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { supabase } from './js/supabase-config.js';
 
         // Make functions globally available for HTML buttons
         window.handleLogin = handleLogin;
@@ -394,7 +414,6 @@
         window.closeModal = closeModal;
         window.saveEssay = saveEssay;
         window.deleteEssay = deleteEssay;
-        window.deleteComment = deleteComment;
         window.openPhotoModal = openPhotoModal;
         window.closePhotoModal = closePhotoModal;
         window.uploadPhoto = uploadPhoto;
@@ -406,7 +425,7 @@
         window.openManagePhotoModal = openManagePhotoModal;
         window.closeManagePhotoModal = closeManagePhotoModal;
         window.savePhotoDetails = savePhotoDetails;
-        window.deleteInternalPhotoComment = deleteInternalPhotoComment;
+        window.toggleSidebar = toggleSidebar;
 
         const loginScreen = document.getElementById('loginScreen');
         const adminApp = document.getElementById('adminApp');
@@ -414,16 +433,36 @@
         const editModal = document.getElementById('editModal');
         const photoModal = document.getElementById('photoModal');
         const managePhotoModal = document.getElementById('managePhotoModal');
+        const sidebar = document.getElementById('adminSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
         let editingId = null;
         let managingPhotoId = null;
 
+        function toggleSidebar() {
+            // Only toggle on mobile
+            if (window.innerWidth >= 768) return;
+
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
         // Check Access on Auth State Change
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                console.log("User logged in:", user.email);
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session?.user) {
+                console.log("User logged in:", session.user.email);
                 showAdminApp();
             } else {
                 console.log("User logged out");
+                loginScreen.style.display = 'flex';
+                adminApp.classList.add('hidden');
+            }
+        });
+
+        // Check initial session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                showAdminApp();
+            } else {
                 loginScreen.style.display = 'flex';
                 adminApp.classList.add('hidden');
             }
@@ -435,7 +474,8 @@
             const password = document.getElementById('passwordInput').value;
 
             try {
-                await signInWithEmailAndPassword(auth, email, password);
+                const { error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) throw error;
             } catch (error) {
                 console.error("Login failed", error);
                 loginError.textContent = "Login failed: " + error.message;
@@ -445,7 +485,7 @@
 
         async function handleLogout() {
             try {
-                await signOut(auth);
+                await supabase.auth.signOut();
                 location.reload();
             } catch (error) {
                 console.error("Logout failed", error);
@@ -462,16 +502,12 @@
 
         async function loadStats() {
             try {
-                const essaysSnap = await getDocs(collection(db, "essays"));
-                document.getElementById('stat-essays').textContent = essaysSnap.size;
-
-                // Count comments via collectionGroup
-                const commentsSnap = await getDocs(collectionGroup(db, 'comments'));
-                document.getElementById('stat-comments').textContent = commentsSnap.size;
-
-                // Photos stats (if element exists)
-                // const photosSnap = await getDocs(collection(db, "photos"));
-                // document.getElementById('stat-photos').textContent = photosSnap.size;
+                const { count, error } = await supabase
+                    .from('essays')
+                    .select('*', { count: 'exact', head: true });
+                if (!error) {
+                    document.getElementById('stat-essays').textContent = count;
+                }
             } catch (e) {
                 console.error("Error loading stats", e);
             }
@@ -536,13 +572,13 @@
                 // Resize to max width 800px, quality 0.7
                 const base64String = await compressImage(file, 800, 0.7);
 
-                // 2. Save Base64 directly to Firestore
-                await addDoc(collection(db, "photos"), {
+                // 2. Save Base64 directly to Supabase
+                const { error } = await supabase.from('photos').insert([{
                     url: base64String, // The actual image data
-                    caption: caption,
-                    storagePath: null, // Legacy field
-                    createdAt: serverTimestamp()
-                });
+                    caption: caption
+                }]);
+
+                if (error) throw error;
 
                 alert("Photo saved successfully!");
                 closePhotoModal();
@@ -565,26 +601,29 @@
             list.innerHTML = '<div class="col-span-full text-center py-12 text-stone-400">Loading photos...</div>';
 
             try {
-                const q = query(collection(db, "photos"), orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
+                const { data: photos, error } = await supabase
+                    .from('photos')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
 
                 list.innerHTML = '';
-                if (querySnapshot.empty) {
+                if (!photos || photos.length === 0) {
                     list.innerHTML = '<div class="col-span-full text-center py-12 text-stone-400 italic">No photos found.</div>';
                     return;
                 }
 
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
+                photos.forEach((data) => {
                     const el = document.createElement('div');
                     el.className = "relative group aspect-square bg-stone-100 rounded-lg overflow-hidden border border-stone-200";
                     el.innerHTML = `
                         <img src="${data.url}" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                             <button onclick="openManagePhotoModal('${doc.id}')" class="bg-white/90 p-2 rounded-full text-stone-700 hover:scale-110 transition-transform" title="Edit & Manage">
+                             <button onclick="openManagePhotoModal('${data.id}')" class="bg-white/90 p-2 rounded-full text-stone-700 hover:scale-110 transition-transform" title="Edit & Manage">
                                 <span class="material-symbols-outlined">edit</span>
                             </button>
-                            <button onclick="deletePhoto('${doc.id}')" class="bg-white/90 p-2 rounded-full text-red-500 hover:scale-110 transition-transform" title="Delete Photo">
+                            <button onclick="deletePhoto('${data.id}')" class="bg-white/90 p-2 rounded-full text-red-500 hover:scale-110 transition-transform" title="Delete Photo">
                                 <span class="material-symbols-outlined">delete</span>
                             </button>
                         </div>
@@ -602,8 +641,8 @@
         async function deletePhoto(id) {
             if (!confirm("Delete this photo? This will also delete all comments.")) return;
             try {
-                // Delete from Firestore only (since data is inside doc)
-                await deleteDoc(doc(db, "photos", id));
+                const { error } = await supabase.from('photos').delete().eq('id', id);
+                if (error) throw error;
                 loadPhotos();
             } catch (e) {
                 alert("Error deleting photo: " + e.message);
@@ -615,11 +654,9 @@
             managingPhotoId = id;
             managePhotoModal.classList.remove('hidden');
 
-            // 1. Load Photo Details
             try {
-                const docSnap = await getDoc(doc(db, "photos", id));
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
+                const { data, error } = await supabase.from('photos').select('*').eq('id', id).single();
+                if (data) {
                     document.getElementById('managePhotoPreview').src = data.url;
                     // Backward compatibility: use caption as title if title missing, content empty
                     document.getElementById('managePhotoTitle').value = data.title || data.caption || '';
@@ -627,8 +664,6 @@
                 }
             } catch (e) { console.error(e); }
 
-            // 2. Load Comments
-            loadManagePhotoComments(id);
         }
 
         function closeManagePhotoModal() {
@@ -642,56 +677,15 @@
             const content = document.getElementById('managePhotoContent').value;
             try {
                 // Save both, and keep caption synced with title for legacy/grid view if needed
-                await updateDoc(doc(db, "photos", managingPhotoId), {
+                const { error } = await supabase.from('photos').update({
                     title: title,
                     content: content,
                     caption: title // Keep caption as a short-hand/fallback for grid
-                });
+                }).eq('id', managingPhotoId);
+                if (error) throw error;
+
                 alert("Details updated!");
                 loadPhotos(); // Refresh grid
-            } catch (e) { alert("Error: " + e.message); }
-        }
-
-        async function loadManagePhotoComments(photoId) {
-            const list = document.getElementById('managePhotoCommentsList');
-            list.innerHTML = '<div class="text-center py-4 text-stone-400 text-xs">Loading comments...</div>';
-
-            try {
-                const commentsRef = collection(db, "photos", photoId, "comments");
-                const q = query(commentsRef, orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
-
-                list.innerHTML = '';
-                if (querySnapshot.empty) {
-                    list.innerHTML = '<div class="text-center py-4 text-stone-400 text-xs italic">No comments on this photo.</div>';
-                    return;
-                }
-
-                querySnapshot.forEach(doc => {
-                    const data = doc.data();
-                    const el = document.createElement('div');
-                    el.className = "flex justify-between items-center bg-white p-2 rounded shadow-sm border border-stone-100 text-xs";
-                    el.innerHTML = `
-                        <div class="truncate pr-2">
-                             <span class="font-bold text-stone-700">${data.author || 'Guest'}:</span> 
-                             <span class="text-stone-600">${data.content}</span>
-                        </div>
-                        <button onclick="deleteInternalPhotoComment('${photoId}', '${doc.id}')" class="text-red-300 hover:text-red-500">
-                            <span class="material-symbols-outlined text-sm">remove_circle</span>
-                        </button>
-                    `;
-                    list.appendChild(el);
-                });
-            } catch (e) {
-                list.innerHTML = '<div class="text-red-400 text-xs">Error loading comments</div>';
-            }
-        }
-
-        async function deleteInternalPhotoComment(photoId, commentId) {
-            if (!confirm("Delete comment?")) return;
-            try {
-                await deleteDoc(doc(db, "photos", photoId, "comments", commentId));
-                loadManagePhotoComments(photoId); // Refresh internal list
             } catch (e) { alert("Error: " + e.message); }
         }
 
@@ -702,17 +696,21 @@
             list.innerHTML = '<tr><td colspan="4" class="text-center py-4">Loading...</td></tr>';
 
             try {
-                const q = query(collection(db, "essays"), orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
+                const { data: essays, error } = await supabase
+                    .from('essays')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
                 list.innerHTML = '';
 
-                if (querySnapshot.empty) {
+                if (!essays || essays.length === 0) {
                     list.innerHTML = '<tr><td colspan="4" class="text-center py-4">No essays found.</td></tr>';
                     return;
                 }
 
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
+                essays.forEach((data) => {
                     const row = document.createElement('tr');
                     row.className = "border-b border-stone-100 dark:border-zinc-800 hover:bg-stone-50 dark:hover:bg-zinc-800/50";
                     row.innerHTML = `
@@ -720,8 +718,8 @@
                         <td class="px-6 py-4 font-mono text-xs text-stone-500">${data.date}</td>
                         <td class="px-6 py-4"><span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Published</span></td>
                         <td class="px-6 py-4 flex gap-2">
-                            <button onclick="openEditModal('${doc.id}')" class="text-stone-400 hover:text-stone-800"><span class="material-symbols-outlined text-sm">edit</span></button>
-                            <button onclick="deleteEssay('${doc.id}')" class="text-red-300 hover:text-red-500"><span class="material-symbols-outlined text-sm">delete</span></button>
+                            <button onclick="openEditModal('${data.id}')" class="text-stone-400 hover:text-stone-800"><span class="material-symbols-outlined text-sm">edit</span></button>
+                            <button onclick="deleteEssay('${data.id}')" class="text-red-300 hover:text-red-500"><span class="material-symbols-outlined text-sm">delete</span></button>
                         </td>
                     `;
                     list.appendChild(row);
@@ -737,9 +735,8 @@
             editingId = id;
             if (id) {
                 try {
-                    const docSnap = await getDoc(doc(db, "essays", id));
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
+                    const { data, error } = await supabase.from('essays').select('*').eq('id', id).single();
+                    if (data) {
                         document.getElementById('editTitle').value = data.title;
                         document.getElementById('editDate').value = data.date;
                         document.getElementById('editContent').value = data.content;
@@ -760,10 +757,12 @@
             if (!title) return alert("Title required");
             try {
                 if (editingId) {
-                    await updateDoc(doc(db, "essays", editingId), { title, date, content });
+                    const { error } = await supabase.from('essays').update({ title, date, content }).eq('id', editingId);
+                    if (error) throw error;
                     alert("Updated!");
                 } else {
-                    await addDoc(collection(db, "essays"), { title, date, content, createdAt: serverTimestamp() });
+                    const { error } = await supabase.from('essays').insert([{ title, date, content }]);
+                    if (error) throw error;
                     alert("Saved!");
                 }
                 closeModal(); showView('writings');
@@ -771,146 +770,16 @@
         }
         async function deleteEssay(id) {
             if (!confirm("Delete?")) return;
-            try { await deleteDoc(doc(db, "essays", id)); loadWritings(); } catch (e) { alert(e.message); }
-        }
-
-        // --- COMMUNITY & COMMENTS LOGIC ---
-        async function loadCommunity() {
-            loadAdminComments();
-            loadGuestbook();
-            // loadPhotoComments(); // Removed from Community view
-        }
-
-        /*      // Old Global Photo Comment Loader - Removed
-                async function loadPhotoComments() {
-                     const listContainer = document.getElementById('adminPhotoCommentList');
-                    if (!listContainer) return;
-                    listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">Loading photo comments...</div>';
-        
-                    try {
-                        // Query all 'comments' subcollections inside 'photos' using collectionGroup
-                        // Note: Ensure index exists for 'comments' collectionGroup ordered by createdAt desc
-                        const q = query(collectionGroup(db, 'comments'), orderBy('createdAt', 'desc'));
-                        const querySnapshot = await getDocs(q);
-        
-                        listContainer.innerHTML = '';
-                        if (querySnapshot.empty) {
-                            listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">No photography comments found.</div>';
-                            return;
-                        }
-        
-                        // Filter out essay comments if they share the same subcollection name 'comments'
-                        // Check parent collection name
-                        const photosComments = [];
-                        querySnapshot.forEach(doc => {
-                            if (doc.ref.parent.parent.parent.id === 'photos') { // photos/{id}/comments/{docId} -> parent=comments, parent.parent={photoDoc}, parent.parent.parent=photos ?? No.
-                                // Structure: db -> collection('photos') -> doc(photoId) -> collection('comments') -> doc(commentId)
-                                // doc.ref.parent = collection('comments')
-                                // doc.ref.parent.parent = doc(photoId)
-                                // doc.ref.parent.parent.parent = collection('photos')
-                                photosComments.push({ id: doc.id, ref: doc.ref, ...doc.data() });
-                            }
-                            // Wait, 'essays' also has 'comments'. We need to distinguish.
-                            // Essay: essays/{id}/comments/{docId}
-                            // Photo: photos/{id}/comments/{docId}
-                            // doc.ref.parent.parent.parent.id check is correct.
-                        });
-        
-                        // Re-sort in JS just in case mixture messed up order or we filtered
-                        photosComments.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
-        
-                        if (photosComments.length === 0) {
-                            listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">No photography comments found.</div>';
-                            return;
-                        }
-        
-                        photosComments.forEach(comment => {
-                            const photoId = comment.ref.parent.parent.id;
-                            const dateStr = comment.createdAt ? comment.createdAt.toDate().toLocaleDateString() : 'Unknown';
-        
-                            const el = document.createElement('div');
-                            el.className = "bg-white p-4 rounded-lg shadow-sm border border-stone-200 flex justify-between items-start mb-2";
-                            el.innerHTML = `
-                                 <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="badge bg-purple-100 text-purple-800 text-[10px] px-2 py-0.5 rounded">Photo Memory</span>
-                                        <span class="font-bold text-sm text-stone-800">${comment.author || 'Guest'}</span>
-                                        <span class="text-xs text-stone-400">on Photo ID: ${photoId.slice(0, 5)}...</span>
-                                        <span class="text-[10px] text-stone-300">• ${dateStr}</span>
-                                    </div>
-                                    <p class="text-stone-600 text-sm font-serif italic">"${comment.content}"</p>
-                                </div>
-                                <button onclick="deletePhotoComment('${photoId}', '${comment.id}')" class="text-red-400 hover:text-red-600 p-2"><span class="material-symbols-outlined text-sm">delete</span></button>
-                            `;
-                            listContainer.appendChild(el);
-                        });
-        
-                    } catch (e) {
-                        console.error("Error loading photo comments", e);
-                        listContainer.innerHTML = `<div class="text-center py-4 text-red-400 italic">Error: ${e.message}</div>`;
-                    }
-                }
-        
-                async function deletePhotoComment(photoId, commentId) {
-                    if (!confirm("Delete this comment?")) return;
-                    try {
-                        await deleteDoc(doc(db, "photos", photoId, "comments", commentId));
-                        loadPhotoComments();
-                        loadStats();
-                    } catch (e) { alert("Error: " + e.message); }
-                }
-        */
-
-
-        async function loadAdminComments() {
-            const listContainer = document.getElementById('adminCommentList');
-            if (!listContainer) return;
-            listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">Loading essay comments...</div>';
-
             try {
-                // Try simple query without sorting first to avoid Index Error
-                const commentsQuery = query(collectionGroup(db, 'comments'));
-                const querySnapshot = await getDocs(commentsQuery);
+                const { error } = await supabase.from('essays').delete().eq('id', id);
+                if (error) throw error;
+                loadWritings();
+            } catch (e) { alert(e.message); }
+        }
 
-                listContainer.innerHTML = '';
-                if (querySnapshot.empty) {
-                    listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">No essay comments found.</div>';
-                    return;
-                }
-
-                // Client-side sort
-                const docs = [];
-                querySnapshot.forEach(doc => docs.push({ id: doc.id, ref: doc.ref, ...doc.data() }));
-                docs.sort((a, b) => {
-                    const tA = a.createdAt?.toMillis() || 0;
-                    const tB = b.createdAt?.toMillis() || 0;
-                    return tB - tA; // Descending
-                });
-
-                docs.forEach(comment => {
-                    const essayId = comment.ref.parent.parent.id;
-                    const dateStr = comment.createdAt ? comment.createdAt.toDate().toLocaleDateString() : (comment.date || 'Unknown');
-
-                    const el = document.createElement('div');
-                    el.className = "bg-white p-4 rounded-lg shadow-sm border border-stone-200 flex justify-between items-start mb-2";
-                    el.innerHTML = `
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="badge bg-stone-100 text-stone-600 text-[10px] px-2 py-0.5 rounded">Essay Comment</span>
-                                <span class="font-bold text-sm text-stone-800">${comment.name}</span>
-                                <span class="text-xs text-stone-400">on Essay ID: ${essayId.slice(0, 5)}...</span>
-                                <span class="text-[10px] text-stone-300">• ${dateStr}</span>
-                            </div>
-                            <p class="text-stone-600 text-sm">${comment.content}</p>
-                        </div>
-                        <button onclick="deleteComment('${essayId}', '${comment.id}')" class="text-red-400 hover:text-red-600 p-2"><span class="material-symbols-outlined text-sm">delete</span></button>
-                    `;
-                    listContainer.appendChild(el);
-                });
-            } catch (e) {
-                console.error("Error loading comments", e);
-                listContainer.innerHTML = `<div class="text-center py-4 text-red-400 italic">Error loading comments: ${e.message}</div>`;
-            }
+        // --- COMMUNITY LOGIC ---
+        async function loadCommunity() {
+            loadGuestbook();
         }
 
         async function loadGuestbook() {
@@ -919,19 +788,21 @@
             listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">Loading guestbook...</div>';
 
             try {
-                // Guestbook usually doesn't have index issues as it's single collection
-                const q = query(collection(db, "guestbook"), orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
+                const { data: messages, error } = await supabase
+                    .from('guestbook')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
 
                 listContainer.innerHTML = '';
-                if (querySnapshot.empty) {
+                if (!messages || messages.length === 0) {
                     listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">No guestbook messages found.</div>';
                     return;
                 }
 
-                querySnapshot.forEach(doc => {
-                    const msg = doc.data();
-                    const dateStr = msg.createdAt ? msg.createdAt.toDate().toLocaleDateString() : (msg.date || 'Unknown');
+                messages.forEach(msg => {
+                    const dateStr = msg.created_at ? new Date(msg.created_at).toLocaleDateString() : (msg.date || 'Unknown');
 
                     const el = document.createElement('div');
                     el.className = "bg-[#FDFCF9] p-4 rounded-lg shadow-sm border border-stone-200 flex justify-between items-start mb-2";
@@ -944,7 +815,7 @@
                             </div>
                             <p class="text-stone-600 text-sm font-serif italic">"${msg.message}"</p>
                         </div>
-                        <button onclick="deleteGuestbook('${doc.id}')" class="text-red-400 hover:text-red-600 p-2"><span class="material-symbols-outlined text-sm">delete</span></button>
+                        <button onclick="deleteGuestbook('${msg.id}')" class="text-red-400 hover:text-red-600 p-2"><span class="material-symbols-outlined text-sm">delete</span></button>
                     `;
                     listContainer.appendChild(el);
                 });
@@ -954,14 +825,16 @@
             }
         }
 
-        async function deleteComment(essayId, commentId) {
-            if (!confirm("Delete comment?")) return;
-            try { await deleteDoc(doc(db, "essays", essayId, "comments", commentId)); loadAdminComments(); loadStats(); } catch (e) { alert("Error: " + e.message); }
-        };
+
 
         async function deleteGuestbook(id) {
             if (!confirm("Delete this guestbook message?")) return;
-            try { await deleteDoc(doc(db, "guestbook", id)); loadGuestbook(); loadStats(); } catch (e) { alert("Error: " + e.message); }
+            try {
+                const { error } = await supabase.from('guestbook').delete().eq('id', id);
+                if (error) throw error;
+                loadGuestbook();
+                loadStats();
+            } catch (e) { alert("Error: " + e.message); }
         }
 
         function showView(viewId) {
@@ -973,7 +846,117 @@
             if (viewId === 'comments') loadCommunity();
             if (viewId === 'writings') loadWritings();
             if (viewId === 'photography') loadPhotos();
+            if (viewId === 'music') loadMusic();
         }
+
+        // --- MUSIC MANAGER LOGIC ---
+
+        async function loadMusic() {
+            const listContainer = document.getElementById('adminMusicList');
+            if (!listContainer) return;
+            listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">Loading playlist...</div>';
+
+            try {
+                const { data: musicTracks, error } = await supabase
+                    .from('music')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                listContainer.innerHTML = '';
+                if (!musicTracks || musicTracks.length === 0) {
+                    listContainer.innerHTML = '<div class="text-center py-4 text-stone-400 italic">No music tracks found.</div>';
+                    return;
+                }
+
+                musicTracks.forEach(track => {
+                    const el = document.createElement('div');
+                    el.className = "flex items-center justify-between p-3 bg-stone-50 dark:bg-zinc-900 rounded border border-stone-200 dark:border-zinc-700";
+                    el.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-stone-200 dark:bg-zinc-800 rounded flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-stone-400">music_note</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-sm text-stone-800 dark:text-stone-200">${track.title}</h3>
+                                <p class="text-xs text-stone-500">${track.artist}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-xs text-stone-400 font-mono hidden md:block">${track.videoId}</div>
+                            <button onclick="deleteMusic('${track.id}')" class="text-red-400 hover:text-red-600 p-2 rounded hover:bg-red-50 dark:hover:bg-red-900/20">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                            </button>
+                        </div>
+                    `;
+                    listContainer.appendChild(el);
+                });
+
+            } catch (e) {
+                console.error("Error loading music:", e);
+                listContainer.innerHTML = `<div class="text-center py-4 text-red-400 italic">Error: ${e.message}</div>`;
+            }
+        }
+
+        async function handleAddMusic(e) {
+            e.preventDefault();
+            const title = document.getElementById('musicTitle').value;
+            const artist = document.getElementById('musicArtist').value;
+            const url = document.getElementById('musicUrl').value;
+
+            // Extract Video ID
+            let videoId = '';
+            try {
+                if (url.includes('youtu.be/')) {
+                    videoId = url.split('youtu.be/')[1].split('?')[0];
+                } else if (url.includes('v=')) {
+                    videoId = url.split('v=')[1].split('&')[0];
+                }
+            } catch (err) {
+                alert("Invalid YouTube URL format.");
+                return;
+            }
+
+            if (!videoId || videoId.length !== 11) {
+                alert("Could not extract a valid YouTube Video ID. Please check the URL.");
+                return;
+            }
+
+            try {
+                const { error } = await supabase.from('music').insert([{
+                    title,
+                    artist,
+                    videoId
+                }]);
+
+                if (error) throw error;
+
+                // Reset form
+                document.getElementById('musicTitle').value = '';
+                document.getElementById('musicArtist').value = '';
+                document.getElementById('musicUrl').value = '';
+
+                loadMusic();
+            } catch (e) {
+                alert("Error adding track: " + e.message);
+            }
+        }
+
+        async function deleteMusic(id) {
+            if (!confirm("Delete this track?")) return;
+            try {
+                const { error } = await supabase.from('music').delete().eq('id', id);
+                if (error) throw error;
+                loadMusic();
+            } catch (e) {
+                alert("Error deleting track: " + e.message);
+            }
+        }
+
+        // Expose global functions
+        window.handleAddMusic = handleAddMusic;
+        window.deleteMusic = deleteMusic;
     </script>
 </body>
 
