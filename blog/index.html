@@ -199,11 +199,11 @@
                         <div class="w-1 h-3 bg-black/60 rounded-full"></div>
                     </div>
                     <div class="space-y-1.5 mt-2 relative z-30" id="cabinetDrawers">
-                        <div class="tray-trigger block relative group">
-                            <div class="tray-content h-10 sm:h-12 bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/40">
+                        <div class="tray-trigger block relative group bg-stone-900 shadow-inner rounded-sm">
+                            <div class="tray-content relative z-10 h-10 sm:h-12 bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/40">
                             </div>
                         </div>
-                        <div class="tray-trigger block relative group" id="targetDrawer">
+                        <div class="tray-trigger block relative group bg-stone-900 shadow-inner rounded-sm" id="targetDrawer">
                             <!-- Snackbar Tooltip -->
                             <div class="absolute -top-10 left-1/2 -translate-x-1/2 z-50 transition-opacity duration-300 pointer-events-none" id="drawerTooltip">
                                 <div class="bg-primary text-white text-[13px] sm:text-sm font-bold px-4 py-1.5 rounded-full shadow-lg tooltip-bounce whitespace-nowrap border border-white/20">
@@ -211,15 +211,15 @@
                                     <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rotate-45 border-r border-b border-white/20"></div>
                                 </div>
                             </div>
-                            <div class="tray-content h-10 sm:h-12 bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/40">
+                            <div class="tray-content relative z-10 h-10 sm:h-12 bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/40">
                             </div>
                         </div>
-                        <div class="tray-trigger block relative group">
-                            <div class="tray-content h-10 sm:h-12 bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/40">
+                        <div class="tray-trigger block relative group bg-stone-900 shadow-inner rounded-sm">
+                            <div class="tray-content relative z-10 h-10 sm:h-12 bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/40">
                             </div>
                         </div>
-                        <div class="tray-trigger relative group">
-                            <div class="tray-content h-8 sm:h-10 bg-tray-dark/60 flex items-center px-4 rounded-sm border-b border-black/40">
+                        <div class="tray-trigger relative group bg-stone-900 shadow-inner rounded-sm">
+                            <div class="tray-content relative z-10 h-8 sm:h-10 bg-tray-dark/60 flex items-center px-4 rounded-sm border-b border-black/40">
                             </div>
                         </div>
                     </div>
@@ -278,10 +278,15 @@
             // 1. 스낵바 숨기기
             if (tooltip) tooltip.style.opacity = '0';
             
-            // 2. 2번째 서랍 열기
-            targetDrawer.classList.add('force-open');
+            // 2. 씬을 서랍장(캐비닛) 쪽으로 줌인 (크게 확대하여 내부로 들어가는 느낌)
+            scene.style.transform = 'scale(2.5) translateY(5%)';
             
-            // 3. 약간의 지연 후 씬 페이드아웃 및 메인 콘텐츠 표시
+            // 3. 서랍장 2번째 칸 열기 (줌인 모션과 자연스럽게 이어지도록 약간 지연)
+            setTimeout(() => {
+                targetDrawer.classList.add('force-open');
+            }, 200);
+            
+            // 4. 서랍이 열리고 내부로 들어가는 모션을 충분히 보여준 후 페이드아웃
             setTimeout(() => {
                 scene.style.opacity = '0'; // 씬 페이드 아웃
                 
@@ -289,9 +294,9 @@
                     scene.style.display = 'none'; // DOM에서 숨김
                     document.body.classList.remove('overflow-hidden');
                     main.classList.add('active'); // 메인 콘텐츠 페이드 인 & 슬라이드 업
-                }, 1500); // 페이드아웃 끝난 후
+                }, 1200); // 페이드아웃 끝난 후
                 
-            }, 500); // 서랍이 열리는 애니메이션 이후
+            }, 1200); // 줌인과 서랍 오픈 애니메이션을 1.2초간 충분히 감상하도록 대기
         });
     </script>
     <script src="js/transition.js"></script>
