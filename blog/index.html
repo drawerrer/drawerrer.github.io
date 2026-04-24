@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html class="dark" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영유의 서랍장 | The Modern Drawer</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#d46211",
+                        "wood-light": "#DCC6A1",
+                        "wood-dark": "#5D4037",
+                        "tray-gray": "#CBD5E1",
+                        "tray-dark": "#2C353F",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#12100E"
+                    },
+                    fontFamily: {
+                        display: "Montserrat",
+                        sans: ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    }
+                }
+            }
+        };
+    </script>
+    <style type="text/tailwindcss">
+        :root {
+            --warm-light: rgba(255, 170, 50, 0.4);
+            --lamp-glow: rgba(255, 140, 0, 0.5);
+            --wood-grain: #3d2b1f;
+            --table-warmth: #6a2f0d;
+            --table-warmth-dark: #3a1a08;
+            --lamp-inner: #ffcc80;
+        }
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .cabinet-shadow {
+            box-shadow: 25px 25px 60px rgba(0,0,0,0.6), -2px -2px 10px rgba(255,255,255,0.02);
+        }
+        .tray-content {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tray-trigger:hover .tray-content, .tray-trigger.force-open .tray-content {
+            transform: translateX(-32px) translateY(-4px);
+            z-index: 50;
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.3);
+        }
+        .bedroom-wall {
+            background-color: #1a1714;
+            background-image: radial-gradient(#25211e 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+        .lamp-glow-effect {
+            background: radial-gradient(circle at center, var(--lamp-inner) 0%, var(--lamp-glow) 50%, transparent 90%);
+        }
+        .floor-texture {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%),
+                        repeating-linear-gradient(90deg, #1a150f 0, #1a150f 80px, #0d0a08 81px);
+        }
+        .cabinet-lighting {
+            background: linear-gradient(105deg, rgba(255,160,50,0.18) 0%, rgba(255,160,50,0.05) 30%, transparent 60%);
+            pointer-events: none;
+        }
+        .wood-grain-texture {
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px),
+                              linear-gradient(90deg, rgba(0,0,0,0.05) 0%, transparent 50%, rgba(0,0,0,0.05) 100%);
+        }
+        .striped-bedding-dark {
+            background: repeating-linear-gradient(90deg, #1e2124, #1e2124 6px, #141619 6px, #141619 12px);
+        }
+        .book-stack div:nth-child(odd) { background-color: #1c1917; border-left: 4px solid #7c2d12; }
+        .book-stack div:nth-child(even) { background-color: #1a1a1a; border-left: 4px solid #1e3a8a; }
+        .lamp-cast-light {
+            background: radial-gradient(ellipse at bottom left, rgba(255, 140, 0, 0.25) 0%, transparent 70%);
+        }
+
+        /* Animation & Transition styles */
+        #sceneContainer {
+            transition: transform 2.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.5s ease;
+            transform-origin: center calc(100% - 150px); /* Focus on the cabinet */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+        }
+
+        /* Overlay for CTA */
+        .cta-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
+            transition: opacity 0.8s ease;
+        }
+        
+        .cta-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* The actual content (Compartments) */
+        .main-content-wrapper {
+            position: relative;
+            z-index: 30;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease;
+            height: 100vh;
+            overflow-y: auto;
+            background-color: var(--bg-color); /* main.css에서 정의된 배경색 사용 */
+        }
+        
+        .main-content-wrapper.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+    
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="bg-stone-950 font-sans overflow-hidden">
+
+    <!-- CTA Overlay -->
+    <div class="cta-overlay" id="ctaOverlay">
+        <h1 class="intro-title" style="margin-bottom: 24px; font-family: Pretendard;">영유의 서랍장</h1>
+        <p class="intro-desc" style="max-width: 500px; text-align: center; margin-bottom: 40px; font-family: Pretendard;">
+            단순히 일을 잘하는지 확인하는 것을 넘어, 제가 어떤 사람인지 궁금하시다면 이 서랍장을 열어보세요.
+        </p>
+        <button id="openDrawerBtn" class="open-btn" style="font-family: Pretendard;">
+            서랍장 열어보기
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <polyline points="19 12 12 19 5 12"></polyline>
+            </svg>
+        </button>
+    </div>
+
+    <!-- The Room Scene from old design -->
+    <div id="sceneContainer" class="pointer-events-none">
+        <main class="relative h-screen w-full flex flex-col items-center justify-end bedroom-wall transition-colors duration-1000">
+            <div class="absolute inset-0 lamp-cast-light pointer-events-none z-0"></div>
+            
+            <!-- Left Side Element (Lamp) -->
+            <div class="absolute left-[5%] bottom-[15%] w-48 h-64 z-10 hidden lg:block">
+                <div class="absolute bottom-0 w-full h-40 bg-[var(--table-warmth-dark)] rounded-sm border-t border-white/5 shadow-2xl wood-grain-texture overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-transparent"></div>
+                    <div class="absolute top-4 left-1/2 -translate-x-1/2 w-32 h-1 bg-black/40 rounded"></div>
+                    <div class="absolute top-12 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-stone-900 border border-white/5 shadow-inner"></div>
+                </div>
+                <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-48 flex flex-col items-center">
+                    <div class="w-20 h-24 bg-orange-100/10 rounded-t-3xl border-x border-t border-orange-500/30 shadow-[0_0_50px_rgba(255,165,0,0.3)] relative z-20 overflow-hidden">
+                        <div class="absolute inset-0 lamp-glow-effect blur-xl opacity-80"></div>
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white/40 blur-md rounded-full"></div>
+                    </div>
+                    <div class="w-2 h-16 bg-stone-800 border-x border-black/20"></div>
+                    <div class="w-16 h-4 bg-stone-900 rounded-full border-t border-white/5"></div>
+                </div>
+                <div class="absolute -top-20 -left-20 w-80 h-80 bg-orange-600/15 blur-[100px] rounded-full pointer-events-none"></div>
+            </div>
+
+            <!-- Right Side Element (Bed) -->
+            <div class="absolute right-0 translate-x-[40%] bottom-0 w-[45%] h-[55%] z-10 hidden lg:block grayscale-[0.4] brightness-[0.4]">
+                <div class="w-full h-full bg-[#3a2a1a] wood-grain-texture rounded-tl-lg border-l-4 border-t-4 border-white/5 shadow-2xl relative overflow-hidden">
+                    <div class="absolute bottom-0 left-0 w-full h-[65%] striped-bedding-dark shadow-inner border-t border-black/40">
+                        <div class="absolute -top-6 left-10 flex gap-4">
+                            <div class="w-48 h-32 bg-sky-950/40 rounded-3xl rotate-6 shadow-lg border border-white/5"></div>
+                            <div class="w-48 h-32 bg-slate-900/40 rounded-3xl -rotate-3 shadow-lg border border-white/5"></div>
+                        </div>
+                    </div>
+                    <div class="absolute top-0 left-0 w-full h-[35%] bg-wood-dark border-b-4 border-black/40 flex items-end px-8 pb-3 gap-8">
+                        <div class="book-stack flex flex-col-reverse items-center mb-1">
+                            <div class="w-24 h-3 rounded-sm shadow-sm"></div>
+                            <div class="w-22 h-4 rounded-sm shadow-sm -rotate-1"></div>
+                            <div class="w-26 h-3 rounded-sm shadow-sm"></div>
+                        </div>
+                        <div class="w-28 h-36 bg-stone-900 border-4 border-[#2d1e15] shadow-md mb-2 flex items-center justify-center overflow-hidden">
+                            <div class="w-full h-full bg-stone-950 opacity-90 flex flex-col items-center justify-center p-2">
+                                <div class="w-full h-1/2 bg-white/5 rounded-sm mb-1"></div>
+                            </div>
+                        </div>
+                        <div class="book-stack flex flex-col-reverse items-center mb-1 opacity-70">
+                            <div class="w-20 h-4 rounded-sm shadow-sm"></div>
+                            <div class="w-24 h-3 rounded-sm shadow-sm rotate-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Floor -->
+            <div class="absolute bottom-0 w-full h-[25vh] floor-texture z-0 border-t border-black/40"></div>
+
+            <!-- Center Cabinet (Drawer) -->
+            <div class="relative z-20 w-full max-w-lg mb-24 perspective-1000">
+                <div class="relative mx-auto w-[320px] sm:w-[400px] bg-wood-dark p-2 sm:p-3 rounded-sm cabinet-shadow border-t border-l border-white/10">
+                    <div class="absolute inset-0 cabinet-lighting z-40 rounded-sm"></div>
+                    <div class="h-4 w-full border-b border-black/30 flex items-center justify-center">
+                        <div class="h-1 w-8 bg-black/40 rounded-full"></div>
+                    </div>
+                    <div class="h-10 flex items-center justify-center border-b border-black/30">
+                        <div class="w-1 h-3 bg-black/60 rounded-full"></div>
+                    </div>
+                    <div class="space-y-1.5 mt-2 relative z-30" id="cabinetDrawers">
+                        <div class="tray-trigger block relative group">
+                            <div class="tray-content h-10 sm:h-12 bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/40">
+                                <span class="text-xs sm:text-sm font-bold text-gray-500 w-8">1</span>
+                                <span class="font-display font-medium text-gray-200 tracking-wider">THE BUILDER</span>
+                            </div>
+                        </div>
+                        <div class="tray-trigger block relative group">
+                            <div class="tray-content h-10 sm:h-12 bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/40">
+                                <span class="text-xs sm:text-sm font-bold text-gray-500 w-8">2</span>
+                                <span class="font-display font-medium text-gray-200 tracking-wider">THE THINKER</span>
+                            </div>
+                        </div>
+                        <div class="tray-trigger block relative group">
+                            <div class="tray-content h-10 sm:h-12 bg-tray-dark flex items-center px-4 rounded-sm border-b border-black/40">
+                                <span class="text-xs sm:text-sm font-bold text-gray-500 w-8">3</span>
+                                <span class="font-display font-medium text-gray-200 tracking-wider uppercase">THE OBSERVER</span>
+                            </div>
+                        </div>
+                        <div class="tray-trigger relative group">
+                            <div class="tray-content h-8 sm:h-10 bg-tray-dark/60 flex items-center px-4 rounded-sm border-b border-black/40">
+                                <span class="text-[10px] sm:text-xs font-bold text-gray-600 w-8">4</span>
+                                <span class="text-[10px] sm:text-xs font-display tracking-widest text-gray-500 uppercase">THE GUEST</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-2 border-t-2 border-black/20">
+                        <div class="h-10 sm:h-12 bg-wood-dark/80 rounded-sm flex items-center justify-center">
+                            <div class="w-12 h-1 bg-black/40 rounded-full"></div>
+                        </div>
+                    </div>
+                    <div class="h-10 sm:h-12 mt-2 bg-[#1B261E] rounded-b-sm border-t border-black/40"></div>
+                </div>
+                <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[120%] h-12 bg-black/80 blur-3xl rounded-full"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- The actual compartments -->
+    <div class="main-content-wrapper" id="mainContent">
+        <main class="drawer-content active" style="padding-top: 10vh;">
+            <div class="compartment-grid">
+                
+                <!-- 1. The Builder's Drawer (개발/기획) -->
+                <article class="compartment comp-builder" onclick="location.href='projects.html'">
+                    <h2 class="comp-title">The Builder's Drawer</h2>
+                    <p class="comp-desc">문제 정의부터 해결까지, 논리와 코드로 구축한 결과물들</p>
+                </article>
+
+                <!-- 2. The Thinker's Drawer (글/회고) -->
+                <article class="compartment comp-thinker" onclick="location.href='writings.html'">
+                    <h2 class="comp-title">The Thinker's Drawer</h2>
+                    <p class="comp-desc">개발, 기획, 그리고 일상에 대한 사유의 흔적</p>
+                </article>
+
+                <!-- 3. The Observer's Drawer (사진/영감) -->
+                <article class="compartment comp-observer" onclick="location.href='photography.html'">
+                    <h2 class="comp-title">The Observer's Drawer</h2>
+                    <p class="comp-desc">세상을 바라보는 시선과 영감이 담긴 조각들</p>
+                </article>
+
+                <!-- 4. The Guest's Drawer (방명록) -->
+                <article class="compartment comp-guest" onclick="location.href='guestbook.html'">
+                    <h2 class="comp-title">The Guest's Drawer</h2>
+                    <p class="comp-desc">이곳을 다녀간 분들이 남겨주신 따뜻한 메시지</p>
+                </article>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('openDrawerBtn').addEventListener('click', () => {
+            const overlay = document.getElementById('ctaOverlay');
+            const scene = document.getElementById('sceneContainer');
+            const main = document.getElementById('mainContent');
+            const trays = document.querySelectorAll('.tray-trigger');
+            
+            // 1. 오버레이(CTA) 숨기기
+            overlay.classList.add('hidden');
+            
+            // 2. 씬을 서랍장(캐비닛) 쪽으로 줌인 (크게 확대)
+            scene.style.transform = 'scale(2.5) translateY(5%)';
+            
+            // 3. 서랍이 순차적으로 열리는 애니메이션
+            trays.forEach((tray, index) => {
+                setTimeout(() => {
+                    tray.classList.add('force-open');
+                }, 200 * index + 400); // 줌인이 시작된 후 0.4초 뒤부터 차례대로 열림
+            });
+            
+            // 4. 전체 씬이 서서히 페이드아웃 되면서 메인 콘텐츠 표시
+            setTimeout(() => {
+                scene.style.opacity = '0'; // 씬 페이드 아웃
+                
+                setTimeout(() => {
+                    scene.style.display = 'none'; // DOM에서 숨김
+                    document.body.classList.remove('overflow-hidden');
+                    main.classList.add('active'); // 메인 콘텐츠 페이드 인
+                }, 1500); // 페이드아웃 끝난 후
+                
+            }, 1800); // 서랍이 다 열린 후
+        });
+    </script>
+    <script src="js/transition.js"></script>
+</body>
+</html>
