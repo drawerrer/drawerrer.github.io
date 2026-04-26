@@ -640,3 +640,57 @@ a {
     to { opacity: 0; transform: translateY(-20px); }
 }
 
+/* ==========================================================================
+   Mobile Responsive Adjustments
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* Typography & Spacing */
+    .page-title {
+        font-size: 2rem !important;
+    }
+    .page-subtitle {
+        font-size: 1rem !important;
+    }
+    .page-container {
+        padding: 60px 20px !important;
+    }
+    .article-title {
+        font-size: 1.8rem !important;
+    }
+    
+    /* Layout */
+    .drawer-content {
+        padding: 3rem 1.25rem !important;
+    }
+    .compartment {
+        padding: 1.5rem !important;
+    }
+    .comp-title {
+        font-size: 1.25rem !important;
+    }
+    
+    /* Grids */
+    .project-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .masonry-grid {
+        column-count: 1 !important;
+    }
+    
+    /* Writings List */
+    .writing-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        padding: 16px 0 !important;
+    }
+    .writing-meta {
+        width: 100% !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 4px !important;
+    }
+    .writing-title {
+        font-size: 1.1rem !important;
+    }
+}
+
