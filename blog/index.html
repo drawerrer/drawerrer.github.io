@@ -269,6 +269,22 @@
     </div>
 
     <script>
+        // 해시가 #menu일 경우 룸 애니메이션 생략하고 바로 서랍장 메뉴 표시
+        if (window.location.hash === '#menu') {
+            const scene = document.getElementById('sceneContainer');
+            const main = document.getElementById('mainContent');
+            
+            scene.style.display = 'none';
+            document.body.classList.remove('overflow-hidden');
+            
+            main.style.transition = 'none';
+            main.classList.add('active');
+            
+            setTimeout(() => {
+                main.style.transition = '';
+            }, 50);
+        }
+
         document.getElementById('mainCabinet').addEventListener('click', () => {
             const scene = document.getElementById('sceneContainer');
             const main = document.getElementById('mainContent');
