@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Observer's Drawer | 영유의 서랍장</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+    <main class="page-container photography-container">
+        
+        <!-- Back Link -->
+        <a href="index.html#menu" class="back-link">
+            <span class="material-symbols-outlined" style="font-size: 1.2rem;">arrow_back</span>
+            서랍장으로 돌아가기
+        </a>
+
+        <!-- Header -->
+        <header class="page-header">
+            <h1 class="page-title">The Observer's Drawer</h1>
+            <p class="page-subtitle">순간의 빛과 영감을 포착한 사진 기록들입니다.</p>
+        </header>
+
+        <!-- View Controls -->
+        <div class="gallery-controls">
+            <button class="view-btn active" id="btn-grid">
+                <span class="material-symbols-outlined">grid_view</span> Grid
+            </button>
+            <button class="view-btn" id="btn-space">
+                <span class="material-symbols-outlined">wallpaper</span> Space
+            </button>
+        </div>
+
+        <!-- Gallery Area -->
+        <div id="gallery-area" class="masonry-grid">
+            <!-- Photos will be injected here -->
+        </div>
+
+    </main>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <span class="material-symbols-outlined lightbox-close" id="lightbox-close">close</span>
+            <img src="" id="lightbox-img" alt="Gallery Photo">
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { photographyData } from 'js/data.js';
+
+        const galleryArea = document.getElementById('gallery-area');
+        const btnGrid = document.getElementById('btn-grid');
+        const btnSpace = document.getElementById('btn-space');
+        
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+        const lightboxClose = document.getElementById('lightbox-close');
+
+        let currentMode = 'grid'; // 'grid' or 'space'
+        let zIndexCounter = 10;
+
+        function renderGallery() {
+            galleryArea.innerHTML = '';
+            
+            if (currentMode === 'grid') {
+                galleryArea.className = 'masonry-grid';
+                
+                photographyData.forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'photo-item';
+                    el.onclick = () => openLightbox(item);
+                    
+                    el.innerHTML = `
+                        <img src="${item.url}" alt="${item.title || 'Photo'}">
+                        <div class="photo-overlay">
+                            <div class="photo-title">${item.title || 'Untitled'}</div>
+                            <div class="photo-date" style="font-size: 0.8rem; opacity: 0.8;">${new Date(item.created_at).toLocaleDateString()}</div>
+                        </div>
+                    `;
+                    galleryArea.appendChild(el);
+                });
+            } else {
+                galleryArea.className = 'space-view';
+                
+                photographyData.forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'space-item';
+                    
+                    // Random positions and rotations
+                    const randomX = Math.random() * (galleryArea.clientWidth - 300);
+                    const randomY = Math.random() * (galleryArea.clientHeight - 300);
+                    const randomRot = (Math.random() * 40) - 20;
+                    
+                    el.style.left = `${randomX}px`;
+                    el.style.top = `${randomY}px`;
+                    el.style.transform = `rotate(${randomRot}deg)`;
+                    el.style.zIndex = zIndexCounter++;
+
+                    el.innerHTML = `<img src="${item.url}" alt="${item.title || 'Photo'}" draggable="false">`;
+                    
+                    // Drag logic
+                    makeDraggable(el);
+                    
+                    // Double click to open lightbox
+                    el.ondblclick = () => openLightbox(item);
+
+                    galleryArea.appendChild(el);
+                });
+            }
+        }
+
+        function makeDraggable(el) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            
+            el.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e.preventDefault();
+                el.style.zIndex = zIndexCounter++; // Bring to front
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                
+                // Keep the current rotation while moving
+                const transform = el.style.transform;
+                const rotateMatch = transform.match(/rotate\([^)]+\)/);
+                const rotation = rotateMatch ? rotateMatch[0] : '';
+
+                el.style.top = (el.offsetTop - pos2) + "px";
+                el.style.left = (el.offsetLeft - pos1) + "px";
+                el.style.transform = rotation + " scale(1.05)"; // Add scale while dragging
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                
+                const transform = el.style.transform;
+                const rotateMatch = transform.match(/rotate\([^)]+\)/);
+                const rotation = rotateMatch ? rotateMatch[0] : '';
+                el.style.transform = rotation; // Remove scale
+            }
+        }
+
+        function openLightbox(item) {
+            lightboxImg.src = item.url;
+            lightboxCaption.innerText = item.title || item.caption || '';
+            lightbox.classList.add('active');
+        }
+
+        lightboxClose.onclick = () => {
+            lightbox.classList.remove('active');
+        };
+
+        lightbox.onclick = (e) => {
+            if(e.target === lightbox) lightbox.classList.remove('active');
+        };
+
+        // Controls
+        btnGrid.onclick = () => {
+            if(currentMode === 'grid') return;
+            currentMode = 'grid';
+            btnGrid.classList.add('active');
+            btnSpace.classList.remove('active');
+            renderGallery();
+        };
+
+        btnSpace.onclick = () => {
+            if(currentMode === 'space') return;
+            currentMode = 'space';
+            btnSpace.classList.add('active');
+            btnGrid.classList.remove('active');
+            renderGallery();
+        };
+
+        // Initialize
+        renderGallery();
+
+        // Handle resize for space view bounds (optional enhancement)
+        window.addEventListener('resize', () => {
+            if(currentMode === 'space') renderGallery();
+        });
+
+    </script>
+    <script src="js/transition.js"></script>
+</body>
+</html>

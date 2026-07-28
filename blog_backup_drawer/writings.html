@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Thinker's Drawer | 영유의 서랍장</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+    <main class="page-container writings-container">
+        
+        <!-- List View -->
+        <div id="list-view">
+            <!-- Back Link -->
+            <a href="index.html#menu" class="back-link">
+                <span class="material-symbols-outlined" style="font-size: 1.2rem;">arrow_back</span>
+                서랍장으로 돌아가기
+            </a>
+
+            <!-- Header -->
+            <header class="page-header">
+                <h1 class="page-title">The Thinker's Drawer</h1>
+                <p class="page-subtitle">단순한 기록을 넘어, 관찰하고 고민하며 얻은 사유의 파편들입니다.</p>
+            </header>
+
+            <!-- Tags Filter -->
+            <div class="tags-filter">
+                <button class="tag-btn active" data-tag="all">All</button>
+                <button class="tag-btn" data-tag="Development">Development</button>
+                <button class="tag-btn" data-tag="Design">Design</button>
+                <button class="tag-btn" data-tag="Retrospect">Retrospect</button>
+                <button class="tag-btn" data-tag="Daily">Daily</button>
+            </div>
+
+            <!-- Writing List -->
+            <div class="writing-list" id="writing-list-container">
+                <!-- Javascript will populate this -->
+            </div>
+        </div>
+
+        <!-- Reading View -->
+        <div id="reading-view">
+            <!-- Back Link -->
+            <a href="#" class="back-link" id="back-to-list">
+                <span class="material-symbols-outlined" style="font-size: 1.2rem;">arrow_back</span>
+                목록으로 돌아가기
+            </a>
+            
+            <article>
+                <header class="article-header">
+                    <span class="article-meta" id="article-date"></span>
+                    <h1 class="article-title" id="article-title"></h1>
+                </header>
+                <div class="article-content" id="article-content">
+                    <!-- Content will be injected here -->
+                </div>
+            </article>
+        </div>
+
+    </main>
+
+    <script type="module">
+        import { writingsData } from 'js/data.js';
+
+        const listView = document.getElementById('list-view');
+        const readingView = document.getElementById('reading-view');
+        const listContainer = document.getElementById('writing-list-container');
+        const backToListBtn = document.getElementById('back-to-list');
+
+        // Dummy tags for assignment since data.js doesn't have them
+        const dummyTags = ['Daily', 'Retrospect', 'Development', 'Daily', 'Retrospect'];
+
+        // Sort data by date descending (assuming format YYYY.MM.DD)
+        const sortedData = [...writingsData].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // Render List
+        function renderList(filterTag = 'all') {
+            listContainer.innerHTML = '';
+            
+            sortedData.forEach((item, index) => {
+                const assignedTag = dummyTags[index % dummyTags.length];
+                
+                if (filterTag !== 'all' && assignedTag !== filterTag) return;
+
+                const el = document.createElement('a');
+                el.className = 'writing-item';
+                el.href = '#';
+                el.onclick = (e) => {
+                    e.preventDefault();
+                    openArticle(item);
+                };
+
+                el.innerHTML = `
+                    <div class="writing-meta">[${assignedTag}] &nbsp;${item.date}</div>
+                    <div class="writing-title">${item.title}</div>
+                `;
+                
+                listContainer.appendChild(el);
+            });
+        }
+
+        // Open Article
+        function openArticle(item) {
+            document.getElementById('article-date').innerText = item.date;
+            document.getElementById('article-title').innerText = item.title;
+            document.getElementById('article-content').innerHTML = item.content;
+
+            listView.classList.add('hidden');
+            readingView.classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        // Close Article
+        backToListBtn.onclick = (e) => {
+            e.preventDefault();
+            readingView.classList.remove('active');
+            listView.classList.remove('hidden');
+        };
+
+        // Tag Filters
+        document.querySelectorAll('.tag-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                renderList(e.target.dataset.tag);
+            });
+        });
+
+        // Initialize
+        renderList();
+    </script>
+    <script src="js/transition.js"></script>
+</body>
+</html>
