@@ -8,7 +8,7 @@
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
     <!-- Google Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <!-- DESIGN.md CSS Tokens & System -->
+    <!-- DESIGN.md CSS Tokens -->
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -21,15 +21,16 @@
         </a>
 
         <nav class="nav-tabs">
-            <button class="nav-tab-btn active" data-target="#work">Work</button>
-            <button class="nav-tab-btn" data-target="#thoughts">Thoughts</button>
-            <button class="nav-tab-btn" data-target="#visuals">Visuals</button>
-            <button class="nav-tab-btn" data-target="#guestbook">Guestbook</button>
+            <button class="nav-tab-btn active" onclick="document.getElementById('work-section').scrollIntoView({behavior:'smooth'})">Work</button>
+            <button class="nav-tab-btn" onclick="document.getElementById('editorial-section').scrollIntoView({behavior:'smooth'})">Editorial</button>
+            <button class="nav-tab-btn" onclick="document.getElementById('essays-section').scrollIntoView({behavior:'smooth'})">Essays</button>
+            <button class="nav-tab-btn" onclick="document.getElementById('visuals-section').scrollIntoView({behavior:'smooth'})">Visuals</button>
+            <button class="nav-tab-btn" onclick="document.getElementById('guestbook-section').scrollIntoView({behavior:'smooth'})">Guestbook</button>
         </nav>
 
-        <a href="정영주_이력서.pdf" download class="nav-action-pill">
-            <span class="material-symbols-outlined" style="font-size:16px">description</span>
-            이력서 받기
+        <a href="resume.html" class="nav-action-pill">
+            <span class="material-symbols-outlined" style="font-size:18px">badge</span>
+            이력서 보기
         </a>
     </header>
 
@@ -37,7 +38,7 @@
     <section id="hero" class="tile-section tile-light">
         <div class="hero-content">
             <div class="hero-tag">
-                ✦ Product Builder & Thinker
+                ✦ Product Builder & Content Planner
             </div>
             <h1 class="hero-display">
                 논리와 센스로<br>경험을 설계합니다.
@@ -57,54 +58,70 @@
         </div>
     </section>
 
-    <!-- Section 1: Work (Projects Bento Grid) -->
+    <!-- Section 2: Work & Projects (Vertical Cards Carousel) -->
     <section id="work-section" class="tile-section tile-parchment">
         <div class="tile-container">
             <div class="section-header">
                 <h2 class="section-title">Work & Projects</h2>
-                <p class="section-desc">기획과 개발, 디자인으로 문제를 해결한 핵심 프로젝트들입니다.</p>
+                <p class="section-desc">기획과 개발, 디자인으로 문제를 해결한 세로형 프로젝트 카드입니다. (좌우로 드래그해보세요)</p>
             </div>
-            
-            <div id="projects-grid" class="grid-cards">
+
+            <div id="projects-carousel-track" class="carousel-track">
                 <!-- Rendered dynamically by app.js -->
             </div>
         </div>
     </section>
 
-    <!-- Section 2: Thoughts (Writings Archive) -->
-    <section id="thoughts-section" class="tile-section tile-light">
+    <!-- Section 3: Editorial & Magazine (3X2 Grid) -->
+    <section id="editorial-section" class="tile-section tile-light">
         <div class="tile-container">
             <div class="section-header">
-                <h2 class="section-title">Thoughts & Insights</h2>
-                <p class="section-desc">관찰과 사유, 일상의 고민에서 얻은 기록들입니다.</p>
+                <h2 class="section-title">Editorial & Magazine</h2>
+                <p class="section-desc">월간 SPACE, 매거진 미러, 플라토 매거진, Tür 브랜드 기획 등 직접 작성한 아티클 모음입니다.</p>
             </div>
 
-            <div id="writings-list" class="writing-list">
+            <div id="editorial-grid" class="editorial-grid-3x2">
                 <!-- Rendered dynamically by app.js -->
             </div>
         </div>
     </section>
 
-    <!-- Section 3: Visuals (Photography Gallery) -->
+    <!-- Section 4: Essays & Personal Study (Reference Image Series Split Card) -->
+    <section id="essays-section" class="tile-section tile-parchment">
+        <div class="tile-container">
+            <div class="section-header">
+                <h2 class="section-title">Essays & Personal Study</h2>
+                <p class="section-desc">대주제별 에세이와 개인 탐구 기록입니다. (좌우로 스와이프하여 다른 주제를 살펴보세요)</p>
+            </div>
+
+            <div id="series-carousel-track" class="series-carousel">
+                <!-- Rendered dynamically by app.js (Reference Image series card layout) -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Visuals & Moments (Infinite Auto-Marquee) -->
     <section id="visuals-section" class="tile-section tile-dark">
         <div class="tile-container">
             <div class="section-header">
                 <h2 class="section-title" style="color:var(--color-body-on-dark)">Visuals & Moments</h2>
-                <p class="section-desc">순간의 시선과 시각적 영감을 포착한 갤러리입니다.</p>
+                <p class="section-desc">순간의 시선과 영감을 담아낸 사진들이 흐르는 갤러리입니다.</p>
             </div>
+        </div>
 
-            <div id="photos-grid" class="photo-grid">
-                <!-- Rendered dynamically by app.js -->
+        <div class="marquee-container">
+            <div id="marquee-track" class="marquee-track">
+                <!-- Rendered dynamically by app.js (Auto scrolling right -> left) -->
             </div>
         </div>
     </section>
 
-    <!-- Section 4: Guestbook (Supabase Notes) -->
+    <!-- Section 6: Guestbook (Supabase Notes) -->
     <section id="guestbook-section" class="tile-section tile-parchment">
         <div class="tile-container">
             <div class="section-header">
                 <h2 class="section-title">Guestbook</h2>
-                <p class="section-desc">이곳을 방문해주신 분들의 자유로운 응원 메시지와 피드백 공간입니다.</p>
+                <p class="section-desc">이곳을 방문해주신 분들의 자유로운 메시지와 피드백 공간입니다.</p>
             </div>
 
             <!-- Guestbook Form -->
@@ -131,7 +148,7 @@
     <!-- Footer -->
     <footer class="footer-section">
         <div class="tile-container">
-            <p>© 2026 Youngju. Designed & Built with Precision (Ref: DESIGN.md)</p>
+            <p>© 2026 Youngju Jeong. All rights reserved.</p>
         </div>
     </footer>
 

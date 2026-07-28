@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정영주 이력서 | Resume</title>
+    <!-- Pretendard Variable Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    <!-- Google Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- DESIGN.md CSS Tokens -->
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .resume-page {
+            max-width: 860px;
+            margin: 40px auto 100px auto;
+            padding: 0 24px;
+        }
+        .resume-header {
+            border-bottom: 1px solid var(--color-hairline);
+            padding-bottom: 36px;
+            margin-bottom: 44px;
+        }
+        .resume-name {
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+        .resume-job {
+            font-size: 20px;
+            color: var(--color-primary);
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .resume-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 15px;
+            color: var(--color-ink-muted-48);
+        }
+        .resume-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .resume-section {
+            margin-bottom: 50px;
+        }
+        .resume-section-title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            color: var(--color-ink);
+            border-bottom: 2px solid var(--color-primary);
+            padding-bottom: 8px;
+            margin-bottom: 24px;
+            display: inline-block;
+        }
+        .resume-item {
+            margin-bottom: 28px;
+        }
+        .resume-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 6px;
+        }
+        .resume-item-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .resume-item-sub {
+            font-size: 14px;
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        .resume-item-date {
+            font-size: 14px;
+            color: var(--color-ink-muted-48);
+        }
+        .resume-item-desc {
+            font-size: 15px;
+            color: var(--color-ink-muted-80);
+            line-height: 1.6;
+        }
+        .resume-item-desc ul {
+            padding-left: 20px;
+            margin-top: 8px;
+        }
+        .resume-item-desc li {
+            margin-bottom: 6px;
+        }
+        .skill-badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .skill-badge {
+            background: var(--color-canvas-parchment);
+            border: 1px solid var(--color-divider-soft);
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-ink);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Global Header -->
+    <header class="global-nav-frosted">
+        <a href="index.html" class="nav-action-pill" style="background:transparent; color:var(--color-ink); border:1px solid var(--color-hairline);">
+            <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
+            포트폴리오로 돌아가기
+        </a>
+
+        <a href="정영주_이력서.pdf" download class="nav-action-pill">
+            <span class="material-symbols-outlined" style="font-size:18px">download</span>
+            이력서 다운받기 (PDF)
+        </a>
+    </header>
+
+    <main class="resume-page">
+        <!-- Header -->
+        <div class="resume-header">
+            <h1 class="resume-name">정영주</h1>
+            <div class="resume-job">Product Builder & Content Planner</div>
+            <div class="resume-meta">
+                <span class="resume-meta-item"><span class="material-symbols-outlined" style="font-size:18px">mail</span> drawerrer@gmail.com</span>
+                <span class="resume-meta-item"><span class="material-symbols-outlined" style="font-size:18px">link</span> github.com/drawerrer</span>
+                <span class="resume-meta-item"><span class="material-symbols-outlined" style="font-size:18px">location_on</span> Seoul, South Korea</span>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <section class="resume-section">
+            <h2 class="resume-section-title">Summary</h2>
+            <p class="resume-item-desc" style="font-size:16px;">
+                사용자 니즈 파악과 문제 정의부터 서비스 기획, 프로토타이핑, 프론트엔드 구현까지 논리적이고 직관적인 제품 경험을 만드는 프로덕트 빌더입니다.
+                에디토리얼 에디터 및 브랜드 기획 경험을 바탕으로 제품의 기술적 가치를 매력적인 스토리텔링으로 풀어냅니다.
+            </p>
+        </section>
+
+        <!-- Projects -->
+        <section class="resume-section">
+            <h2 class="resume-section-title">Key Projects</h2>
+
+            <div class="resume-item">
+                <div class="resume-item-header">
+                    <span class="resume-item-title">알로 (Allo) - 영양제 섭취 관리 서비스 MVP</span>
+                    <span class="resume-item-date">2025.10 - 2025.12</span>
+                </div>
+                <div class="resume-item-sub">기획 & MVP 개발</div>
+                <div class="resume-item-desc">
+                    <ul>
+                        <li>개인별 맞춤 영양제 섭취 타이밍 추천 및 습관 형성을 돕는 헬스케어 서비스 MVP 기획</li>
+                        <li>사용자 리서치 기반 알림 UX 및 섭취 달성률 트래킹 인터페이스 구축</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="resume-item">
+                <div class="resume-item-header">
+                    <span class="resume-item-title">카공지도 (Kagong Jido)</span>
+                    <span class="resume-item-date">2026.01 - 진행 중</span>
+                </div>
+                <div class="resume-item-sub">서비스 기획 & 프론트엔드 개발</div>
+                <div class="resume-item-desc">
+                    <ul>
+                        <li>카공족(카페에서 공부/일하는 사람)을 위한 콘센트, 조용함, 좌석 형태 중심의 맞춤 지도 서비스</li>
+                        <li>지도 API 연동 및 인터랙티브 필터링 시스템 개발</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="resume-item">
+                <div class="resume-item-header">
+                    <span class="resume-item-title">틱톡 (TikTok) UX/UI 리디자인</span>
+                    <span class="resume-item-date">2025.08 - 2025.09</span>
+                </div>
+                <div class="resume-item-sub">UI/UX 리디자인</div>
+                <div class="resume-item-desc">
+                    <ul>
+                        <li>숏폼 동영상 시청 몰입도를 극대화하는 직관적인 레이아웃 및 탭 동선 재설계</li>
+                        <li>마이크로 인터랙션을 반영한 모바일 피드 프로토타이핑 제작</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience -->
+        <section class="resume-section">
+            <h2 class="resume-section-title">Editorial & Experience</h2>
+
+            <div class="resume-item">
+                <div class="resume-item-header">
+                    <span class="resume-item-title">월간 SPACE (공간)</span>
+                    <span class="resume-item-date">학생기자</span>
+                </div>
+                <div class="resume-item-desc">한국 대표 건축 전문지 월간 SPACE 학생기자로 건축, 공간, 트렌드 분야 취재 및 기사 작성</div>
+            </div>
+
+            <div class="resume-item">
+                <div class="resume-item-header">
+                    <span class="resume-item-title">매거진 미러 / 플라토 매거진</span>
+                    <span class="resume-item-date">에디터</span>
+                </div>
+                <div class="resume-item-desc">문화 예술 및 라이프스타일 콘텐츠 기획, 취재, 에디팅 담당</div>
+            </div>
+
+            <div class="resume-item">
+                <div class="resume-item-header">
+                    <span class="resume-item-title">Tür (튜어)</span>
+                    <span class="resume-item-date">브랜드 기획자</span>
+                </div>
+                <div class="resume-item-desc">브랜드 초기 아이덴티티 구축 및 마케팅 전략 기획 가이드 작성</div>
+            </div>
+        </section>
+
+        <!-- Skills -->
+        <section class="resume-section">
+            <h2 class="resume-section-title">Skills & Capabilities</h2>
+            <div class="skill-badge-group">
+                <span class="skill-badge">JavaScript (ES6+)</span>
+                <span class="skill-badge">HTML5 / CSS3</span>
+                <span class="skill-badge">TailwindCSS</span>
+                <span class="skill-badge">Supabase / Backend API</span>
+                <span class="skill-badge">UI/UX Design</span>
+                <span class="skill-badge">Figma Prototyping</span>
+                <span class="skill-badge">Editorial Content Writing</span>
+                <span class="skill-badge">Product Strategy</span>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
