@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영유의 포트폴리오 | Product Builder & Thinker</title>
+    <!-- Pretendard Variable Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    <!-- Google Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- DESIGN.md CSS Tokens & System -->
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+    <!-- Global Sticky Sub-Nav (Frosted Glass) -->
+    <header class="global-nav-frosted">
+        <a href="#hero" class="nav-brand">
+            영유의 서랍장
+            <span class="nav-brand-badge">PORTFOLIO</span>
+        </a>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab-btn active" data-target="#work">Work</button>
+            <button class="nav-tab-btn" data-target="#thoughts">Thoughts</button>
+            <button class="nav-tab-btn" data-target="#visuals">Visuals</button>
+            <button class="nav-tab-btn" data-target="#guestbook">Guestbook</button>
+        </nav>
+
+        <a href="정영주_이력서.pdf" download class="nav-action-pill">
+            <span class="material-symbols-outlined" style="font-size:16px">description</span>
+            이력서 받기
+        </a>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="tile-section tile-light">
+        <div class="hero-content">
+            <div class="hero-tag">
+                ✦ Product Builder & Thinker
+            </div>
+            <h1 class="hero-display">
+                논리와 센스로<br>경험을 설계합니다.
+            </h1>
+            <p class="lead-text" style="margin-top:20px;">
+                문제 정의부터 해결까지, 깊이 있는 사유와 직관적인 인터랙션으로 가치를 만듭니다.
+            </p>
+            <div class="hero-ctas">
+                <button class="btn-primary-pill" onclick="document.getElementById('work-section').scrollIntoView({behavior:'smooth'})">
+                    프로젝트 둘러보기
+                    <span class="material-symbols-outlined" style="font-size:18px">arrow_downward</span>
+                </button>
+                <button class="btn-secondary-pill" onclick="document.getElementById('guestbook-section').scrollIntoView({behavior:'smooth'})">
+                    방명록 남기기
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1: Work (Projects Bento Grid) -->
+    <section id="work-section" class="tile-section tile-parchment">
+        <div class="tile-container">
+            <div class="section-header">
+                <h2 class="section-title">Work & Projects</h2>
+                <p class="section-desc">기획과 개발, 디자인으로 문제를 해결한 핵심 프로젝트들입니다.</p>
+            </div>
+            
+            <div id="projects-grid" class="grid-cards">
+                <!-- Rendered dynamically by app.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Thoughts (Writings Archive) -->
+    <section id="thoughts-section" class="tile-section tile-light">
+        <div class="tile-container">
+            <div class="section-header">
+                <h2 class="section-title">Thoughts & Insights</h2>
+                <p class="section-desc">관찰과 사유, 일상의 고민에서 얻은 기록들입니다.</p>
+            </div>
+
+            <div id="writings-list" class="writing-list">
+                <!-- Rendered dynamically by app.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Visuals (Photography Gallery) -->
+    <section id="visuals-section" class="tile-section tile-dark">
+        <div class="tile-container">
+            <div class="section-header">
+                <h2 class="section-title" style="color:var(--color-body-on-dark)">Visuals & Moments</h2>
+                <p class="section-desc">순간의 시선과 시각적 영감을 포착한 갤러리입니다.</p>
+            </div>
+
+            <div id="photos-grid" class="photo-grid">
+                <!-- Rendered dynamically by app.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Guestbook (Supabase Notes) -->
+    <section id="guestbook-section" class="tile-section tile-parchment">
+        <div class="tile-container">
+            <div class="section-header">
+                <h2 class="section-title">Guestbook</h2>
+                <p class="section-desc">이곳을 방문해주신 분들의 자유로운 응원 메시지와 피드백 공간입니다.</p>
+            </div>
+
+            <!-- Guestbook Form -->
+            <div class="guestbook-input-card">
+                <form id="guestbook-form" class="form-group">
+                    <input type="text" id="guest-name" class="form-input" placeholder="이름 또는 닉네임" required>
+                    <textarea id="guest-message" class="form-textarea" rows="3" placeholder="따뜻한 메시지나 방명록을 작성해주세요..." required></textarea>
+                    <div style="display:flex; justify-content:flex-end;">
+                        <button type="submit" class="btn-primary-pill" style="font-size:15px; padding:10px 22px;">
+                            메시지 남기기
+                            <span class="material-symbols-outlined" style="font-size:16px">send</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Guestbook Notes Grid -->
+            <div id="guestbook-list" class="guest-notes-grid">
+                <!-- Rendered dynamically by app.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="tile-container">
+            <p>© 2026 Youngju. Designed & Built with Precision (Ref: DESIGN.md)</p>
+        </div>
+    </footer>
+
+    <!-- App Modal Overlay -->
+    <div id="app-modal" class="modal-overlay">
+        <div class="modal-box">
+            <button id="modal-close" class="modal-close-btn">✕</button>
+            <h2 id="modal-title" class="section-title" style="margin-bottom:20px;">제목</h2>
+            <div id="modal-body" class="body-strong" style="font-weight:400; line-height:1.7;">
+                내용
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script type="module" src="js/app.js"></script>
+
+</body>
+</html>
